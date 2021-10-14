@@ -24,14 +24,13 @@ void create_prt(){
   mpz_out_str(stdout,2,X_z);printf("\n");
   printf("trace (HW :%2ld)(binary) = ",mpz_popcount(trace_z));
   mpz_out_str(stdout,2,trace_z);printf("\n");
-  fp_set_ui(&base_c,1);
-  fp_set_neg(&base_c,&base_c);
+  fp_set_ui(&base_c,5);
   fp_inv(&base_c_inv,&base_c);
   gmp_printf("\nmodulo polynomial\n");
 
-  gmp_printf("fp2  = fp[alpha]/(alpha^2 -%Nu)\n",base_c.x0,FPLIMB);
-  gmp_printf("fp6 = fp2[beta]/(beta^3 -alpha)\n");
-
+  gmp_printf("fp2 = fp[alpha] /(alpha^2 - %Nu  )\n",base_c.x0,FPLIMB);
+  gmp_printf("fp4 = fp2[beta] /(beta^2  - alpha)\n");
+  gmp_printf("fp8 = fp4[gamma]/(gamma^2 - beta )\n");
   fp_println("base_c     = ",&base_c);
   fp_println("base_c_inv = ",&base_c_inv);
   printf("---------------------------------\n");
@@ -61,28 +60,20 @@ void check_base(){
   fp_pow(&tmp,&tmp,expo);
   // fp_println("c^(p-1) :",&tmp);
   if(fp_cmp_one(&tmp)!=0) printf("error!!! c^(p-1)!=1\n\n");
-
-  //check base_c = CNR
-  fp_set(&tmp,&base_c);
-  mpz_sub_ui(expo,prime_z,1);
-  mpz_divexact_ui(expo,expo,3);
-  fp_pow(&tmp,&base_c,expo);
-  if(fp_cmp_one(&tmp)==0) printf("error!!! c^((p-1)/3)==1\n\n");
-
-
   
   //check base_c = QNR
+  fp_set_ui(&tmp2.x0,0);
   fp_set_ui(&tmp2.x1,1);
   mpz_pow_ui(expo,prime_z,2);
   mpz_sub_ui(expo,expo,1);
-  mpz_divexact_ui(expo,expo,3);
+  mpz_divexact_ui(expo,expo,2);
   fp2_pow(&tmp2,&tmp2,expo);
   // fp2_println("fp2",&tmp2);
-  if(fp2_cmp_one(&tmp2)==0) printf("error!!! alpha^((p^3-1)/2)==1\n\n");
+  if(fp2_cmp_one(&tmp2)==0) printf("error!!! alpha^((p^2-1)/2)==1\n\n");
   
-  mpz_set_ui(expo,3);
+  mpz_set_ui(expo,2);
   fp2_pow(&tmp2,&tmp2,expo);
-  if(fp2_cmp_one(&tmp2)!=0) printf("error!!! alpha^(p^3-1)!=1\n\n");
+  if(fp2_cmp_one(&tmp2)!=0) printf("error!!! alpha^(p^2-1)!=1\n\n");
 
   fp_mul(&tmp,&base_c,&base_c_inv);
   //fp_println("base_c * base_c_inv = ",&tmp);
@@ -264,7 +255,6 @@ void tmp_init(){
 
   mpz_init(efp_total);
   mpz_init(efp2_total);
-
   mpz_init(efp4_total);
   mpz_init(efp8_total);
   mpz_init(fp8_total_r);

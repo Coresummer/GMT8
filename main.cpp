@@ -14,7 +14,7 @@
 // #include "fp4.h"
 // #include "fp8.h"
 // #include "test_fp.h"
-// #include "field_test.h"
+#include "field_test.h"
 // #include "efp.h"
 // #include "efp2.h"
 // #include "test_efp.h"
@@ -32,10 +32,10 @@ int main(){
   tmp_init();
   create_prt();
   check_base();
-  // pre_montgomery();
-  // frobenius_precalculation();
-  // curve_search();
-  // create_weil();
+  pre_montgomery();
+  frobenius_precalculation();
+  curve_search();
+  create_weil();
 
   printf("*********************************************************************************************\n\n");
   
@@ -48,8 +48,8 @@ int main(){
   // test_fp2(CHECK_PAIRING_TIME_LOOP);
   // test_fp6(CHECK_PAIRING_TIME_LOOP);
 
-  // check_fp_with_montgomery();
-  // check_fp2_with_montgomery();
+  check_fp_with_montgomery();
+  check_fp2_with_montgomery();
   // check_fp6_with_montgomery();
 
   // BENCH_fp2_fp6_mul_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
