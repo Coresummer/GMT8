@@ -2,7 +2,7 @@
 #ifndef fp8_H
 #define fp8_H
 
-#include "fp.h"
+#include "fp4.h"
 
 void fp8_init(fp8_t *A);
 void fp8_printf(std::string str ,fp8_t *A);

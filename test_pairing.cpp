@@ -1,75 +1,7 @@
 #include "test_pairing.h"
 #include "final_exp.h"
 #include "miller.h"
-/*
-void SCM_func_check(){
-printf("SCM_func_check() 開始\n");
-efp6 efp6_point_P,efp6_point_Q;
-mpz_t s,a,b,ab;
-efp6_init(&efp6_point_P);
-efp6_init(&efp6_point_Q);
-mpz_init(s);
-mpz_init(a);
-mpz_init(b);
-mpz_init(ab);
 
-efp efp_P,efp_aP;
-efp7 efp7_Q,efp7_bQ1,efp7_bQ2;
-efp_init(&efp_P);
-efp_init(&efp_aP);
-efp7_init(&efp7_Q);
-efp7_init(&efp7_bQ1);
-efp7_init(&efp7_bQ2);
-
-
-find_P_inG1_Q_inG2(&efp6_point_P,&efp6_point_Q);
-mpz_urandomm(a,state,p);
-mpz_urandomm(b,state,p);
-
-twist_mapping_to_efp(&efp_P,&efp6_point_P);
-twist_mapping_to_efp7(&efp7_Q,&efp6_point_Q);
-#if 1
-printf("P  :");
-efp_print(&efp_P);
-printf("Q' :");
-efp7_print(&efp7_Q);
-#endif
-efp7_SCM_twist(&efp7_bQ1,&efp7_Q,b);
-efp7_SCM_twist_GLV(&efp7_bQ2,&efp7_Q,b);
-#if 1
-printf("[b]Q (plain) = ");
-efp7_print(&efp7_bQ1);
-printf("[b]Q (GLV)   = ");
-efp7_print(&efp7_bQ2);
-#endif
-if(fp7_cmp(&efp7_bQ1.x,&efp7_bQ2.x)==0 && fp7_cmp(&efp7_bQ1.y,&efp7_bQ2.y)==0)  printf("[b]Q (plain) == [b]Q (GLV)\n\n");
-else  printf("[b]Q (plain) != [b]Q (GLV)\n\n");
-printf("---------------------------------\n");
-
-printf("SCM (plain)\n");
-cost_zero();
-efp7_SCM_twist(&efp7_bQ1,&efp7_Q,b);
-count_print();
-printf("SCM (GLV)\n");
-cost_zero();
-efp7_SCM_twist_GLV(&efp7_bQ2,&efp7_Q,b);
-count_print();
-
-
-printf("\nSCM_func_check() 終了\n");
-printf("*********************************************************************************************\n\n");
-efp6_clear(&efp6_point_P);
-efp6_clear(&efp6_point_Q);
-mpz_clear(s);
-mpz_clear(a);
-mpz_clear(b);
-mpz_clear(ab);
-efp_clear(&efp_P);
-efp_clear(&efp_aP);
-efp7_clear(&efp7_Q);
-efp7_clear(&efp7_bQ1);
-efp7_clear(&efp7_bQ2);
-}*/
 
 void check_pairing(){
   printf("check_pairing() 開始\n");

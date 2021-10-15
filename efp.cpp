@@ -235,10 +235,11 @@ void efp_rational_point(efp_t *P){
   P->infinity=0;
   while(1){
     fp_set_random(&P->x,state);
-    //y^2 = x^3 + b
+    //y^2 = x^3 + ax
     fp_sqr(&tmp_y2,&P->x);
-    fp_mul(&tmp_y2,&tmp_y2,&P->x);
-    fp_add(&tmp_y2,&tmp_y2,&curve_b);
+    fp_mul(&tmp_y2,&tmp_y2,&P->x);  //x^3
+    fp_mul(&tmp_ax,&P->x,&curve_a); //ax
+    fp_add(&tmp_y2,&tmp_y2,&tmp_ax);//x^3 + ax
     if(fp_legendre(&tmp_y2)==1){
       fp_sqrt(&P->y,&tmp_y2);
       break;
@@ -267,7 +268,7 @@ void efp_ecd(efp_t *ANS,efp_t *P){
   fp_sqr(&tmp2_fp,&tmp1_efp.x);
   fp_add(&tmp3_fp,&tmp2_fp,&tmp2_fp);
   fp_add(&tmp2_fp,&tmp2_fp,&tmp3_fp);
-  //fp_add(&tmp2_fp,&tmp2_fp,&curve_a);
+  fp_add(&tmp2_fp,&tmp2_fp,&curve_a);
   //tmp3_fp = lambda
   fp_mul(&tmp3_fp,&tmp1_fp,&tmp2_fp);
 
@@ -581,4 +582,21 @@ void efp_checkOnCurve_Twsit(efp_t* A){
 
   fp_sub(&tmp1_fp,&tmp2_fp,&tmp1_fp);
   fp_println("afin_diff:",&tmp1_fp);
+}
+
+void efp_checkOnCurve(efp_t *A){
+  static fp_t tmp_left_fp, tmp_right_fp,tmp_ax;
+  fp_sqr(&tmp_left_fp,&A->y);
+
+  fp_sqr(&tmp_right_fp,&A->x);
+  fp_mul(&tmp_right_fp,&tmp_right_fp,&A->x);
+
+  fp_mul(&tmp_ax,&A->x,&curve_a);
+  fp_add(&tmp_right_fp, &tmp_right_fp, &tmp_ax);
+  if(fp_cmp(&tmp_right_fp, &tmp_left_fp)==0){
+    printf("efp6 check on curve: On curve\n");
+  }else{
+    printf("efp6 check on curve: NOT On curve\n");
+  }
+
 }

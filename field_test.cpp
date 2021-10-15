@@ -1174,77 +1174,150 @@ void check_fp2_with_montgomery(){
 }
 
 
-// void check_fp6_with_montgomery(){
-//   printf("********************CHECK FP2 WITH MONTGOMERY*************************************************\n\n");
-//   printf("check_fp_with_montogomery() start...\n");
-//   fp6_t A, ANS;
-//   fp6_t Am, ANSm;
+void check_fp4_with_montgomery(){
+  printf("********************CHECK FP4 WITH MONTGOMERY*************************************************\n\n");
+  printf("check_fp_with_montogomery() start...\n");
+  fp4_t A, ANS;
+  fp4_t Am, ANSm;
 
-//   fp6_init(&A);
-//   fp6_init(&ANS);
-//   fp6_init(&Am);
-//   fp6_init(&ANSm);
-//   printf("---------------------------------\n");
+  fp4_init(&A);
+  fp4_init(&ANS);
+  fp4_init(&Am);
+  fp4_init(&ANSm);
+  printf("---------------------------------\n");
 
-//   fp6_set_random(&A,state);
-//   fp6_println("A =  ",&A);
-//   fp6_to_montgomery(&Am, &A);
-//   fp6_println_montgomery("Am = ",&Am);
+  fp4_set_random(&A,state);
+  fp4_println("A =  ",&A);
+  fp4_to_montgomery(&Am, &A);
+  fp4_println_montgomery("Am = ",&Am);
 
-//   fp6_inv(&ANS,&A);
-//   fp6_inv_lazy_montgomery(&ANSm,&Am);
+  fp4_inv(&ANS,&A);
+  fp4_inv_lazy_montgomery(&ANSm,&Am);
 
-//   fp6_println("\nA^-1 =  ",&ANS);
-//   fp6_println_montgomery("Am^-1 = ",&ANSm);
+  fp4_println("\nA^-1 =  ",&ANS);
+  fp4_println_montgomery("Am^-1 = ",&ANSm);
 
-//   fp6_mul(&ANS,&ANS,&A);
-//   fp6_mul_lazy_montgomery(&ANSm,&ANSm,&Am);
+  fp4_mul(&ANS,&ANS,&A);
+  fp4_mul_lazy_montgomery(&ANSm,&ANSm,&Am);
 
-//   fp6_println("\nA * A^-1 =  ",&ANS);
-//   fp6_println_montgomery("Am * Am^-1 = ",&ANSm);
-//   printf("---------------------------------\n");
+  fp4_println("\nA * A^-1 =  ",&ANS);
+  fp4_println_montgomery("Am * Am^-1 = ",&ANSm);
+  printf("---------------------------------\n");
 
-//   printf("Check sqrt algorithm\n");
-//   int flag=fp6_legendre(&A);
-//   printf("fp6_legendre(A) = %d\n",flag);
-//   if(flag==1){
-//     fp6_sqrt(&ANS,&A);
-//     fp6_println("fp6_sqrt(A) = ",&ANS);
-//     fp6_to_montgomery(&ANSm, &ANS);
-//     fp6_println_montgomery("fp6_sqrt(Am) = ",&ANSm);
+  printf("Check sqrt algorithm\n");
+  int flag=fp4_legendre(&A);
+  printf("fp4_legendre(A) = %d\n",flag);
+  if(flag==1){
+    fp4_sqrt(&ANS,&A);
+    fp4_println("fp4_sqrt(A) = ",&ANS);
+    fp4_to_montgomery(&ANSm, &ANS);
+    fp4_println_montgomery("fp4_sqrt(Am) = ",&ANSm);
 
-//     fp6_sqr(&ANS,&ANS);
-//     if(fp6_cmp(&ANS,&A)==0){
-//       printf("(fp6_sqrt(A))^6 = A\n\n");
-//     }
-//     else  printf("(fp_6sqrt(A))^6 != A\n\n");
+    fp4_sqr(&ANS,&ANS);
+    if(fp4_cmp(&ANS,&A)==0){
+      printf("(fp4_sqrt(A))^4 = A\n\n");
+    }
+    else  printf("(fp4_sqrt(A))^4 != A\n\n");
 
-//     fp6_sqr_lazy_montgomery(&ANSm,&ANSm);
-//     if(fp6_cmp(&ANSm,&Am)==0){
-//       printf("(fp6_sqrt(Am))^6 = A\n\n");
-//     }
-//     else  printf("(fp6_sqrt(Am))^6 != A\n\n");
+    fp4_sqr_lazy_montgomery(&ANSm,&ANSm);
+    if(fp4_cmp(&ANSm,&Am)==0){
+      printf("(fp4_sqrt(Am))^4 = A\n\n");
+    }
+    else  printf("(fp4_sqrt(Am))^4 != A\n\n");
 
-//   }
-//   printf("---------------------------------\n");
+  }
+  printf("---------------------------------\n");
 
-//   printf("Check Fermert's little theorem\n");
-//   mpz_t tmp;
-//   mpz_init(tmp);
-//   mpz_pow_ui(tmp,prime_z,6);
-//   mpz_sub_ui(tmp,tmp,1);
-//   fp6_pow(&ANS,&A,tmp);
-//   fp6_println("A^(p^6-1) =  ",&ANS);
+  printf("Check Fermert's little theorem\n");
+  mpz_t tmp;
+  mpz_init(tmp);
+  mpz_pow_ui(tmp,prime_z,6);
+  mpz_sub_ui(tmp,tmp,1);
+  fp4_pow(&ANS,&A,tmp);
+  fp4_println("A^(p^4-1) =  ",&ANS);
 
-//   fp6_pow_montgomery(&ANSm,&Am,tmp);
-//   fp6_println_montgomery("Am^(p^6-1) = ",&ANSm);
-//   printf("---------------------------------\n");
+  fp4_pow_montgomery(&ANSm,&Am,tmp);
+  fp4_println_montgomery("Am^(p^4-1) = ",&ANSm);
+  printf("---------------------------------\n");
 
-//   fp6_println("\nA =  ",&A);
-//   fp6_println_montgomery("Am = ",&Am);
-//   printf("---------------------------------\n");
-//   printf("*********************************************************************************************\n\n");
-// }
+  fp4_println("\nA =  ",&A);
+  fp4_println_montgomery("Am = ",&Am);
+  printf("---------------------------------\n");
+  printf("*********************************************************************************************\n\n");
+}
+
+void check_fp8_with_montgomery(){
+  printf("********************CHECK FP8 WITH MONTGOMERY*************************************************\n\n");
+  printf("check_fp_with_montogomery() start...\n");
+  fp8_t A, ANS;
+  fp8_t Am, ANSm;
+
+  fp8_init(&A);
+  fp8_init(&ANS);
+  fp8_init(&Am);
+  fp8_init(&ANSm);
+  printf("---------------------------------\n");
+
+  fp8_set_random(&A,state);
+  fp8_println("A =  ",&A);
+  fp8_to_montgomery(&Am, &A);
+  fp8_println_montgomery("Am = ",&Am);
+
+  fp8_inv(&ANS,&A);
+  fp8_inv_lazy_montgomery(&ANSm,&Am);
+
+  fp8_println("\nA^-1 =  ",&ANS);
+  fp8_println_montgomery("Am^-1 = ",&ANSm);
+
+  fp8_mul(&ANS,&ANS,&A);
+  fp8_mul_lazy_montgomery(&ANSm,&ANSm,&Am);
+
+  fp8_println("\nA * A^-1 =  ",&ANS);
+  fp8_println_montgomery("Am * Am^-1 = ",&ANSm);
+  printf("---------------------------------\n");
+
+  printf("Check sqrt algorithm\n");
+  int flag=fp8_legendre(&A);
+  printf("fp8_legendre(A) = %d\n",flag);
+  if(flag==1){
+    fp8_sqrt(&ANS,&A);
+    fp8_println("fp8_sqrt(A) = ",&ANS);
+    fp8_to_montgomery(&ANSm, &ANS);
+    fp8_println_montgomery("fp8_sqrt(Am) = ",&ANSm);
+
+    fp8_sqr(&ANS,&ANS);
+    if(fp8_cmp(&ANS,&A)==0){
+      printf("(fp8_sqrt(A))^8 = A\n\n");
+    }
+    else  printf("(fp8_sqrt(A))^8 != A\n\n");
+
+    fp8_sqr_lazy_montgomery(&ANSm,&ANSm);
+    if(fp8_cmp(&ANSm,&Am)==0){
+      printf("(fp8_sqrt(Am))^8 = A\n\n");
+    }
+    else  printf("(fp8_sqrt(Am))^8 != A\n\n");
+
+  }
+  printf("---------------------------------\n");
+
+  printf("Check Fermert's little theorem\n");
+  mpz_t tmp;
+  mpz_init(tmp);
+  mpz_pow_ui(tmp,prime_z,6);
+  mpz_sub_ui(tmp,tmp,1);
+  fp8_pow(&ANS,&A,tmp);
+  fp8_println("A^(p^8-1) =  ",&ANS);
+
+  fp8_pow_montgomery(&ANSm,&Am,tmp);
+  fp8_println_montgomery("Am^(p^8-1) = ",&ANSm);
+  printf("---------------------------------\n");
+
+  fp8_println("\nA =  ",&A);
+  fp8_println_montgomery("Am = ",&Am);
+  printf("---------------------------------\n");
+  printf("*********************************************************************************************\n\n");
+}
+
 
 // void BENCH_fp2_fp6_mul_lazy_montgomery(int LOOP){
 //   printf("============================================================================\n");

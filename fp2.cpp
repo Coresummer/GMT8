@@ -85,6 +85,12 @@ void fp2_set_neg(fp2_t *ANS,fp2_t *A){
   fp_set_neg(&ANS->x1,&A->x1);
 }
 
+
+void fp2_set_neg_montgomery(fp2_t *ANS,fp2_t *A){
+  fp_set_neg_montgomery(&ANS->x0,&A->x0);
+  fp_set_neg_montgomery(&ANS->x1,&A->x1);
+}
+
 void fp2_set_conj(fp2_t *ANS,fp2_t *A){
   fp_set(&ANS->x0,&A->x0);
   fp_set_neg(&ANS->x1,&A->x1);
@@ -699,15 +705,6 @@ void fp2_lshift_ui_nonmod_double(fpd2_t *ANS, fpd2_t *A, int s) {
   fp_lshift_ui_nonmod_double(&ANS->x1, &A->x1, s);
 }
 
-void fp2_mul_3_twist_b(fp2_t *ANS, fp2_t *A) {
-  static fp2_t tmp;
-  fp2_lshift_ui_nonmod_single(&tmp, A, 3);
-
-  fp_sub_nonmod_single(&ANS->x0, &tmp.x0, &tmp.x1);
-  fp_add_nonmod_single(&ANS->x1, &tmp.x1, &tmp.x0);
-}
-
-
 void fp2_frobenius_map_p1(fp2_t *ANS,fp2_t *A){
   fp_set(&ANS->x0,&A->x0);
   fp_set_neg(&ANS->x1,&A->x1);
@@ -717,22 +714,15 @@ void fp2_mul_base(fp2_t *ANS,fp2_t *A){
   static fp2_t tmp_A;
   fp2_set(&tmp_A,A);
 
-  fp_l1shift(&ANS->x0, &A->x1);
+  fp_mul_base(&ANS->x0, &A->x1);
   fp_set(&ANS->x1,&tmp_A.x0);    //@^2 = 2
 }
 
-void fp2_mul_base_nonmod_single(fp2_t *ANS,fp2_t *A){
-  static fp_t tmp_A;
-  fp_set(&tmp_A,&A->x0);
+void fp2_mul_base_inv(fp2_t *ANS,fp2_t *A){
+  static fp2_t tmp_A;
+  fp2_set(&tmp_A,A);
 
-  fp_l1shift(&ANS->x0, &A->x1);
-  fp_set(&ANS->x1,&tmp_A);    //@^2 = 2
-}
+  fp_mul_base_inv(&ANS->x1, &tmp_A.x0);
+  fp_set(&ANS->x0,&tmp_A.x1);    //@^2 = 2
 
-void fp2_mul_base_nonmod_double(fpd2_t *ANS,fpd2_t *A){
-  static fpd_t tmp_A;
-  fpd_set(&tmp_A,&A->x0);
-
-  fp_l1shift_double(&ANS->x0,&A->x1);
-  fpd_set(&ANS->x1,&tmp_A);    //@^2 = 2
 }

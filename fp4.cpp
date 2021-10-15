@@ -1,6 +1,5 @@
+#include "fp4.h"
 #include "fp2.h"
-#include "fp.h"
-#include "mpn.h"
 
 void fp4_init(fp4_t *A){
   fp2_init(&A->x0);
@@ -21,6 +20,14 @@ void fp4_println(std::string str ,fp4_t *A){
   gmp_printf(",");
   fp2_printf("",&A->x1);
   gmp_printf(")\n");
+}
+
+void fpd4_printf(std::string str ,fpd4_t *A){
+  gmp_printf("%s(",str.c_str());
+  fpd2_printf("",&A->x0);
+  gmp_printf(",");
+  fpd2_printf("",&A->x1);
+  gmp_printf(")");
 }
 
 void fpd4_println(std::string str ,fpd4_t *A){
@@ -77,6 +84,12 @@ void fp4_set_neg(fp4_t *ANS,fp4_t *A){
   fp2_set_neg(&ANS->x1,&A->x1);
 }
 
+
+void fp4_set_neg_montgomery(fp4_t *ANS,fp4_t *A){
+  fp2_set_neg_montgomery(&ANS->x0,&A->x0);
+  fp2_set_neg_montgomery(&ANS->x1,&A->x1);
+}
+
 void fp4_set_conj(fp4_t *ANS,fp4_t *A){
   fp2_set(&ANS->x0,&A->x0);
   fp2_set_neg(&ANS->x1,&A->x1);
@@ -85,13 +98,6 @@ void fp4_set_conj(fp4_t *ANS,fp4_t *A){
 void fp4_set_conj_montgomery(fp4_t *ANS,fp4_t *A){
   fp2_set(&ANS->x0,&A->x0);
   fp2_set_neg_montgomery(&ANS->x1,&A->x1);
-}
-
-void fp4_set_conj_montgomery_fpd(fpd4_t *ANS,fp4_t *A){
-  static fpd4_t temp;
-  fp2_set_fpd(&ANS->x0,&A->x0);
-  fp2_set_fpd(&temp,&A->x1);
-  fpd4_set_neg_montgomery(&ANS->x1,&temp);
 }
 
 void fp4_to_montgomery(fp4_t *ANS,fp4_t *A){
@@ -162,28 +168,28 @@ void fp4_mul(fp4_t *ANS,fp4_t *A,fp4_t *B){
   fp2_sub(&ANS->x1,&tmp3_fp,&tmp2_fp);//(a+b)(c+d) - ac -bd
 } 
 
-void fp4_mul_lazy(fp4_t *ANS,fp4_t *A,fp4_t *B){ 
-  static fp4_t tmp_A,tmp_B;
-  fp4_set(&tmp_A,A);
-  fp4_set(&tmp_B,B);
+// void fp4_mul_lazy(fp4_t *ANS,fp4_t *A,fp4_t *B){ 
+//   static fp4_t tmp_A,tmp_B;
+//   fp4_set(&tmp_A,A);
+//   fp4_set(&tmp_B,B);
 
-  static fp2_t tmp3_fp,tmp4_fp;
-  static fp2_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd,tmp5_fpd;
+//   static fp2_t tmp3_fp,tmp4_fp;
+//   static fpd2_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd,tmp5_fpd;
   
-  fp2_mul_lazy(&tmp1_fpd,&tmp_A.x0,&tmp_B.x0); //ac
-  fp2_mul_lazy(&tmp2_fpd,&tmp_A.x1,&tmp_B.x1); //bd
-  fp2_l1shift_double(&tmp3_fpd, &tmp2_fpd);  //ab+bdΘ^2
-  fp2_add_nonmod_double(&tmp4_fpd, &tmp1_fpd, &tmp3_fpd);  //ab+bdΘ^2
-  fp2_mod(&ANS->x0,tmp4_fpd.x0,FPLIMB2);
+//   fp2_mul_nonmod(&tmp1_fpd,&tmp_A.x0,&tmp_B.x0); //ac
+//   fp2_mul_nonmod(&tmp2_fpd,&tmp_A.x1,&tmp_B.x1); //bd
+//   fp2_l1shift_double(&tmp3_fpd, &tmp2_fpd);  //ab+bdΘ^2
+//   fp2_add_nonmod_double(&tmp4_fpd, &tmp1_fpd, &tmp3_fpd);  //ab+bdΘ^2
+//   fp2_mod(&ANS->x0,tmp4_fpd.x0,FPLIMB2);
 
-  fp2_add_nonmod_single(&tmp3_fp,&tmp_A.x0,&tmp_A.x1);//a+b
-  fp2_add_nonmod_single(&tmp4_fp,&tmp_B.x0,&tmp_B.x1);//c+d
-  fp2_mul_lazy(&tmp5_fpd,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
+//   fp2_add_nonmod_single(&tmp3_fp,&tmp_A.x0,&tmp_A.x1);//a+b
+//   fp2_add_nonmod_single(&tmp4_fp,&tmp_B.x0,&tmp_B.x1);//c+d
+//   fp2_mul_nonmod(&tmp5_fpd,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
   
-  fp2_sub_nonmod_double(&tmp3_fpd,&tmp5_fpd,&tmp1_fpd);//(a+b)(c+d) - ac
-  fp2_sub_nonmod_double(&tmp4_fpd,&tmp3_fpd,&tmp2_fpd);//(a+b)(c+d) - ac -bd
-  fp2_mod(&ANS->x1,tmp4_fpd.x0,FPLIMB2);
-} 
+//   fp2_sub_nonmod_double(&tmp3_fpd,&tmp5_fpd,&tmp1_fpd);//(a+b)(c+d) - ac
+//   fp2_sub_nonmod_double(&tmp4_fpd,&tmp3_fpd,&tmp2_fpd);//(a+b)(c+d) - ac -bd
+//   fp2_mod(&ANS->x1,tmp4_fpd.x0,FPLIMB2);
+// } 
 
 void fp4_mul_lazy_montgomery(fp4_t *ANS,fp4_t *A,fp4_t *B){ 
   // static fp4_t tmp_A,tmp_B;
@@ -191,7 +197,7 @@ void fp4_mul_lazy_montgomery(fp4_t *ANS,fp4_t *A,fp4_t *B){
   // fp4_set(&tmp_B,B);
 
   // static fp2_t tmp3_fp,tmp4_fp;
-  // static fpd4_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd,tmp5_fpd;
+  // static fpd2_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd,tmp5_fpd;
   
   // fp2_mul_nonmod(&tmp1_fpd,&tmp_A.x0,&tmp_B.x0); //ac
   // fp2_mul_nonmod(&tmp2_fpd,&tmp_A.x1,&tmp_B.x1); //bd
@@ -212,14 +218,14 @@ void fp4_mul_lazy_montgomery(fp4_t *ANS,fp4_t *A,fp4_t *B){
   fp4_set(&tmp_B,B);
 
   static fp2_t tmp1_fp,tmp2_fp,tmp3_fp,tmp4_fp,tmp5_fp;
-  fp2_mulmod_montgomery(&tmp1_fp,&tmp_A.x0,&tmp_B.x0); //ac
-  fp2_mulmod_montgomery(&tmp2_fp,&tmp_A.x1,&tmp_B.x1); //bd
+  fp2_mul_lazy_montgomery(&tmp1_fp,&tmp_A.x0,&tmp_B.x0); //ac
+  fp2_mul_lazy_montgomery(&tmp2_fp,&tmp_A.x1,&tmp_B.x1); //bd
   fp2_mul_base(&tmp3_fp, &tmp2_fp);  //ab+bdΘ^2
   fp2_add(&ANS->x0, &tmp1_fp, &tmp3_fp);  //ab+bdΘ^2
 
   fp2_add(&tmp3_fp,&tmp_A.x0,&tmp_A.x1);//a+b
   fp2_add(&tmp4_fp,&tmp_B.x0,&tmp_B.x1);//c+d
-  fp2_mulmod_montgomery(&tmp5_fp,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
+  fp2_mul_lazy_montgomery(&tmp5_fp,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
   
   fp2_sub(&tmp3_fp,&tmp5_fp,&tmp1_fp);//(a+b)(c+d) - ac
   fp2_sub(&ANS->x1,&tmp3_fp,&tmp2_fp);//(a+b)(c+d) - ac -bd
@@ -232,16 +238,16 @@ void fp4_mul_nonmod_montgomery(fpd4_t *ANS, fp4_t *A, fp4_t *B) {
   fp4_set(&tmp_B,B);
 
   static fp2_t tmp3_fp,tmp4_fp;
-  static fpd4_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd,tmp5_fpd;
+  static fpd2_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd,tmp5_fpd;
   
-  fp2_mul_nonmod(&tmp1_fpd,&tmp_A.x0,&tmp_B.x0); //ac
-  fp2_mul_nonmod(&tmp2_fpd,&tmp_A.x1,&tmp_B.x1); //bd
-  fp2_l1shift_double(&tmp3_fpd, &tmp2_fpd);  //ab+bdΘ^2
+  fp2_mul_nonmod_montgomery(&tmp1_fpd,&tmp_A.x0,&tmp_B.x0); //ac
+  fp2_mul_nonmod_montgomery(&tmp2_fpd,&tmp_A.x1,&tmp_B.x1); //bd
+  fp2_l1shift_nonmod_double(&tmp3_fpd, &tmp2_fpd);  //ab+bdΘ^2
   fp2_add_nonmod_double(&ANS->x0, &tmp1_fpd, &tmp3_fpd);  //ab+bdΘ^2
 
   fp2_add_nonmod_single(&tmp3_fp,&tmp_A.x0,&tmp_A.x1);//a+b
   fp2_add_nonmod_single(&tmp4_fp,&tmp_B.x0,&tmp_B.x1);//c+d
-  fp2_mul_nonmod(&tmp5_fpd,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
+  fp2_mul_nonmod_montgomery(&tmp5_fpd,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
   fp2_sub_nonmod_double(&tmp3_fpd,&tmp5_fpd,&tmp1_fpd);//(a+b)(c+d) - ac
   fp2_sub_nonmod_double(&ANS->x1,&tmp3_fpd,&tmp2_fpd);//(a+b)(c+d) - ac -bd
 }
@@ -260,8 +266,9 @@ void fp4_mul_mpn(fp4_t *ANS,fp4_t *A,mp_limb_t *B){
 }
 
 void fp4_mul_mpn_montgomery(fp4_t *ANS,fp4_t *A,mp_limb_t *B){
-  mpn_mulmod_montgomery(ANS->x0.x0,FPLIMB,A->x0.x0,FPLIMB,B,FPLIMB);
-  mpn_mulmod_montgomery(ANS->x1.x0,FPLIMB,A->x1.x0,FPLIMB,B,FPLIMB);
+  fp2_mul_mpn_montgomery(&ANS->x0, &A->x0, B);
+  fp2_mul_mpn_montgomery(&ANS->x1, &A->x1, B);
+
 }
 
 void fp4_sqr(fp4_t *ANS,fp4_t *A){
@@ -282,32 +289,32 @@ void fp4_sqr(fp4_t *ANS,fp4_t *A){
 
 }
 
-void fp4_sqr_lazy(fp4_t *ANS,fp4_t *A){
-  static fp4_t tmp_A;
-  fp4_set(&tmp_A,A);
-  static fp2_t tmp3_fp;
-  static fpd4_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd;
+// void fp4_sqr_lazy(fp4_t *ANS,fp4_t *A){
+//   static fp4_t tmp_A;
+//   fp4_set(&tmp_A,A);
+//   static fp2_t tmp3_fp;
+//   static fpd2_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd;
   
-  fp2_sqr_nonmod(&tmp1_fpd, &tmp_A.x0);  //a^2
-  fp2_sqr_nonmod(&tmp2_fpd, &tmp_A.x1);  //b^2
+//   fp2_sqr_nonmod(&tmp1_fpd, &tmp_A.x0);  //a^2
+//   fp2_sqr_nonmod(&tmp2_fpd, &tmp_A.x1);  //b^2
 
-  fp2_l1shift_double(&tmp3_fpd, &tmp2_fpd);  //b^2@^2
-  fp2_add_nonmod_double(&tmp4_fpd, &tmp1_fpd, &tmp3_fpd); //a^2+b^2@^
-  fp2_mod(&ANS->x0,tmp4_fpd.x0,FPLIMB2);
+//   fp2_l1shift_double(&tmp3_fpd, &tmp2_fpd);  //b^2@^2
+//   fp2_add_nonmod_double(&tmp4_fpd, &tmp1_fpd, &tmp3_fpd); //a^2+b^2@^
+//   fp2_mod(&ANS->x0,tmp4_fpd.x0,FPLIMB2);
 
-  fp2_add_nonmod_single(&tmp3_fp,&tmp_A.x0,&tmp_A.x1); //(a+b)
-  fp2_sqr_nonmod(&tmp3_fpd, &tmp3_fp);  //(a+b)^2
+//   fp2_add_nonmod_single(&tmp3_fp,&tmp_A.x0,&tmp_A.x1); //(a+b)
+//   fp2_sqr_nonmod(&tmp3_fpd, &tmp3_fp);  //(a+b)^2
 
-  fp2_sub_nonmod_double(&tmp3_fpd,&tmp3_fpd, &tmp1_fpd); //(a+b)^2 - a^2 
-  fp2_sub_nonmod_double(&tmp4_fpd,&tmp3_fpd, &tmp2_fpd); //(a+b)^2 - a^2 - b^2 
-  fp2_mod(&ANS->x1,tmp4_fpd.x0,FPLIMB2);
-}
+//   fp2_sub_nonmod_double(&tmp3_fpd,&tmp3_fpd, &tmp1_fpd); //(a+b)^2 - a^2 
+//   fp2_sub_nonmod_double(&tmp4_fpd,&tmp3_fpd, &tmp2_fpd); //(a+b)^2 - a^2 - b^2 
+//   fp2_mod(&ANS->x1,tmp4_fpd.x0,FPLIMB2);
+// }
 
 void fp4_sqr_lazy_montgomery(fp4_t *ANS,fp4_t *A){
   // static fp4_t tmp_A;
   // fp4_set(&tmp_A,A);
   // static fp2_t tmp3_fp;
-  // static fpd4_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd;
+  // static fpd2_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd;
   
   // fp2_sqr_nonmod(&tmp1_fpd, &tmp_A.x0);  //a^2
   // fp2_sqr_nonmod(&tmp2_fpd, &tmp_A.x1);  //b^2
@@ -325,13 +332,13 @@ void fp4_sqr_lazy_montgomery(fp4_t *ANS,fp4_t *A){
 
   static fp2_t tmp1_fp,tmp2_fp,tmp3_fp;
 
-  fp2_sqrmod_montgomery(&tmp1_fp, &tmp_A.x0);  //a^2
-  fp2_sqrmod_montgomery(&tmp2_fp, &tmp_A.x1);  //b^2
+  fp2_sqr_lazy_montgomery(&tmp1_fp, &tmp_A.x0);  //a^2
+  fp2_sqr_lazy_montgomery(&tmp2_fp, &tmp_A.x1);  //b^2
   fp2_mul_base(&tmp3_fp, &tmp2_fp);  //b^2@^2
   fp2_add(&ANS->x0, &tmp1_fp, &tmp3_fp); //a^2+b^2@^
 
   fp2_add(&tmp3_fp,&tmp_A.x0,&tmp_A.x1); //(a+b)
-  fp2_sqrmod_montgomery(&tmp3_fp, &tmp3_fp);  //(a+b)^2
+  fp2_sqr_lazy_montgomery(&tmp3_fp, &tmp3_fp);  //(a+b)^2
   fp2_sub(&tmp3_fp,&tmp3_fp, &tmp1_fp); //(a+b)^2 - a^2 
   fp2_sub(&ANS->x1,&tmp3_fp, &tmp2_fp); //(a+b)^2 - a^2 - b^2 
 
@@ -343,15 +350,15 @@ void fp4_sqr_nonmod_montgomery(fpd4_t *ANS, fp4_t *A) {
   static fp4_t tmp_A;
   fp4_set(&tmp_A,A);
   static fp2_t tmp3_fp;
-  static fpd4_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd;
+  static fpd2_t tmp1_fpd,tmp2_fpd,tmp3_fpd,tmp4_fpd;
   
-  fp2_sqr_nonmod(&tmp1_fpd, &tmp_A.x0);  //a^2
-  fp2_sqr_nonmod(&tmp2_fpd, &tmp_A.x1);  //b^2
-  fp2_l1shift_double(&tmp3_fpd, &tmp2_fpd);  //b^2@^2
+  fp2_sqr_nonmod_montgomery(&tmp1_fpd, &tmp_A.x0);  //a^2
+  fp2_sqr_nonmod_montgomery(&tmp2_fpd, &tmp_A.x1);  //b^2
+  fp2_l1shift_nonmod_double(&tmp3_fpd, &tmp2_fpd);  //b^2@^2
   fp2_add_nonmod_double(&ANS->x0, &tmp1_fpd, &tmp3_fpd); //a^2+b^2@^
 
   fp2_add_nonmod_single(&tmp3_fp,&tmp_A.x0,&tmp_A.x1); //(a+b)
-  fp2_sqr_nonmod(&tmp3_fpd, &tmp3_fp);  //(a+b)^2
+  fp2_sqr_nonmod_montgomery(&tmp3_fpd, &tmp3_fp);  //(a+b)^2
   fp2_sub_nonmod_double(&tmp3_fpd,&tmp3_fpd, &tmp1_fpd); //(a+b)^2 - a^2 
   fp2_sub_nonmod_double(&ANS->x1,&tmp3_fpd, &tmp2_fpd); //(a+b)^2 - a^2 - b^2 
 
@@ -485,14 +492,14 @@ void fp4_inv_lazy_montgomery(fp4_t *ANS, fp4_t *A) {
   fp2_set(&tmp1_fp, &A->x0);
   fp2_set_neg(&tmp2_fp, &A->x1);
 
-  fp2_sqrmod_montgomery(&tmp1, &tmp1_fp); //a^2
-  fp2_mulmod_montgomery(&tmp2, &tmp2_fp, &A->x1);//b^2
-  fp2_mul_base_nonmod_sigle(&tmp2,&tmp2);//b^2*c
-  fp2_add_nonmod_single(&tmp3, &tmp1, &tmp2);//a^2-b^2*c
+  fp2_sqr_lazy_montgomery(&tmp1, &tmp1_fp); //a^2
+  fp2_mul_lazy_montgomery(&tmp2, &tmp2_fp, &A->x1);//b^2
+  fp2_mul_base(&tmp2,&tmp2);//b^2*c
+  fp2_add(&tmp3, &tmp1, &tmp2);//a^2-b^2*c
 
-  fp2_inv_montgomery(&tmp3, &tmp3);
-  fp2_mulmod_montgomery(&ANS->x0, &tmp1_fp, &tmp3);
-  fp2_mulmod_montgomery(&ANS->x1, &tmp2_fp, &tmp3);
+  fp2_inv_lazy_montgomery(&tmp3, &tmp3);
+  fp2_mul_lazy_montgomery(&ANS->x0, &tmp1_fp, &tmp3);
+  fp2_mul_lazy_montgomery(&ANS->x1, &tmp2_fp, &tmp3);
 }
 
 int fp4_legendre(fp4_t *A){
@@ -502,7 +509,7 @@ int fp4_legendre(fp4_t *A){
   mpz_init(expo);
 
   //(p^2 -1)/2 を計算
-  mpz_pow_ui(expo,prime_z,2);
+  mpz_pow_ui(expo,prime_z,4);
   mpz_sub_ui(expo,expo,1);
   mpz_tdiv_q_ui(expo,expo,2);
   fp4_pow(&tmp,A,expo);
@@ -539,7 +546,7 @@ void fp4_sqrt(fp4_t *ANS,fp4_t *A){
   while(fp4_legendre(&n)!=-1){
     fp4_set_random(&n,state);
   }
-  mpz_pow_ui(q,prime_z,2);
+  mpz_pow_ui(q,prime_z,4);
   mpz_sub_ui(q,q,1);
   mpz_mod_ui(result,q,2);
   e=0;
@@ -651,58 +658,14 @@ int fp4_cmp_one(fp4_t *A){
   return 1;
 }
 
-int fp4_montgomery_trick(fp4_t *A_inv, fp4_t *A, int n) {
-  int i;
-  fp4_t ANS[n], ALL_inv;
-  fp4_set(ANS, A);
-
-  for (i = 1; i < n; i++) {
-    fp4_mul_lazy(&ANS[i], &ANS[i - 1], &A[i]);
-  }
-  fp4_inv_lazy(&ALL_inv, &ANS[n - 1]);
-  for (i = n - 1; i > 0; i--) {
-    fp4_mul_lazy(&A_inv[i], &ALL_inv, &ANS[i - 1]);
-    fp4_mul_lazy(&ALL_inv, &ALL_inv, &A[i]);
-  }
-
-  fp4_set(A_inv, &ALL_inv);
-  return 0;
-}
-int fp4_montgomery_trick_montgomery(fp4_t *A_inv, fp4_t *A, int n) {
-  int i;
-  fp4_t ANS[n], ALL_inv;
-  fp4_set(ANS, A);
-
-  for (i = 1; i < n; i++) {
-    fp4_mul_lazy_montgomery(&ANS[i], &ANS[i - 1], &A[i]);
-  }
-  fp4_inv_lazy_montgomery(&ALL_inv, &ANS[n - 1]);
-  for (i = n - 1; i > 0; i--) {
-    fp4_mul_lazy_montgomery(&A_inv[i], &ALL_inv, &ANS[i - 1]);
-    fp4_mul_lazy_montgomery(&ALL_inv, &ALL_inv, &A[i]);
-  }
-
-  fp4_set(A_inv, &ALL_inv);
-  return 0;
-}
-
-void fp4_lshift_ui_nonmod_single(fp4_t *ANS, fp4_t *A, int s) {
-  fp2_lshift_ui_nonmod_single(&ANS->x0, &A->x0, s);
-  fp2_lshift_ui_nonmod_single(&ANS->x1, &A->x1, s);
-}
-void fp4_lshift_ui_nonmod_double(fpd4_t *ANS, fpd4_t *A, int s) {
-  fp2_lshift_ui_nonmod_double(&ANS->x0, &A->x0, s);
-  fp2_lshift_ui_nonmod_double(&ANS->x1, &A->x1, s);
-}
-
-void fp4_mul_3_twist_b(fp4_t *ANS, fp4_t *A) {
-  static fp4_t tmp;
-  fp4_lshift_ui_nonmod_single(&tmp, A, 3);
-
-  fp2_sub_nonmod_single(&ANS->x0, &tmp.x0, &tmp.x1);
-  fp2_add_nonmod_single(&ANS->x1, &tmp.x1, &tmp.x0);
-}
-
+// void fp4_lshift_ui_nonmod_single(fp4_t *ANS, fp4_t *A, int s) {
+//   fp2_lshift_ui_nonmod_single(&ANS->x0, &A->x0, s);
+//   fp2_lshift_ui_nonmod_single(&ANS->x1, &A->x1, s);
+// }
+// void fp4_lshift_ui_nonmod_double(fpd4_t *ANS, fpd4_t *A, int s) {
+//   fp2_lshift_ui_nonmod_double(&ANS->x0, &A->x0, s);
+//   fp2_lshift_ui_nonmod_double(&ANS->x1, &A->x1, s);
+// }
 
 void fp4_frobenius_map_p1(fp4_t *ANS,fp4_t *A){
   fp2_set(&ANS->x0,&A->x0);
@@ -713,22 +676,6 @@ void fp4_mul_base(fp4_t *ANS,fp4_t *A){
   static fp4_t tmp_A;
   fp4_set(&tmp_A,A);
 
-  fp2_l1shift(&ANS->x0, &A->x1);
+  fp2_mul_base(&ANS->x0, &A->x1);
   fp2_set(&ANS->x1,&tmp_A.x0);    //@^2 = 2
-}
-
-void fp4_mul_base_nonmod_single(fp4_t *ANS,fp4_t *A){
-  static fp2_t tmp_A;
-  fp2_set(&tmp_A,&A->x0);
-
-  fp2_l1shift(&ANS->x0, &A->x1);
-  fp2_set(&ANS->x1,&tmp_A);    //@^2 = 2
-}
-
-void fp4_mul_base_nonmod_double(fpd4_t *ANS,fpd4_t *A){
-  static fpd4_t tmp_A;
-  fpd4_set(&tmp_A,&A->x0);
-
-  fp2_l1shift_double(&ANS->x0,&A->x1);
-  fpd4_set(&ANS->x1,&tmp_A);    //@^2 = 2
 }

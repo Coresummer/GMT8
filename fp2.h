@@ -17,6 +17,7 @@ void fp2_set_ui(fp2_t *ANS,unsigned long int UI);
 void fp2_set_ui_ui(fp2_t *ANS,unsigned long int UI);
 void fp2_set_mpn(fp2_t *ANS,mp_limb_t *A);
 void fp2_set_neg(fp2_t *ANS,fp2_t *A);
+void fp2_set_neg_montgomery(fp2_t *ANS,fp2_t *A);
 void fp2_set_conj(fp2_t *ANS,fp2_t *A);
 void fp2_set_conj_montgomery(fp2_t *ANS,fp2_t *A);
 void fp2_set_conj_montgomery_fpd(fpd2_t *ANS,fp2_t *A);
@@ -35,6 +36,7 @@ void fp2_mul_lazy(fp2_t *ANS,fp2_t *A,fp2_t *B);
 void fp2_mul_lazy_montgomery(fp2_t *ANS,fp2_t *A,fp2_t *B);
 void fp2_mul_nonmod_montgomery(fpd2_t *ANS,fp2_t *A,fp2_t *B);
 void fp2_mul_ui(fp2_t *ANS,fp2_t *A,unsigned long int UI);
+void fp2_mul_ui_nonmod_single(fp2_t *ANS, fp2_t *A, unsigned long int UI);
 void fp2_mul_mpn(fp2_t *ANS,fp2_t *A,mp_limb_t *B);
 void fp2_mul_mpn_montgomery(fp2_t *ANS,fp2_t *A,mp_limb_t *B);
 void fp2_sqr(fp2_t *ANS,fp2_t *A);
@@ -73,6 +75,8 @@ void fp2_frobenius_map_p2(fp2_t *ANS,fp2_t *A);
 void fp2_frobenius_map_p3(fp2_t *ANS,fp2_t *A);
 
 void fp2_mul_base(fp2_t *ANS,fp2_t *A);
-void fp2_mul_base_nonmod_single(fp2_t *ANS,fp2_t *A);
+void fp2_mul_base_inv(fp2_t *ANS,fp2_t *A);
+// void fp2_mul_base_nonmod_single(fp2_t *ANS,fp2_t *A);
+
 void fp2_mul_base_nonmod_double(fpd2_t *ANS,fpd2_t *A);
 #endif

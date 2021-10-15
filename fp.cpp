@@ -217,7 +217,7 @@ void fp_sqrmod_montgomery(fp_t *ANS, fp_t *A) {
   mpn_add_n(ANS->x0, T + FPLIMB, T, FPLIMB);
   if (mpn_cmp(ANS->x0, prime, FPLIMB) != -1)
     mpn_sub_n(ANS->x0, ANS->x0, prime, FPLIMB);
-  mcl_mont(ANS->x0, A->x0, A->x0);
+  // mcl_mont(ANS->x0, A->x0, A->x0);
 }
 
 void fp_mod_montgomery(fp_t *ANS, fp_t *A) {
@@ -314,8 +314,8 @@ void fp_sqr_nonmod(fpd_t *ANS, fp_t *A) {
 #ifdef DEBUG_COST_A
   cost_sqr++;
 #endif
-  // mpn_sqr(ANS->x0, A->x0, FPLIMB);
-  mcl_mulPre(ANS->x0, A->x0, A->x0);
+  mpn_sqr(ANS->x0, A->x0, FPLIMB);
+  // mcl_mulPre(ANS->x0, A->x0, A->x0);
 
 }
 
@@ -733,8 +733,8 @@ void fp_mul_base(fp_t *ANS,fp_t *A){
   // cost_mul_base++;
   // cost_mul--;
   #endif
-  // fp_mul(ANS,A,&base_c);
-  fp_l1shift(ANS,A);
+  fp_mul(ANS,A,&base_c);
+  // fp_l1shift(ANS,A);
 }
 
 void fp_mul_base_nonmod_sigle(fp_t *ANS,fp_t *A){
@@ -743,7 +743,7 @@ void fp_mul_base_nonmod_sigle(fp_t *ANS,fp_t *A){
   // cost_mul_base++;
   // cost_mul--;
   #endif
-  fp_l1shift_nonmod_single(ANS,A);
+  fp_mul(ANS,A,&base_c);
 }
 
 void fp_mul_base_nonmod_double(fpd_t *ANS,fpd_t *A){
@@ -758,21 +758,21 @@ void fp_mul_base_nonmod_double(fpd_t *ANS,fpd_t *A){
 
 void fp_mul_base_inv(fp_t *ANS,fp_t *A){
 
-  if( __builtin_ctzl(A->x0[0]) >= 1){
-  #ifdef DEBUG_COST_A
-  cost_add++;
-  #endif
-    fp_r1shift(ANS,A);
-  }else{
+  // if( __builtin_ctzl(A->x0[0]) >= 1){
+  // #ifdef DEBUG_COST_A
+  // cost_add++;
+  // #endif
+  //   fp_r1shift(ANS,A);
+  // }else{
     fp_mul(ANS,A,&base_c_inv);
-  }
+  // }
 }
 
 void fp_mul_base_inv_single(fp_t *ANS,fp_t *A){
   // #ifdef DEBUG_COST_A
   // cost_add++;
   // #endif
-  fp_r1shift(ANS,A);
+  // fp_r1shift(ANS,A);
 
   // if( __builtin_ctzl(A->x0[0]) >= 1){
 

@@ -147,7 +147,7 @@ TTT_EXTERN mp_limb_t prime2[FPLIMB2];
 TTT_EXTERN fp_t base_c;//α^7=c, β^2=α となるように逐次拡大で拡大体を構成する
 TTT_EXTERN fp_t base_c_inv;//α^7=c, β^2=α に出てくるcの逆元の計算結果
 
-TTT_EXTERN fp_t curva_a,curve_b;
+TTT_EXTERN fp_t curve_a,curve_a_dash,curve_b;
 TTT_EXTERN mpz_t sqrt_power_z;
 
 TTT_EXTERN mpz_t efp_total,efp2_total,efp4_total,efp8_total,fp8_total_r;//#efp,#efp5,#efp10,#efp7,#efp14

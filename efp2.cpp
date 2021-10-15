@@ -1,4 +1,5 @@
 #include "efp2.h"
+#include "fp2.h"
 
 void efp2_init(efp2_t *P){
   fp2_init(&P->x);
@@ -325,7 +326,8 @@ void efp2_rational_point(efp2_t *P){
     //y^2 = x^3 + b
     fp2_sqr(&tmp_y2,&P->x);
     fp2_mul(&tmp_y2,&tmp_y2,&P->x);
-    fp_add(&tmp_y2.x0,&tmp_y2.x0,&curve_b);
+    fp2_mul_mpn(&tmp_ax,&P->x,curve_a.x0); //ax
+    fp2_add(&tmp_y2,&tmp_y2,&tmp_ax);//x^3 + ax
     if(fp2_legendre(&tmp_y2)==1){
       fp2_sqrt(&P->y,&tmp_y2);
       break;
@@ -354,7 +356,43 @@ void efp2_ecd(efp2_t *ANS,efp2_t *P){
   fp2_sqr(&tmp2_fp2,&tmp1_efp2.x);
   fp2_add(&tmp3_fp2,&tmp2_fp2,&tmp2_fp2);
   fp2_add(&tmp2_fp2,&tmp2_fp2,&tmp3_fp2);
-  // fp_add(&tmp2_fp2.x0,&tmp2_fp2.x0,&curve_a);
+  fp_add(&tmp2_fp2.x0,&tmp2_fp2.x0,&curve_a);
+  //tmp3_fp = lambda
+  fp2_mul(&tmp3_fp2,&tmp1_fp2,&tmp2_fp2);
+
+  //ANS.x
+  fp2_sqr(&tmp1_fp2,&tmp3_fp2);
+  fp2_add(&tmp2_fp2,&tmp1_efp2.x,&tmp1_efp2.x);
+  fp2_sub(&ANS->x,&tmp1_fp2,&tmp2_fp2);
+  //ANS.y
+  fp2_sub(&tmp1_fp2,&tmp1_efp2.x,&ANS->x);
+  fp2_mul(&tmp2_fp2,&tmp3_fp2,&tmp1_fp2);
+  fp2_sub(&ANS->y,&tmp2_fp2,&tmp1_efp2.y);
+}
+
+void efp2_ecd_dash(efp2_t *ANS,efp2_t *P){
+  static efp2_t tmp1_efp2;
+  static fp2_t tmp1_fp2,tmp2_fp2,tmp3_fp2,tmpa_fp2;
+  if(P->infinity==1){
+    ANS->infinity=1;
+    return;
+  }
+  if(fp2_cmp_zero(&P->y)==0){
+    ANS->infinity=1;
+    return;
+  }
+  ANS->infinity=0;
+  efp2_set(&tmp1_efp2,P);
+  fp2_set_mpn(&tmpa_fp2,curve_a.x0);
+  fp2_mul_base(&tmpa_fp2, &tmpa_fp2);
+  //tmp1_fp = 1/2yp
+  fp2_add(&tmp1_fp2,&tmp1_efp2.y,&tmp1_efp2.y);
+  fp2_inv(&tmp1_fp2,&tmp1_fp2);
+  //tmp2_fp = 3x^2 +a/i
+  fp2_sqr(&tmp2_fp2,&tmp1_efp2.x);
+  fp2_add(&tmp3_fp2,&tmp2_fp2,&tmp2_fp2);
+  fp2_add(&tmp2_fp2,&tmp2_fp2,&tmp3_fp2);
+  fp2_add(&tmp2_fp2,&tmp2_fp2,&tmpa_fp2);
   //tmp3_fp = lambda
   fp2_mul(&tmp3_fp2,&tmp1_fp2,&tmp2_fp2);
 
@@ -629,4 +667,53 @@ void efp2_scm(efp2_t *ANS,efp2_t *P,mpz_t scalar){
     if(binary[i]=='1')  efp2_eca(&Next_P,&Next_P,&Tmp_P);
   }
   efp2_set(ANS,&Next_P);
+}
+
+void efp2_scm_dash(efp2_t *ANS,efp2_t *P,mpz_t scalar){
+  if(mpz_cmp_ui(scalar,0)==0){
+    ANS->infinity=1;
+    return;
+  }else if(mpz_cmp_ui(scalar,1)==0){
+    efp2_set(ANS,P);
+    return;
+  }
+
+  efp2_t Tmp_P,Next_P;
+  efp2_init(&Tmp_P);
+  efp2_set(&Tmp_P,P);
+  efp2_init(&Next_P);
+  int i,length;
+  length=(int)mpz_sizeinbase(scalar,2);
+  char binary[length+1];
+  mpz_get_str(binary,2,scalar);
+
+  efp2_set(&Next_P,&Tmp_P);
+  for(i=1;i<length;i++){
+    efp2_ecd_dash(&Next_P,&Next_P);
+    if(binary[i]=='1')  efp2_eca(&Next_P,&Next_P,&Tmp_P);
+  }
+  efp2_set(ANS,&Next_P);
+}
+
+
+
+void efp2_checkOnTwsitCurve(efp2_t *A){
+  static fp2_t tmp_left_fp2, tmp_right_fp2,tmp_ax;
+
+  fp2_sqr(&tmp_left_fp2,&A->y);
+
+  fp2_sqr(&tmp_right_fp2,&A->x);
+  fp2_mul(&tmp_right_fp2,&tmp_right_fp2,&A->x);
+
+  fp2_mul_mpn(&tmp_ax,&A->x,curve_a.x0);
+  fp2_mul_base(&tmp_ax, &tmp_ax);
+
+  fp2_add(&tmp_right_fp2,&tmp_right_fp2,&tmp_ax);
+
+  if(fp2_cmp(&tmp_right_fp2, &tmp_left_fp2)==0){
+    printf("efp2 check on curve: On twist curve\n");
+  }else{
+    printf("efp2 check on curve: NOT On twist curve\n");
+  }
+
 }
