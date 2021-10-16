@@ -42,8 +42,8 @@ void ff_lttp(fp8_t *f, efp2_jacobian_t *S, efp_t *P){
   fp8_sqr(f,f); //update
 
   static fp_t tmp1_fp, tmp2_fp,tmp3_fp;
-  static fp_t t1,t2,t3;
-  static fp_t nextX,nextY,nextZ;
+  static fp2_t t1,t2,t3;
+  static fp2_t nextX,nextY,nextZ;
 
   static fp8_t tmp1_fp8;
 
