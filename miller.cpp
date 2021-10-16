@@ -56,8 +56,11 @@ void ff_lttp(fp8_t *f, efp2_jacobian_t *S, efp_t *P){
   fp2_sqr(&t3,&S->x);              //t3 = X^2
   fp2_l1shift(&tmp1_fp, &t3);
   fp2_add(&t3,&t3,&tmp1_fp);       //t3 = 3X^2
-  fp2_sqr(&tmp3_fp,&S->z);          //Z^2
-  fp2_mul_mpn(&tmp1_fp, &tmp3_fp, curve_a.x0);
+
+  fp2_sqr(&tmp3_fp,&S->z);          //Z2=Z^2
+  fp2_sqr(&tmp1_fp,&tmp3_fp);       //Z2^2
+
+  fp2_mul_mpn(&tmp1_fp, &tmp1_fp, curve_a.x0);
   fp2_mul_base(&tmp1_fp, &tmp1_fp);
   fp2_add(&t3,&t3,&tmp1_fp);    //t3 = 3X^2+aZ^2*alpha
 
@@ -81,13 +84,13 @@ void ff_lttp(fp8_t *f, efp2_jacobian_t *S, efp_t *P){
   // fp2_mul_base_inv(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1);  // = nextZ*Z^2*(2^-1)
   fp2_mul_mpn(&tmp1_fp8.x1.x1,&tmp1_fp8.x1.x1,P->y.x0);     // = nextZ*Z^2Py
 //------------------------------------
-  fp2_mul(&tmp3_fp,&t3,&S->x);                        //tmp3 = t3*X
-  fp2_sub(&tmp1_fp8.x0.x0,&tmp3_fp,&tmp2_fp);         // = t3*X - 2*t1
-//------------------------------------
   fp2_mul_mpn(&tmp1_fp8.x0.x1,&t3,P->x.x0);                 // = t3*Px
-  fp2_mul(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1,&tmp1_fp);  // = t3*Px*Z^2
+  fp2_mul(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1,&tmp3_fp);  // = t3*Px*Z^2
   fp2_set_neg(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1);       // = -t3*Px*Z^2
   // fp2_mul_base_inv(&tmp1_fp8.x1.x1,&tmp1_fp8.x1.x1);  // = -t3*Px*Z^2*(2^-1)
+//------------------------------------
+  fp2_mul(&tmp3_fp,&t3,&S->x);                        //tmp3 = t3*X
+  fp2_sub(&tmp1_fp8.x0.x0,&tmp3_fp,&tmp2_fp);         // = t3*X - 2*t1
 //------------------------------------
   // fp8_mul_sparse_dbl(f,&tmp1_fp8,f);        //Capable for further Karatsuba //update
   fp8_mul(f,&tmp1_fp8,f);
