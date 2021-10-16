@@ -411,6 +411,44 @@ void efp8_ecd(efp8_t *ANS,efp8_t *P){
   fp8_sub(&ANS->y,&tmp2_fp8,&tmp1_efp8.y);
 }
 
+
+void efp8_ecd_dash(efp8_t *ANS,efp8_t *P){
+  static efp8_t tmp1_efp8;
+  static fp8_t tmp1_fp8,tmp2_fp8,tmp3_fp8,tmpa_fp8;
+  if(P->infinity==1){
+    ANS->infinity=1;
+    return;
+  }
+  if(fp8_cmp_zero(&P->y)==0){
+    ANS->infinity=1;
+    return;
+  }
+  ANS->infinity=0;
+  efp8_set(&tmp1_efp8,P);
+  fp8_set_mpn(&tmpa_fp8,curve_a.x0);
+  fp2_mul_base(&tmpa_fp8.x0.x0, &tmpa_fp8.x0.x0);
+
+  //tmp1_fp = 1/2yp
+  fp8_add(&tmp1_fp8,&tmp1_efp8.y,&tmp1_efp8.y);
+  fp8_inv(&tmp1_fp8,&tmp1_fp8);
+  //tmp2_fp = 3x^2 +a
+  fp8_sqr(&tmp2_fp8,&tmp1_efp8.x);
+  fp8_add(&tmp3_fp8,&tmp2_fp8,&tmp2_fp8);
+  fp8_add(&tmp2_fp8,&tmp2_fp8,&tmp3_fp8);
+  fp8_add(&tmp2_fp8,&tmp2_fp8,&tmpa_fp8);
+  //tmp3_fp = lambda
+  fp8_mul(&tmp3_fp8,&tmp1_fp8,&tmp2_fp8);
+
+  //ANS.x
+  fp8_sqr(&tmp1_fp8,&tmp3_fp8);
+  fp8_add(&tmp2_fp8,&tmp1_efp8.x,&tmp1_efp8.x);
+  fp8_sub(&ANS->x,&tmp1_fp8,&tmp2_fp8);
+  //ANS.y
+  fp8_sub(&tmp1_fp8,&tmp1_efp8.x,&ANS->x);
+  fp8_mul(&tmp2_fp8,&tmp3_fp8,&tmp1_fp8);
+  fp8_sub(&ANS->y,&tmp2_fp8,&tmp1_efp8.y);
+}
+
 // void efp8_ecd_jacobian_lazy_montgomery(efp8_jacobian_t *ANS,efp8_jacobian_t *P){
 //   static fp8_t s,m,T;
 
@@ -669,6 +707,32 @@ void efp8_scm(efp8_t *ANS,efp8_t *P,mpz_t scalar){
   efp8_set(&Next_P,&Tmp_P);
   for(i=1;i<length;i++){
     efp8_ecd(&Next_P,&Next_P);
+    if(binary[i]=='1')  efp8_eca(&Next_P,&Next_P,&Tmp_P);
+  }
+  efp8_set(ANS,&Next_P);
+}
+
+void efp8_scm_dash(efp8_t *ANS,efp8_t *P,mpz_t scalar){
+  if(mpz_cmp_ui(scalar,0)==0){
+    ANS->infinity=1;
+    return;
+  }else if(mpz_cmp_ui(scalar,1)==0){
+    efp8_set(ANS,P);
+    return;
+  }
+
+  efp8_t Tmp_P,Next_P;
+  efp8_init(&Tmp_P);
+  efp8_set(&Tmp_P,P);
+  efp8_init(&Next_P);
+  int i,length;
+  length=(int)mpz_sizeinbase(scalar,2);
+  char binary[length+1];
+  mpz_get_str(binary,2,scalar);
+
+  efp8_set(&Next_P,&Tmp_P);
+  for(i=1;i<length;i++){
+    efp8_ecd_dash(&Next_P,&Next_P);
     if(binary[i]=='1')  efp8_eca(&Next_P,&Next_P,&Tmp_P);
   }
   efp8_set(ANS,&Next_P);

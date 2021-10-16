@@ -388,7 +388,7 @@ void efp2_ecd_dash(efp2_t *ANS,efp2_t *P){
   //tmp1_fp = 1/2yp
   fp2_add(&tmp1_fp2,&tmp1_efp2.y,&tmp1_efp2.y);
   fp2_inv(&tmp1_fp2,&tmp1_fp2);
-  //tmp2_fp = 3x^2 +a/i
+  //tmp2_fp = 3x^2 +ai
   fp2_sqr(&tmp2_fp2,&tmp1_efp2.x);
   fp2_add(&tmp3_fp2,&tmp2_fp2,&tmp2_fp2);
   fp2_add(&tmp2_fp2,&tmp2_fp2,&tmp3_fp2);

@@ -1,5 +1,5 @@
 
-#include "mcl.h"
+// #include "mcl.h"
 
 #define TTT_INSTANCE_HERE
 
@@ -11,17 +11,17 @@
 #include "mpn.h"
 #include "fp.h"
 #include "fp2.h"
-// #include "fp4.h"
-// #include "fp8.h"
+#include "fp4.h"
+#include "fp8.h"
 // #include "test_fp.h"
 #include "field_test.h"
 #include "efp.h"
 #include "efp2.h"
 #include "test_efp.h"
 #include "create.h"
-// #include "miller.h"
-// #include "final_exp.h"
-// #include "test_pairing.h"
+#include "miller.h"
+#include "final_exp.h"
+#include "test_pairing.h"
 
 
 int main(){
@@ -62,8 +62,9 @@ int main(){
   // check_efp4();
   // check_efp8();
   // check_g1_g2();
-  check_g2_dash();
-  //SCM_func_check();//未完成
+  // check_g2_dash();
+
+  check_pairing();
   // check_pairing_2NAF();
   // check_pairing_static();
   // check_pairing_count_2NAF_lazy_montgomery();
