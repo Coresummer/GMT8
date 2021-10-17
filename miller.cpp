@@ -79,20 +79,16 @@ void ff_lttp(fp8_t *f, efp2_jacobian_t *S, efp_t *P){
   fp2_l1shift(&nextZ,&S->y);      //nextZ = 2Y
   fp2_mul(&nextZ,&nextZ,&S->z);    //nextZ = 2YZ
 //------------------------------------
-  // fp2_sqr(&tmp1_fp,&S->z);         //tmp1 = Z^2
   fp2_mul(&tmp1_fp8.x1.x1,&nextZ,&tmp3_fp);           // = nextZ*Z^2
-  // fp2_mul_base_inv(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1);  // = nextZ*Z^2*(2^-1)
   fp2_mul_mpn(&tmp1_fp8.x1.x1,&tmp1_fp8.x1.x1,P->y.x0);     // = nextZ*Z^2Py
 //------------------------------------
   fp2_mul_mpn(&tmp1_fp8.x0.x1,&t3,P->x.x0);                 // = t3*Px
   fp2_mul(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1,&tmp3_fp);  // = t3*Px*Z^2
   fp2_set_neg(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1);       // = -t3*Px*Z^2
-  // fp2_mul_base_inv(&tmp1_fp8.x1.x1,&tmp1_fp8.x1.x1);  // = -t3*Px*Z^2*(2^-1)
 //------------------------------------
   fp2_mul(&tmp3_fp,&t3,&S->x);                        //tmp3 = t3*X
   fp2_sub(&tmp1_fp8.x0.x0,&tmp3_fp,&tmp2_fp);         // = t3*X - 2*t1
 //------------------------------------
-  // fp8_mul_sparse_dbl(f,&tmp1_fp8,f);        //Capable for further Karatsuba //update
   fp8_mul(f,&tmp1_fp8,f);
 
   fp2_set(&S->x,&nextX);
@@ -142,10 +138,7 @@ void ff_ltqp(fp8_t *f, efp2_jacobian_t *S, efp2_t *Q,efp_t *P){
 
   fp2_mul(&nextZ,&S->z,&t1);
 //------------------------------------
-  // fp2_mul_base_inv(&tmp1_fp8.x2.x1,&nextZ);   
-  // fp2_println("&P->y", &P->y);
   fp2_mul_mpn(&tmp1_fp8.x1.x0,&nextZ,P->y.x0);//Zt1*py
-  // fp2_println("&tmp1_fp8.x2.x1", &tmp1_fp8.x2.x1);
 //------------------------------------
   fp2_mul_mpn(&tmp1_fp8.x0.x0,&t2,P->x.x0);     //t2xp
   fp2_set_neg(&tmp1_fp8.x0.x0,&tmp1_fp8.x0.x0); //-t2xp
@@ -155,11 +148,7 @@ void ff_ltqp(fp8_t *f, efp2_jacobian_t *S, efp2_t *Q,efp_t *P){
   fp2_sub(&tmp1_fp8.x0.x1,&tmp1_fp,&tmp2_fp);
   fp2_mul_base_inv(&tmp1_fp8.x0.x1, &tmp1_fp8.x0.x1);
 //------------------------------------
-
-  // fp8_println("tmp1_fp8", &tmp1_fp8);
-  // fp8_mul_sparse_add(f,&tmp1_fp8,f); //Capable for further Karatsuba //update
   fp8_mul(f,f,&tmp1_fp8);
-  // fp8_println("f", f);
 
   fp2_set(&S->x,&nextX);
   fp2_set(&S->y,&nextY);
@@ -307,58 +296,60 @@ void miller_opt_ate_proj(fp8_t *f,efp8_t *P,efp8_t *Q){
     }
 }
 
-// void miller_opt_ate_proj_2NAF(fp8_t *f,efp8_t *P,efp8_t *Q){
-//     static efp_t mapped_P,mapped_Q,mapped_Q_neg;
-//     static efp_jacobian_t S;
+void miller_opt_ate_proj_2NAF(fp8_t *f,efp8_t *P,efp8_t *Q){
+    static efp_t mapped_P;
+    static efp2_t mapped_Q,mapped_Q_neg;
+    static efp2_jacobian_t S;
 
-//     fp8_set_ui_ui(f,0);
-//     fp_set_ui(&f->x0.x0,1);
+    fp8_set_ui_ui(f,0);
+    fp8_set_ui(f,1);
 
-//     fp_set(&mapped_P.x,&P->x.x0.x0);
-//     fp_set(&mapped_P.y,&P->y.x0.x0);
-//     mapped_P.infinity = 0;
+    fp_set(&mapped_P.x,&P->x.x0.x0.x0);
+    fp_set(&mapped_P.y,&P->y.x0.x0.x0);
+    mapped_P.infinity = 0;
 
-//     efp8_to_efp(&mapped_Q,Q);//twist
-//     efp8_to_Jacefp(&S,Q);
-//     efp_set_neg(&mapped_Q_neg,&mapped_Q);
+    efp8_to_efp2(&mapped_Q,Q);//twist
+    efp8_to_Jacefp2(&S,Q);
+    efp2_set_neg(&mapped_Q_neg,&mapped_Q);
 
-//     mp_bitcnt_t i;
-//     for(i=(miller_loop_v.size() -2);i!=-1;i--){
-//       switch(miller_loop_v[i]){
-//         case 0:
-//           ff_lttp(f,&S,&mapped_P);
-//           break;
-//         case 1:
-//           ff_lttp(f,&S,&mapped_P);
-//           ff_ltqp(f,&S,&mapped_Q,&mapped_P);
-//           // fp8_println("&f1", f);
-//           break;
-//         case -1:
-//           ff_lttp(f,&S,&mapped_P);
-//           ff_ltqp(f,&S,&mapped_Q_neg,&mapped_P);
+    mp_bitcnt_t i;
+    for(i=(miller_loop_v.size() -2);i!=-1;i--){
+      switch(miller_loop_v[i]){
+        case 0:
+          ff_lttp(f,&S,&mapped_P);
+          break;
+        case 1:
+          ff_lttp(f,&S,&mapped_P);
+          ff_ltqp(f,&S,&mapped_Q,&mapped_P);
+          // fp8_println("&f1", f);
+          break;
+        case -1:
+          ff_lttp(f,&S,&mapped_P);
+          ff_ltqp(f,&S,&mapped_Q_neg,&mapped_P);
 
-//           break;
-//         default:
-//             break;
-//       }
-//     }
-// }
+          break;
+        default:
+            break;
+      }
+    }
+}
 
 // void miller_opt_ate_proj_2NAF_lazy_montgomery(fp8_t *f,efp8_t *P,efp8_t *Q){
-//     static efp_t mapped_P,mapped_Q,mapped_Q_neg;
-//     static efp_jacobian_t S;
+//     static efp_t mapped_P;
+//     static efp2_t mapped_Q,mapped_Q_neg;
+//     static efp2_jacobian_t S;
 
-//     fp8_set_ui_ui(f,0);
-//     fp_set_ui(&f->x0.x0,1);
-//     fp_to_montgomery(&f->x0.x0, &f->x0.x0);
 
-//     fp_to_montgomery(&mapped_P.x,&P->x.x0.x0);
-//     fp_to_montgomery(&mapped_P.y,&P->y.x0.x0);
+//     fp8_set_ui(f,1);
+//     fp_to_montgomery(&f->x0.x0.x0, &f->x0.x0.x0);
+
+//     fp_to_montgomery(&mapped_P.x,&P->x.x0.x0.x0);
+//     fp_to_montgomery(&mapped_P.y,&P->y.x0.x0.x0);
 //     mapped_P.infinity = 0;
 
-//     efp8_to_efp(&mapped_Q,Q);//twist
-//     efp8_to_Jacefp_montgomery(&S,Q);
-//     efp_set_neg_montgomery(&mapped_Q_neg,&mapped_Q);//here
+//     efp8_to_efp2(&mapped_Q,Q);//twist //already montogmery
+//     efp8_to_Jacefp2_montgomery(&S,Q);
+//     efp2_set_neg_montgomery(&mapped_Q_neg,&mapped_Q);//here
 
 //     mp_bitcnt_t i;
 //     for(i=(miller_loop_v.size() -2);i!=-1;i--){//-1

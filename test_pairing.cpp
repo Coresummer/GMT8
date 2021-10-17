@@ -76,75 +76,75 @@ void check_pairing(){
 }
 
 
-// void check_pairing_2NAF(){
-//   printf("check_pairing() 開始\n");
-//   efp8_t P,Q,Q_dash,aP,bQ,tmp1;
-//   fp8_t f,e1,e2;
-//   mpz_t a,b,ab;
-//   efp8_init(&P);
-//   efp8_init(&Q);
-//   efp8_init(&Q_dash);
-//   efp8_init(&aP);
-//   efp8_init(&bQ);
-//   efp8_init(&tmp1);
-//   fp8_init(&f);
-//   fp8_init(&e1);
-//   fp8_init(&e2);
-//   mpz_init(a);
-//   mpz_init(b);
-//   mpz_init(ab);
+void check_pairing_2NAF(){
+  printf("check_pairing() 開始\n");
+  efp8_t P,Q,Q_dash,aP,bQ,tmp1;
+  fp8_t f,e1,e2;
+  mpz_t a,b,ab;
+  efp8_init(&P);
+  efp8_init(&Q);
+  efp8_init(&Q_dash);
+  efp8_init(&aP);
+  efp8_init(&bQ);
+  efp8_init(&tmp1);
+  fp8_init(&f);
+  fp8_init(&e1);
+  fp8_init(&e2);
+  mpz_init(a);
+  mpz_init(b);
+  mpz_init(ab);
 
-//   generate_g1(&P);
-//   generate_g2(&Q);
-//   fp_set(&Q_dash.x.x0.x0,&Q.x.x2.x0);
-//   fp_set(&Q_dash.y.x0.x0,&Q.y.x0.x1);
-//   Q_dash.infinity = 0;
+  generate_g1(&P);
+  generate_g2(&Q);
+  fp2_mul_base(&Q_dash.x.x0.x0,&Q.x.x0.x1);
+  fp2_mul_base(&Q_dash.y.x0.x0,&Q.y.x1.x0);
+  Q_dash.infinity = 0;
 
-//   mpz_urandomm(a,state,prime_z);
-//   mpz_urandomm(b,state,prime_z);
+  mpz_urandomm(a,state,prime_z);
+  mpz_urandomm(b,state,prime_z);
 
-//   #if 1
-//   efp8_println("P = ",&P);
-//   efp8_println("Q = ",&Q);
-//   efp8_println("Q' = ",&Q_dash);
+  #if 1
+  efp8_println("P = ",&P);
+  efp8_println("Q = ",&Q);
+  efp8_println("Q' = ",&Q_dash);
 
-//   efp8_scm(&tmp1,&P,order_z);
-//   efp8_println("[r]P = ",&tmp1);
-//   efp8_scm(&tmp1,&Q,order_z);
-//   efp8_println("[r]Q = ",&tmp1);
-//   efp8_scm(&tmp1,&Q_dash,order_z);
-//   efp8_println("[r]Q' = ",&tmp1);
+  efp8_scm(&tmp1,&P,order_z);
+  efp8_println("[r]P = ",&tmp1);
+  efp8_scm(&tmp1,&Q,order_z);
+  efp8_println("[r]Q = ",&tmp1);
+  efp8_scm_dash(&tmp1,&Q_dash,order_z);
+  efp8_println("[r]Q' = ",&tmp1);
 
-//   gmp_printf("a = %Zd\n",a);
-//   gmp_printf("b = %Zd\n",b);
-//   printf("---------------------------------\n");
-//   #endif
+  gmp_printf("a = %Zd\n",a);
+  gmp_printf("b = %Zd\n",b);
+  printf("---------------------------------\n");
+  #endif
 
 
-//   printf("miller_ate() の動作確認\n");
-//   //e([a]P,[b]Q) を求める
-//   efp8_scm(&aP,&P,a);
-//   efp8_scm(&bQ,&Q,b);
-//   miller_opt_ate_proj_2NAF(&f,&aP,&bQ);
-//   final_exp(&e1,&f);
-//   //e(P,Q)^(a*b) を求める
-//   miller_opt_ate_proj_2NAF(&f,&P,&Q);
-//   final_exp(&e2,&f);
-//   mpz_mul(ab,a,b);
-//   fp8_pow(&e2,&e2,ab);
-//   fp8_println("e([a]P,[b]Q) = ",&e1);
-//   fp8_println("e(P,Q)^(a*b) = ",&e2);
-//   if(fp8_cmp(&e1,&e2)==0)  printf("e([a]P,[b]Q) == e(P,Q)^(a*b)\n\n");
-//   else{
-//     printf("e([a]P,[b]Q) != e(P,Q)^(a*b)\n\n");
-//   }
-//   printf("---------------------------------\n");
+  printf("miller_ate() の動作確認\n");
+  //e([a]P,[b]Q) を求める
+  efp8_scm(&aP,&P,a);
+  efp8_scm(&bQ,&Q,b);
+  miller_opt_ate_proj_2NAF(&f,&aP,&bQ);
+  final_exp_direct(&e1,&f);
+  //e(P,Q)^(a*b) を求める
+  miller_opt_ate_proj_2NAF(&f,&P,&Q);
+  final_exp_direct(&e2,&f);
+  mpz_mul(ab,a,b);
+  fp8_pow(&e2,&e2,ab);
+  fp8_println("e([a]P,[b]Q) = ",&e1);
+  fp8_println("e(P,Q)^(a*b) = ",&e2);
+  if(fp8_cmp(&e1,&e2)==0)  printf("e([a]P,[b]Q) == e(P,Q)^(a*b)\n\n");
+  else{
+    printf("e([a]P,[b]Q) != e(P,Q)^(a*b)\n\n");
+  }
+  printf("---------------------------------\n");
 
-//   mpz_clear(a);
-//   mpz_clear(b);
-//   mpz_clear(ab);
-//   printf("*********************************************************************************************\n\n");
-// }
+  mpz_clear(a);
+  mpz_clear(b);
+  mpz_clear(ab);
+  printf("*********************************************************************************************\n\n");
+}
 
 // void check_pairing_static(){
 //   printf("check_pairing() 開始\n");
