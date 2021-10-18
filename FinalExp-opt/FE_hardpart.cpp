@@ -59,100 +59,100 @@ int main(){
   return 0;
 }
 
-void Cp6NewHardPart(){
-  cout << "Parameter CP6" << endl;
-  for(int i=0;i<5;i++){
-    Pp[i].SetLength(3);
-  }
-  for(int i=0;i<10;i++){
-    Pp2[i].SetLength(3);
-  }
-  for(int i=0;i<15;i++){
-    Pp3[i].SetLength(3);
-  }
-  for(int i=0;i<5;i++){
-    Rr[i].SetLength(3);
-  }
-  for(int i=0;i<5;i++){
-    Tt[i].SetLength(3);
-  }
-  for(int i=0;i<5;i++){
-    Tt2[i].SetLength(3);
-  }
-  for(int i=0;i<5;i++){
-    Tt3[i].SetLength(3);
-  }
+// void Cp6NewHardPart(){
+//   cout << "Parameter CP6" << endl;
+//   for(int i=0;i<5;i++){
+//     Pp[i].SetLength(3);
+//   }
+//   for(int i=0;i<10;i++){
+//     Pp2[i].SetLength(3);
+//   }
+//   for(int i=0;i<15;i++){
+//     Pp3[i].SetLength(3);
+//   }
+//   for(int i=0;i<5;i++){
+//     Rr[i].SetLength(3);
+//   }
+//   for(int i=0;i<5;i++){
+//     Tt[i].SetLength(3);
+//   }
+//   for(int i=0;i<5;i++){
+//     Tt2[i].SetLength(3);
+//   }
+//   for(int i=0;i<5;i++){
+//     Tt3[i].SetLength(3);
+//   }
 
 
-  Pp[0][2] = 9;
-  Pp[0][1] = 12;//12
-  Pp[0][0] = 4;//4
+//   Pp[0][2] = 9;
+//   Pp[0][1] = 12;//12
+//   Pp[0][0] = 4;//4
 
-  Pp[1][2] = -18;
-  Pp[1][1] = -12;
-  Pp[1][0] = 0; //0
+//   Pp[1][2] = -18;
+//   Pp[1][1] = -12;
+//   Pp[1][0] = 0; //0
 
-  Pp[2][2] = 27;
-  Pp[2][1] = 18;
-  Pp[2][0] = 16;//16
+//   Pp[2][2] = 27;
+//   Pp[2][1] = 18;
+//   Pp[2][0] = 16;//16
 
-  Pp[3][2] = -18;//-18
-  Pp[3][1] = -6;//-6
-  Pp[3][0] = -12;//-12
+//   Pp[3][2] = -18;//-18
+//   Pp[3][1] = -6;//-6
+//   Pp[3][0] = -12;//-12
 
-  Pp[4][2] = 9; //9
-  Pp[4][1] = 6; //6
-  Pp[4][0] = 4; //4
+//   Pp[4][2] = 9; //9
+//   Pp[4][1] = 6; //6
+//   Pp[4][0] = 4; //4
 
-  //Rr
+//   //Rr
 
-  Rr[0][2] = 0;
-  Rr[0][1] = 0;//12
-  Rr[0][0] = 1;//4
+//   Rr[0][2] = 0;
+//   Rr[0][1] = 0;//12
+//   Rr[0][0] = 1;//4
 
-  Rr[1][2] = 0;
-  Rr[1][1] = 0;
-  Rr[1][0] = -1;
+//   Rr[1][2] = 0;
+//   Rr[1][1] = 0;
+//   Rr[1][0] = -1;
 
-  Rr[2][2] = 0;
-  Rr[2][1] = 0;
-  Rr[2][0] = 1;
+//   Rr[2][2] = 0;
+//   Rr[2][1] = 0;
+//   Rr[2][0] = 1;
 
-  Rr[3][2] = 0;
-  Rr[3][1] = 0;
-  Rr[3][0] = 0;
+//   Rr[3][2] = 0;
+//   Rr[3][1] = 0;
+//   Rr[3][0] = 0;
 
-  Rr[4][2] = 0;
-  Rr[4][1] = 0;
-  Rr[4][0] = 0;
+//   Rr[4][2] = 0;
+//   Rr[4][1] = 0;
+//   Rr[4][0] = 0;
 
-////Tt
-  Tt[0][2] = 0;
-  Tt[0][1] = 0;
-  Tt[0][0] = 1;
+// ////Tt
+//   Tt[0][2] = 0;
+//   Tt[0][1] = 0;
+//   Tt[0][0] = 1;
 
-  Tt[1][2] = 0;
-  Tt[1][1] = 0;
-  Tt[1][0] = 2;
+//   Tt[1][2] = 0;
+//   Tt[1][1] = 0;
+//   Tt[1][0] = 2;
 
-  Tt[2][2] = 0;
-  Tt[2][1] = 0;
-  Tt[2][0] = -1;
+//   Tt[2][2] = 0;
+//   Tt[2][1] = 0;
+//   Tt[2][0] = -1;
 
-  Tt[3][2] = 0;
-  Tt[3][1] = 0;
-  Tt[3][0] = 0;
+//   Tt[3][2] = 0;
+//   Tt[3][1] = 0;
+//   Tt[3][0] = 0;
 
-  Tt[4][2] = 0;
-  Tt[4][1] = 0;
-  Tt[4][0] = 0;
+//   Tt[4][2] = 0;
+//   Tt[4][1] = 0;
+//   Tt[4][0] = 0;
 
-  Pp2 = Pp * Pp;
+//   Pp2 = Pp * Pp;
 
   
   
 
-}
+// }
 
 
 void SetupPrime_k10(){
@@ -268,12 +268,12 @@ void SetupPrime_cp6(){
   //   p += tt;
   //   // cout << "p^" << i << ":" << p << endl << endl;
   // }
-  p /= 12;
+  p /= 4;
 
   cout << "         p:" << p << endl;
   cout << "original p:" << originalP << endl;
 
-  r = power(x,2) -x +1;
+  r = power(x,4) +1;
 
   cout << "         r:" << r << endl;
   cout << "original r:" << originalR << endl;
@@ -320,6 +320,132 @@ void SetupPrime_cp6(){
   }
 
 }
+
+
+void SetupPrime_cp8(){
+  // hy.SetSize(10000);
+  // hy_2.SetSize(10000);
+  // x.SetSize(10000);
+  // p.SetSize(10000);
+  // tt.SetSize(10000);
+  // originalP.SetSize(10000);
+  // r.SetSize(10000);
+  // originalR.SetSize(10000);
+
+  originalR = hexToZZ("ff0060739e18d7594a978b0ab6ae4ce3dbfd52a9d00197603fffdf0000000101");
+  x = hexToZZ("ffc00020fffffffc");//128
+  hy = hexToZZ("dc04");//80
+  
+  hy_2 = hy*hy;
+  originalP = hexToZZ("bb9dfd549299f1c803ddd5d7c05e7cc0373d9b1ac15b47aa5aa84626f33e58fe66943943049031ae4ca1d2719b3a84fa363bcd2539a5cd02c6f4b6b645a58c1085e14411");
+  cout << "Parameter cp k=8" << endl;
+  Base = 4;
+  P.SetLength(5);
+  R.SetLength(3);
+
+  for(int i=0;i<8;i++){
+    t1[i].SetLength(3);
+  }
+
+  for(int i=0;i<9;i++){
+    P2[i].SetLength(9);
+  }
+
+  for(int i=0;i<7;i++){
+    R_Ans[i].SetLength(9);
+  }
+
+  t1[0][2] = 9;
+  t1[0][1] = 12;//12
+  t1[0][0] = 16;//4
+
+  t1[1][2] = -18;
+  t1[1][1] = -12;
+  t1[1][0] = -24; //0
+
+  t1[2][2] = 27;
+  t1[2][1] = 18;
+  t1[2][0] = 28;//16
+
+  t1[3][2] = -18;//-18
+  t1[3][1] = -6;//-6
+  t1[3][0] = -12;//-12
+
+  t1[4][2] = 9; //9
+  t1[4][1] = 6; //6
+  t1[4][0] = 4; //4
+
+  // for(int i=0;i<5;i++){
+  //   tt=0;
+  //   for(int j=0;j<3;j++){
+  //     if(j==0){
+  //       tt += t1[i][j];
+  //     }else if(j==1){
+  //       tt += t1[i][j] * hy;
+  //     }else if(j==2){
+  //       tt += t1[i][j] * hy_2;
+  //     }
+  //   }
+  //   tt *= power(x,i);
+  //   // cout << "tt^" << i << ":" << tt << endl;
+
+  //   // cout << "x^" << i << ":" << power(x,i) << endl;
+  //   p += tt;
+  //   // cout << "p^" << i << ":" << p << endl << endl;
+  // }
+  p /= 12;
+
+  cout << "         p:" << p << endl;
+  cout << "original p:" << originalP << endl;
+
+  r = power(x,2) -x +1;
+
+  cout << "         r:" << r << endl;
+  cout << "original r:" << originalR << endl;
+
+  //(12P)^2
+  // for(int i=0;i<5;i++){
+  //   for(int j=0;j<5;j++){
+  //     P2[i+j] += (t1[i]*t1[j]);
+  //   }
+  // }
+  cout << endl << endl ;
+
+  // (12P)^2 - 12P
+  // for(int i=0;i<5;i++){
+  //   P2[i] -= t1[i]*12;
+  // }
+
+  //(12P)^2 - 12P + 144
+  // P2[0][0]+=144;
+
+  // cout << "(12p(x))^2 - 12p(x) + 144" << endl;
+
+  // for(int i=0;i<9;i++){
+  //   cout << "P2-" <<i<<":" << P2[i] << endl;
+  // }
+
+  for(int i=5;i>=2;i--){
+    t1[i-2] -= t1[i];
+    t1[i-1] += t1[i];
+    R_Ans[i-2] = t1[i];
+    t1[i] -= t1[i];
+  }
+    cout << endl << endl ;
+
+  cout << "surplus" << endl;
+  for(int i=0;i<5;i++){
+    cout << "P-" <<i<<":" << t1[i] << endl;
+  }
+  cout << endl << endl ;
+
+  cout << "Quotient*16" << endl;
+  for(int i=0;i<5;i++){
+    cout << "r*x^"<<i<<"*(:" << R_Ans[i] << ")" << endl;
+  }
+
+}
+
 
 void HardPart_k10(){
   ZZX p[4],Top,Bottom,Res,Rem,temp1,temp2;
