@@ -1,6 +1,7 @@
 
 // #include "mcl.h"
 
+#include <gmp.h>
 #define TTT_INSTANCE_HERE
 
 #include <cstdio>
@@ -65,15 +66,31 @@ int main(){
   // check_g2_dash();
 
   // check_pairing();
-  check_pairing_2NAF();
+  // check_pairing_2NAF();
   // check_pairing_static();
   // check_pairing_count_2NAF_lazy_montgomery();
   // check_pairing_count_2NAF();
   // check_pairing_time_2NAF();
 
   printf("*********************************************************************************************\n\n");
+  //playground
+  fp8_t a,b;
+  fp8_init(&a);
+  fp8_init(&b);
+  fp8_set_random(&a, state);
+  fp8_set(&b,&a);
+  // printf("here"),getchar();
+  mpz_t exp;
+  mpz_init_set(exp,fp8_total_r);
+  mpz_pow_ui(exp,exp,4);
+  // mpz_init(exp);
+  // mpz_sub_ui(exp,prime_z,1);
 
-
+  fp8_printf("A",&a);
+  fp8_pow(&a, &a, exp);
+  fp8_printf("A^4(p^8-1)/r",&a);
+  final_exp(&b, &b);
+  fp8_printf("B^4(p^8-1)/r",&b);  
 
   return 0;
 }

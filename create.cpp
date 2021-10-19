@@ -2,17 +2,19 @@
 #include "fp.h"
 #include "fp2.h"
 #include <ELiPS/define.h>
+#include <gmp.h>
 
 void create_prt(){
   //c=22,HW=6
-  mpz_set_str(X_z,"18428729816933990396",10);
+  mpz_set_str(X_z,"ffc00020fffffffc",16);
   mpz_set_str(prime_z,"bb9dfd549299f1c803ddd5d7c05e7cc0373d9b1ac15b47aa5aa84626f33e58fe66943943049031ae4ca1d2719b3a84fa363bcd2539a5cd02c6f4b6b645a58c1085e14411",16);
+  //p = ((4*(hy**2)+4) + 4*x + ((4*hy)+1)*(x**2) - (4*hy)*(x**3) + (8*(hy**2)+5)*(x**4) + ((4*hy)+1)*(x**6) - (4*hy)*(x**7) + (1+4*(hy**2))*(x**8) )//4
   if(!mpz_probab_prime_p(prime_z,30))printf("Inputed p*(prime_z) is not a prime");
 
   mpz_set_str(order_z,"ff0060739e18d7594a978b0ab6ae4ce3dbfd52a9d00197603fffdf0000000101",16);
-  mpz_set_str(trace_z,"115340442073425648814791353507399378745849733795265613558474830514443255808254",10);
-  const unsigned char* xai = reinterpret_cast<const unsigned char *>("18428729816933990396");
-  mpn_set_str(&X,xai,sizeof(char)*39,10); //ui(&X,1,319014718988379808906617884108577046528);
+  mpz_set_str(trace_z,"ffc00020fffffffd",16);
+  const unsigned char* xai = reinterpret_cast<const unsigned char *>("ffc00020fffffffc");
+  mpn_set_str(&X,xai,sizeof(char)*16,10); //ui(&X,1,319014718988379808906617884108577046528);
   mpn_set_mpz(prime,prime_z);
   mpn_mul_n(prime2,prime,prime,FPLIMB);
 
@@ -93,26 +95,32 @@ void frobenius_precalculation(){
 
   fp_pow(&tmp,&base_c,expo);
   fp_set(&frobenius_1_8,&tmp);
+  fp_println("c^(p-1)/8", &frobenius_1_8);
   fp_to_montgomery(&frobenius_1_8MR, &frobenius_1_8);
 
   mpz_set_ui(expo,2);
   fp_pow(&frobenius_2_8,&tmp,expo);
+  fp_println("c^2(p-1)/8", &frobenius_2_8);
   fp_to_montgomery(&frobenius_2_8MR, &frobenius_2_8);
 
   mpz_set_ui(expo,3);
   fp_pow(&frobenius_3_8,&tmp,expo);
+  fp_println("c^3(p-1)/8", &frobenius_3_8);
   fp_to_montgomery(&frobenius_3_8MR, &frobenius_3_8);
 
   mpz_set_ui(expo,5);
   fp_pow(&frobenius_5_8,&tmp,expo);
+  fp_println("c^5(p-1)/8", &frobenius_5_8);
   fp_to_montgomery(&frobenius_5_8MR, &frobenius_5_8);
 
   mpz_set_ui(expo,6);
   fp_pow(&frobenius_6_8,&tmp,expo);
+  fp_println("c^6(p-1)/8", &frobenius_6_8);
   fp_to_montgomery(&frobenius_6_8MR, &frobenius_6_8);
 
   mpz_set_ui(expo,7);
   fp_pow(&frobenius_7_8,&tmp,expo);
+  fp_println("c^7(p-1)/8", &frobenius_7_8);
   fp_to_montgomery(&frobenius_7_8MR, &frobenius_7_8);
 
   mpz_clear(expo);
@@ -216,36 +224,13 @@ void create_weil(){
   mpz_set(miller_loop_s,X_z);
   //X = 1 (mod 2) である
   //(X+1)/2をあらかじめ求めておく
-
-  //mpz_add_ui(X_1_div2,X_z,1);
-  // mpz_powm_ui(X_1_div2,X_z,6,prime_z);
-  // mpz_powm_ui(temp,X_z,4,prime_z);
-  // mpz_sub(X_1_div2,X_1_div2,temp);
-  // mpz_mul(temp,X_z,X_z);
-  // mpz_sub(X_1_div2,X_1_div2,temp);
-  // mpz_add_ui(X_1_div2,X_1_div2,1);
-
-  mpz_mul(hardpart,prime_z,prime_z);
-  mpz_sub(hardpart,hardpart,prime_z);
-  mpz_add_ui(hardpart,hardpart,1);
-  mpz_divexact(hardpart,hardpart,order_z);
-
-  mpz_set_str(hp_3w,"1811507161526425387769904",10);
-  
-  mpz_clear(temp);
-  //in k14 X_1_div2 = Rmabda5 = x^6 - x^4 -x^2 + 1
-  //(X -1)をあらかじめ求めておく
-  mpz_sub_ui(X_1,X_z,1);
-  //(x^2)
-  mpz_mul(X_2,X_z,X_z);
-#ifdef OriginalExp
-  mpz_sub_ui(X_2_1,X_2,1);
-#endif
-#ifdef LoubnaExp
-  mpz_add_ui(X_2_1,X_2,1);
-  mpz_mul(X_2_1,X_2_1,X_2_1);
-#endif
-
+  mpz_set_str(hy_neg,"dc04",16);
+  mpz_set(fourhy_neg,hy_neg);
+  mpz_mul_ui(fourhy_neg,fourhy_neg,4);
+  mpz_set(X_2,X_z);
+  mpz_set(X_1,X_z);
+  mpz_add_ui(X_1,X_1,1);
+  mpz_mul(X_2,X_2,X_2);
 }
 
 void tmp_init(){
@@ -268,7 +253,8 @@ void tmp_init(){
   mpz_init_set_ui(four,4);
 
   mpz_init(hardpart);
-  mpz_init(hp_3w);
+  mpz_init(hy_neg);
+  mpz_init(fourhy_neg);
   mpz_init_set_ui(four,4);
   mpz_init_set_ui(three,3);
 

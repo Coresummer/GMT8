@@ -154,7 +154,7 @@ TTT_EXTERN mpz_t efp_total,efp2_total,efp4_total,efp8_total,fp8_total_r;//#efp,#
 TTT_EXTERN mpz_t miller_loop_s;
 TTT_EXTERN std::vector<int> miller_loop_v, finalexp_pow_x,finalexp_pow_x_2, finalexp_pow_4hy;
 TTT_EXTERN mpz_t X_1_div2,X_1,X_2,X_2_1,four;//(kai +1)/2,(kai -1),(kai^2)をあらかじめ求めておく
-TTT_EXTERN mpz_t hardpart,hp_3w,three;
+TTT_EXTERN mpz_t hardpart,hy_neg,fourhy_neg,three;
 //emb6
 TTT_EXTERN fp_t frobenius_1_8,frobenius_2_8,frobenius_3_8,frobenius_5_8,frobenius_6_8,frobenius_7_8;//c^((p-1)/10)の計算結果
 TTT_EXTERN fp_t frobenius_1_8MR,frobenius_2_8MR,frobenius_3_8MR,frobenius_5_8MR,frobenius_6_8MR,frobenius_7_8MR;//c^((p-1)/10)の計算結果
