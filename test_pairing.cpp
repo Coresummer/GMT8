@@ -126,10 +126,10 @@ void check_pairing_2NAF(){
   efp8_scm(&aP,&P,a);
   efp8_scm(&bQ,&Q,b);
   miller_opt_ate_proj_2NAF(&f,&aP,&bQ);
-  final_exp_direct(&e1,&f);
+  final_exp(&e1,&f);
   //e(P,Q)^(a*b) を求める
   miller_opt_ate_proj_2NAF(&f,&P,&Q);
-  final_exp_direct(&e2,&f);
+  final_exp(&e2,&f);
   mpz_mul(ab,a,b);
   fp8_pow(&e2,&e2,ab);
   fp8_println("e([a]P,[b]Q) = ",&e1);

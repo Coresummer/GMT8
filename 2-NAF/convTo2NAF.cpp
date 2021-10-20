@@ -5,7 +5,7 @@ using namespace std;
 
 int main(){
     mpz_t xai,fourhy,x_2,tmp;
-    mpz_init_set_str(xai,"18428729816933990396",10);
+    mpz_init_set_str(xai,"ffc00020fffffffc",16);
     mpz_init_set(x_2,xai);
     mpz_mul(x_2,xai,xai);
     
