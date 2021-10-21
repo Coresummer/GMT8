@@ -152,7 +152,7 @@ TTT_EXTERN mpz_t sqrt_power_z;
 
 TTT_EXTERN mpz_t efp_total,efp2_total,efp4_total,efp8_total,fp8_total_r;//#efp,#efp5,#efp10,#efp7,#efp14
 TTT_EXTERN mpz_t miller_loop_s;
-TTT_EXTERN std::vector<int> miller_loop_v, finalexp_pow_x,finalexp_pow_x_2, finalexp_pow_4hy;
+TTT_EXTERN std::vector<int> miller_loop_v, finalexp_pow_x,finalexp_pow_x_2, finalexp_pow_4hy, finalexp_pow_hy;
 TTT_EXTERN mpz_t X_1_div2,X_1,X_2,X_2_1,four;//(kai +1)/2,(kai -1),(kai^2)をあらかじめ求めておく
 TTT_EXTERN mpz_t hardpart,hy_neg,fourhy_neg,three;
 //emb6

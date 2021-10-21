@@ -382,24 +382,24 @@ void fp8_sqr_nonmod_montgomery(fpd8_t *ANS, fp8_t *A) {
 
 }
 
-// void fp8_sqr_final(fp8_t *ANS,fp8_t *A){
-//   static fp8_t tmp_A;
-//   fp8_set(&tmp_A,A);
+void fp8_sqr_GS(fp8_t *ANS,fp8_t *A){
+  static fp8_t tmp_A;
+  fp8_set(&tmp_A,A);
 
-//   static fp4_t tmp1_fp,tmp2_fp,tmp3_fp;
+  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp;
 
-//   fp4_sqr(&tmp1_fp, &tmp_A.x0);  //a^2
-//   fp4_add(&tmp2_fp, &tmp_A.x0, &tmp_A.x1);  //(a+b)
-//   fp4_sqr(&tmp2_fp,&tmp2_fp);  //(a+b)^2
+  fp4_sqr(&tmp1_fp, &tmp_A.x0);  //a^2
+  fp4_add(&tmp2_fp, &tmp_A.x0, &tmp_A.x1);  //(a+b)
+  fp4_sqr(&tmp2_fp,&tmp2_fp);  //(a+b)^2
 
-//   fp4_sub_ui(&tmp3_fp,&tmp1_fp,1);//a^2-1
-//   fp4_add(&ANS->x0,&tmp3_fp,&tmp1_fp);//2a^2-1
+  fp4_sub_ui(&tmp3_fp,&tmp1_fp,1);//a^2-1
+  fp4_add(&ANS->x0,&tmp3_fp,&tmp1_fp);//2a^2-1
 
-//   fp4_mul_base_inv(&tmp3_fp,&tmp3_fp);//(a^2-1)/2
+  fp4_mul_base_inv(&tmp3_fp,&tmp3_fp);//(a^2-1)/2
   
-//   fp4_sub(&ANS->x1,&tmp2_fp,&tmp1_fp);//(a+b)^2 - a^2
-//   fp4_sub(&ANS->x1,&ANS->x1, &tmp3_fp);//(a+b)^2 - a^2 - (a^2-1)/2
-// }
+  fp4_sub(&ANS->x1,&tmp2_fp,&tmp1_fp);//(a+b)^2 - a^2
+  fp4_sub(&ANS->x1,&ANS->x1, &tmp3_fp);//(a+b)^2 - a^2 - (a^2-1)/2
+}
 
 void fp8_add(fp8_t *ANS,fp8_t *A,fp8_t *B){
   fp4_add(&ANS->x0,&A->x0,&B->x0);
@@ -536,6 +536,131 @@ void fp8_pow(fp8_t *ANS,fp8_t *A,mpz_t scalar){
   fp8_set(ANS,&tmp);
 }
 
+void fp8_pow_GS(fp8_t *ANS,fp8_t *A,mpz_t scalar){
+  int i,length;
+  length=(int)mpz_sizeinbase(scalar,2);
+  char binary[length+1];
+  mpz_get_str(binary,2,scalar);
+  fp8_t tmp;
+  fp8_init(&tmp);
+  fp8_set(&tmp,A);
+
+  for(i=1;i<length; i++){
+    fp8_sqr_GS(&tmp,&tmp);
+    if(binary[i]=='1')  fp8_mul(&tmp,A,&tmp);
+  }
+  fp8_set(ANS,&tmp);
+}
+
+
+void fp6_finalexpow_x_2NAF(fp8_t *ANS,fp8_t *A){
+  static fp8_t tmp_A;
+  fp8_set(&tmp_A,A);
+
+  static fp8_t A_inv;
+  fp8_frobenius_map_p4(&A_inv, A);
+
+  fp8_set(ANS,&tmp_A);
+  for(int i=(finalexp_pow_x.size()-2);i!=-1;i--){
+    switch(finalexp_pow_x[i]){
+      case 0:
+        fp8_sqr_GS(ANS, ANS);
+        break;
+      case 1:
+        fp8_sqr_GS(ANS, ANS);
+        fp8_mul(ANS,ANS,&tmp_A);
+        break;
+      case -1:
+        fp8_sqr_GS(ANS, ANS);
+        fp8_mul(ANS, ANS,&A_inv);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+void fp6_finalexpow_x_2_2NAF(fp8_t *ANS,fp8_t *A){
+  static fp8_t tmp_A;
+  fp8_set(&tmp_A,A);
+
+  static fp8_t A_inv;
+  fp8_frobenius_map_p4(&A_inv, A);
+
+  fp8_set(ANS,&tmp_A);
+  for(int i=(finalexp_pow_x_2.size()-2);i!=-1;i--){
+    switch(finalexp_pow_x_2[i]){
+      case 0:
+        fp8_sqr_GS(ANS, ANS);
+        break;
+      case 1:
+        fp8_sqr_GS(ANS, ANS);
+        fp8_mul(ANS,ANS,&tmp_A);
+        break;
+      case -1:
+        fp8_sqr_GS(ANS, ANS);
+        fp8_mul(ANS, ANS,&A_inv);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+
+void fp6_finalexpow_hy_neg_2NAF(fp8_t *ANS,fp8_t *A){
+  static fp8_t tmp_A;
+  fp8_set(&tmp_A,A);
+
+  static fp8_t A_inv;
+  fp8_frobenius_map_p4(&A_inv, A);
+
+  fp8_set(ANS,&tmp_A);
+  for(int i=(finalexp_pow_hy.size()-2);i!=-1;i--){
+    switch(finalexp_pow_hy[i]){
+      case 0:
+        fp8_sqr_GS(ANS, ANS);
+        break;
+      case 1:
+        fp8_sqr_GS(ANS, ANS);
+        fp8_mul(ANS,ANS,&tmp_A);
+        break;
+      case -1:
+        fp8_sqr_GS(ANS, ANS);
+        fp8_mul(ANS, ANS,&A_inv);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+void fp6_finalexpow_4hy_neg_2NAF(fp8_t *ANS,fp8_t *A){
+  static fp8_t tmp_A;
+  fp8_set(&tmp_A,A);
+
+  static fp8_t A_inv;
+  fp8_frobenius_map_p4(&A_inv, A);
+
+  fp8_set(ANS,&tmp_A);
+  for(int i=(finalexp_pow_4hy.size()-2);i!=-1;i--){
+    switch(finalexp_pow_4hy[i]){
+      case 0:
+        fp8_sqr_GS(ANS, ANS);
+        break;
+      case 1:
+        fp8_sqr_GS(ANS, ANS);
+        fp8_mul(ANS,ANS,&tmp_A);
+        break;
+      case -1:
+        fp8_sqr_GS(ANS, ANS);
+        fp8_mul(ANS, ANS,&A_inv);
+        break;
+      default:
+        break;
+    }
+  }
+}
 
 int fp8_legendre(fp8_t *A){
   fp8_t tmp;

@@ -10,7 +10,7 @@ int main(){
     mpz_mul(x_2,xai,xai);
     
     mpz_init_set_str(fourhy,"dc04",16);
-    mpz_mul_ui(fourhy,fourhy,4);
+    // mpz_mul_ui(fourhy,fourhy,4);
     vector<int> v,v2,v3;
 
     mpz_init_set_ui(tmp,0);
