@@ -679,3 +679,11 @@ void fp4_mul_base(fp4_t *ANS,fp4_t *A){
   fp2_mul_base(&ANS->x0, &A->x1);
   fp2_set(&ANS->x1,&tmp_A.x0);    //@^2 = 2
 }
+
+void fp4_mul_base_inv(fp4_t *ANS,fp4_t *A){
+  static fp4_t tmp_A;
+  fp4_set(&tmp_A,A);
+
+  fp2_mul_base_inv(&ANS->x1, &tmp_A.x0);
+  fp2_set(&ANS->x0,&tmp_A.x1);    //@^2 = 2
+}
