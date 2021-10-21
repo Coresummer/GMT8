@@ -300,9 +300,9 @@ void miller_opt_ate_proj_2NAF(fp8_t *f,efp8_t *P,efp8_t *Q){
     static efp_t mapped_P;
     static efp2_t mapped_Q,mapped_Q_neg;
     static efp2_jacobian_t S;
-
+    
     fp8_set_ui_ui(f,0);
-    fp8_set_ui(f,1);
+    fp_set_ui(&f->x0.x0.x0,1);
 
     fp_set(&mapped_P.x,&P->x.x0.x0.x0);
     fp_set(&mapped_P.y,&P->y.x0.x0.x0);

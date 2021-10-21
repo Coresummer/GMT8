@@ -1,6 +1,7 @@
 
 
 #include "fp8.h"
+#include "define.h"
 #include "fp4.h"
 
 void fp8_init(fp8_t *A){
@@ -677,7 +678,40 @@ int fp8_cmp_one(fp8_t *A){
   return 1;
 }
 
-void fp8_frobenius_map_p1(fp8_t *ANS,fp8_t *A){
+// void fp8_frobenius_map_p1(fp8_t *ANS,fp8_t *A){  /this worked generating g2 as well... ? for some reason ..
+//   fp4_set(&ANS->x0,&A->x0);
+//   fp4_set_neg(&ANS->x1,&A->x1);
+// }
+
+void fp8_frobenius_map_p1(fp8_t *ANS, fp8_t *A){
+  fp_set(&ANS->x0.x0.x0 ,&A->x0.x0.x0);
+  fp_set_neg(&ANS->x0.x0.x1 ,&A->x0.x0.x1);
+
+  fp_mul(&ANS->x0.x1.x0 ,&A->x0.x1.x0,&frobenius_2_8);
+  fp_mul(&ANS->x0.x1.x1 ,&A->x0.x1.x1,&frobenius_6_8);
+
+  fp_mul(&ANS->x1.x0.x0 ,&A->x1.x0.x0,&frobenius_1_8);
+  fp_mul(&ANS->x1.x0.x1 ,&A->x1.x0.x1,&frobenius_5_8);
+  
+  fp_mul(&ANS->x1.x1.x0 ,&A->x1.x1.x0,&frobenius_3_8);
+  fp_mul(&ANS->x1.x1.x1 ,&A->x1.x1.x1,&frobenius_7_8);
+}
+
+void fp8_frobenius_map_p2(fp8_t *ANS, fp8_t *A){
+  fp_set(&ANS->x0.x0.x0 ,&A->x0.x0.x0);
+  fp_set(&ANS->x0.x0.x1 ,&A->x0.x0.x1);
+
+  fp_set_neg(&ANS->x0.x1.x0 ,&A->x0.x1.x0);
+  fp_set_neg(&ANS->x0.x1.x1 ,&A->x0.x1.x1);
+
+  fp_mul(&ANS->x1.x0.x0 ,&A->x1.x0.x0,&frobenius_2_8);
+  fp_mul(&ANS->x1.x0.x1 ,&A->x1.x0.x1,&frobenius_2_8);
+  
+  fp_mul(&ANS->x1.x1.x0 ,&A->x1.x1.x0,&frobenius_6_8);
+  fp_mul(&ANS->x1.x1.x1 ,&A->x1.x1.x1,&frobenius_6_8);
+}
+
+void fp8_frobenius_map_p4(fp8_t *ANS,fp8_t *A){
   fp4_set(&ANS->x0,&A->x0);
   fp4_set_neg(&ANS->x1,&A->x1);
 }

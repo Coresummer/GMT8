@@ -67,6 +67,8 @@ int fp8_cmp_one(fp8_t *A);
 int fp8_montgomery_trick_montgomery(fp8_t *A_inv,fp8_t *A,int n);
 
 void fp8_frobenius_map_p1(fp8_t *ANS,fp8_t *A);
+void fp8_frobenius_map_p1_2(fp8_t *ANS, fp8_t *A);
+
 void fp8_frobenius_map_p2(fp8_t *ANS,fp8_t *A);
 void fp8_frobenius_map_p3(fp8_t *ANS,fp8_t *A);
 void fp8_frobenius_map_p4(fp8_t *ANS,fp8_t *A);
