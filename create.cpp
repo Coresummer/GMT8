@@ -227,9 +227,11 @@ void create_weil(){
   mpz_set_str(hy_neg,"dc04",16);
   mpz_set(fourhy_neg,hy_neg);
   mpz_mul_ui(fourhy_neg,fourhy_neg,4);
+  // mpz_mul(hy_neg,fourhy_neg,hy_neg);
+  // mpz_set_str(X_1,"",16);
+  //2f16841b8a74cdb2fcd03caee60923ff01c6548f4c8cf1ace427220b8af48946f4ec8bc50
+  //2f16841b8a74cdb2fcd03caee60923ff01c6548f4c8cf1ace427220b8af48946f4ec8bc54
   mpz_set(X_2,X_z);
-  mpz_set(X_1,X_z);
-  mpz_add_ui(X_1,X_1,1);
   mpz_mul(X_2,X_2,X_2);
 }
 

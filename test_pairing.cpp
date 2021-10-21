@@ -55,10 +55,10 @@ void check_pairing(){
   efp8_scm(&aP,&P,a);
   efp8_scm(&bQ,&Q,b);
   miller_opt_ate_proj(&f,&aP,&bQ);
-  final_exp_direct(&e1,&f);
+  final_exp(&e1,&f);
   //e(P,Q)^(a*b) を求める
   miller_opt_ate_proj(&f,&P,&Q);
-  final_exp_direct(&e2,&f);
+  final_exp(&e2,&f);
   mpz_mul(ab,a,b);
   fp8_pow(&e2,&e2,ab);
   fp8_println("e([a]P,[b]Q) = ",&e1);
@@ -229,8 +229,6 @@ void check_pairing_2NAF(){
 //   printf("*********************************************************************************************\n\n");
 // }
 
-
-
 // void check_pairing_count(){
 //   printf("check_pairing_count() 開始\n");
 //   cost miller_cost, finalexp_cost, pairing_cost;
@@ -360,40 +358,40 @@ void check_pairing_2NAF(){
 // }
 
 
-// void check_pairing_time_2NAF(){
-//   printf("check_pairing_time_2NAF() 開始\n");
-//   efp8_t P,Q;
-//   fp8_t f,e;
-//   efp8_init(&P);
-//   efp8_init(&Q);
-//   fp8_init(&f);
-//   fp8_init(&e);
+void check_pairing_time_2NAF(){
+  printf("check_pairing_time_2NAF() 開始\n");
+  efp8_t P,Q;
+  fp8_t f,e;
+  efp8_init(&P);
+  efp8_init(&Q);
+  fp8_init(&f);
+  fp8_init(&e);
 
-//   MILLER_ATE_6SPARSE_TIME=0;
-//   FINAL_EXP_TIME=0;
+  MILLER_ATE_6SPARSE_TIME=0;
+  FINAL_EXP_TIME=0;
 
-//   generate_g2(&Q);
+  generate_g2(&Q);
 
-//   for(int i=0;i<CHECK_PAIRING_TIME_LOOP;i++){
-//     generate_g1(&P);
-//     fp_set_ui(&f.x0.x0,1);
+  for(int i=0;i<CHECK_PAIRING_TIME_LOOP;i++){
+    generate_g1(&P);
+    fp8_set_ui(&f,1);
 
-//     gettimeofday(&tv_start,NULL);
-//     miller_opt_ate_proj_2NAF(&f,&P,&Q);
-//     gettimeofday(&tv_end,NULL);
-//     MILLER_ATE_6SPARSE_TIME+=timedifference_msec(tv_start,tv_end);
+    gettimeofday(&tv_start,NULL);
+    miller_opt_ate_proj_2NAF(&f,&P,&Q);
+    gettimeofday(&tv_end,NULL);
+    MILLER_ATE_6SPARSE_TIME+=timedifference_msec(tv_start,tv_end);
 
-//     gettimeofday(&tv_start,NULL);
-//     final_exp(&e,&f);
-//     gettimeofday(&tv_end,NULL);
-//     FINAL_EXP_TIME+=timedifference_msec(tv_start,tv_end);
-//   }
+    gettimeofday(&tv_start,NULL);
+    final_exp(&e,&f);
+    gettimeofday(&tv_end,NULL);
+    FINAL_EXP_TIME+=timedifference_msec(tv_start,tv_end);
+  }
 
-//   printf("miller_ate_2NAF  :%.4f[ms]\n",MILLER_ATE_6SPARSE_TIME/CHECK_PAIRING_TIME_LOOP);
-//   printf("final_exp        :%.4f[ms]\n",FINAL_EXP_TIME/CHECK_PAIRING_TIME_LOOP);
+  printf("miller_ate_2NAF  :%.4f[ms]\n",MILLER_ATE_6SPARSE_TIME/CHECK_PAIRING_TIME_LOOP);
+  printf("final_exp        :%.4f[ms]\n",FINAL_EXP_TIME/CHECK_PAIRING_TIME_LOOP);
 
-//   printf("*********************************************************************************************\n\n");
-// }
+  printf("*********************************************************************************************\n\n");
+}
 
 
 // void check_pairing_time_2NAF_lazy_montgomery(){

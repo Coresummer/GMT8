@@ -15,8 +15,8 @@ void final_exp(fp8_t *ANS, fp8_t *A){
   fp8_frobenius_map_p4(&tmp2_fp8, A);
   fp8_mul(&tmp1_fp8,&tmp1_fp8,&tmp2_fp8); //A^(p^4-1) = M
   //hard
-  fp8_l1shift(&tmp2_fp8, &tmp1_fp8);
-  fp8_l1shift(&tmp2_fp8, &tmp2_fp8);  //M^4
+  fp8_sqr(&tmp2_fp8, &tmp1_fp8);
+  fp8_sqr(&tmp2_fp8, &tmp2_fp8);  //M^4
 
   fp8_frobenius_map_p1(&tmp3_fp8, &tmp1_fp8); //M^p
   fp8_pow(&tmp4_fp8, &tmp1_fp8,X_z);          //M^x
@@ -30,15 +30,20 @@ void final_exp(fp8_t *ANS, fp8_t *A){
   fp8_pow(&tmp4_fp8, &tmp3_fp8, fourhy_neg);  //M"^-4hy
   fp8_frobenius_map_p4(&tmp6_fp8, &tmp4_fp8); //M"^4hy
   fp8_pow(&tmp1_fp8, &tmp4_fp8, hy_neg);  //M"^-4hy*-hy = M"^4hy^2 //not sure..
-  
+
   fp8_mul(&tmp5_fp8,&tmp1_fp8,&tmp3_fp8);     //M"^(4hy^2+1)
   fp8_pow(&tmp5_fp8, &tmp5_fp8, X_z);         //M"^(4hy^2+1)x
-  fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp6_fp8);     //M"^(4hy^2+1)x +4hy
-  fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp3_fp8);     //M"^(4hy^2+1)x +4hy + 1
-  fp8_pow(&tmp5_fp8, &tmp5_fp8, X_2);         //M"^((4hy^2+1)x +4hy + 1)x^2
-  fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp1_fp8);     //M"^((4hy^2+1)x +4hy + 1)x^2 + 4hy^2
-
-  fp8_mul(ANS,&tmp5_fp8,&tmp2_fp8);           //M(4 + (p+x)(p^2+x^2)(((4hy)(x+1)x + 1 -4hy)x -2)x+1 +4hy^2))
+  fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp4_fp8);     //M"^(4hy^2+1)x -4hy
+  fp8_pow(&tmp5_fp8, &tmp5_fp8, X_z);         //M"^((4hy^2+1)x -4hy)x
+  fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp6_fp8);     //M"^((4hy^2+1)x -4hy)x + 4hy
+  fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp3_fp8);     //M"^((4hy^2+1)x -4hy)x + 4hy + 1
+  fp8_pow(&tmp5_fp8, &tmp5_fp8, X_2);         //M"^((4hy^2+1)x -4hy)x + 4hy + 1)x^2
+  fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp1_fp8);     //M"^((4hy^2+1)x -4hy)x + 4hy + 1)x^2 + 4hy^2
+  fp8_sqr(&tmp1_fp8, &tmp3_fp8);              //M"^2
+  fp8_sqr(&tmp1_fp8, &tmp1_fp8);              //M"^4
+  fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp1_fp8);     //M"^((4hy^2+1)x -4hy)x + 4hy + 1)x^2 + 4hy^2 + 4
+  
+  fp8_mul(ANS,&tmp5_fp8,&tmp2_fp8);           //(p^4-1)(4 + (p+x)(p^2+x^2)(((4hy^2+1)x -4hy + 1)x^2 + 4hy^2 + 4)
 }
 
 // void final_exp_lazy_montgomery(fp8_t *ANS,fp8_t *A){
