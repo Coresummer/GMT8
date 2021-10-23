@@ -40,7 +40,7 @@ void fp4_mul_ui_nonmod_single(fp4_t *ANS, fp4_t *A, unsigned long int UI);
 void fp4_mul_mpn(fp4_t *ANS,fp4_t *A,mp_limb_t *B);
 void fp4_mul_mpn_montgomery(fp4_t *ANS,fp4_t *A,mp_limb_t *B);
 void fp4_sqr(fp4_t *ANS,fp4_t *A);
-void fp4_sqr_final(fp4_t *ANS,fp4_t *A);
+void fp4_sqr_GS(fp4_t *ANS,fp4_t *A);
 void fp4_sqr_lazy(fp4_t *ANS,fp4_t *A);
 void fp4_sqr_lazy_montgomery(fp4_t *ANS,fp4_t *A);
 void fp4_sqr_nonmod_montgomery(fpd4_t *ANS, fp4_t *A);

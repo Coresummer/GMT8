@@ -229,66 +229,66 @@ void check_pairing_2NAF(){
 //   printf("*********************************************************************************************\n\n");
 // }
 
-// void check_pairing_count(){
-//   printf("check_pairing_count() 開始\n");
-//   cost miller_cost, finalexp_cost, pairing_cost;
-//   efp8_t P,Q;
-//   fp8_t f,e;
-//   efp8_init(&P);
-//   efp8_init(&Q);
-//   fp8_init(&f);
-//   fp8_init(&e);
+void check_pairing_count(){
+  printf("check_pairing_count() 開始\n");
+  cost miller_cost, finalexp_cost, pairing_cost;
+  efp8_t P,Q;
+  fp8_t f,e;
+  efp8_init(&P);
+  efp8_init(&Q);
+  fp8_init(&f);
+  fp8_init(&e);
 
-//   generate_g1(&P);
-//   generate_g2(&Q);
+  generate_g1(&P);
+  generate_g2(&Q);
 
-//   printf("miller_ate count\n");
-//   cost_zero();
-//   miller_opt_ate_proj(&f,&P,&Q);
-//   cost_check(&miller_cost);
-//   cost_printf("",&miller_cost,CHECK_PAIRING_TIME_LOOP);
-//   printf("---------------------------------\n");
+  printf("miller_ate count\n");
+  cost_zero();
+  miller_opt_ate_proj(&f,&P,&Q);
+  cost_check(&miller_cost);
+  cost_printf("",&miller_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
 
-//   printf("final_exp() count\n");
-//   cost_zero();
-//   final_exp(&e,&f);
-//   cost_check(&finalexp_cost);
-//   cost_printf("",&finalexp_cost,CHECK_PAIRING_TIME_LOOP);
-//   printf("---------------------------------\n");
+  printf("final_exp() count\n");
+  cost_zero();
+  final_exp(&e,&f);
+  cost_check(&finalexp_cost);
+  cost_printf("",&finalexp_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
 
-//   printf("*********************************************************************************************\n\n");
-// }
+  printf("*********************************************************************************************\n\n");
+}
 
-// void check_pairing_count_2NAF(){
-//   printf("check_pairing_count() 開始\n");
-//   cost miller_cost, finalexp_cost, pairing_cost;
+void check_pairing_count_2NAF(){
+  printf("check_pairing_count_2NAF() 開始\n");
+  cost miller_cost, finalexp_cost, pairing_cost;
 
-//   efp8_t P,Q;
-//   fp8_t f,e;
-//   efp8_init(&P);
-//   efp8_init(&Q);
-//   fp8_init(&f);
-//   fp8_init(&e);
+  efp8_t P,Q;
+  fp8_t f,e;
+  efp8_init(&P);
+  efp8_init(&Q);
+  fp8_init(&f);
+  fp8_init(&e);
 
-//   generate_g1(&P);
-//   generate_g2(&Q);
+  generate_g1(&P);
+  generate_g2(&Q);
 
-//   printf("miller_ate count\n");
-//   cost_zero();
-//   miller_opt_ate_proj_2NAF(&f,&P,&Q);
-//   cost_check(&miller_cost);
-//   cost_printf("",&miller_cost,CHECK_PAIRING_TIME_LOOP);
-//   printf("---------------------------------\n");
+  printf("miller_ate count\n");
+  cost_zero();
+  miller_opt_ate_proj_2NAF(&f,&P,&Q);
+  cost_check(&miller_cost);
+  cost_printf("",&miller_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
 
-//   printf("final_exp() count\n");
-//   cost_zero();
-//   final_exp(&e,&f);
-//   cost_check(&finalexp_cost);
-//   cost_printf("",&finalexp_cost,CHECK_PAIRING_TIME_LOOP);
-//   printf("---------------------------------\n");
+  printf("final_exp() count\n");
+  cost_zero();
+  final_exp(&e,&f);
+  cost_check(&finalexp_cost);
+  cost_printf("",&finalexp_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
 
-//   printf("*********************************************************************************************\n\n");
-// }
+  printf("*********************************************************************************************\n\n");
+}
 
 // void check_pairing_count_2NAF_lazy_montgomery(){
 //   printf("check_pairing_count_lazy_montgomery() 開始\n");
@@ -322,40 +322,40 @@ void check_pairing_2NAF(){
 // }
 
 
-// void check_pairing_time(){
-//   printf("check_pairing_time() 開始\n");
-//   efp8_t P,Q;
-//   fp8_t f,e;
-//   efp8_init(&P);
-//   efp8_init(&Q);
-//   fp8_init(&f);
-//   fp8_init(&e);
+void check_pairing_time(){
+  printf("check_pairing_time() 開始\n");
+  efp8_t P,Q;
+  fp8_t f,e;
+  efp8_init(&P);
+  efp8_init(&Q);
+  fp8_init(&f);
+  fp8_init(&e);
 
-//   MILLER_ATE_6SPARSE_TIME=0;
-//   FINAL_EXP_TIME=0;
+  MILLER_ATE_6SPARSE_TIME=0;
+  FINAL_EXP_TIME=0;
 
-//   generate_g2(&Q);
+  generate_g2(&Q);
 
-//   for(int i=0;i<CHECK_PAIRING_TIME_LOOP;i++){
-//     generate_g1(&P);
-//     fp_set_ui(&f.x0.x0,1);
+  for(int i=0;i<CHECK_PAIRING_TIME_LOOP;i++){
+    generate_g1(&P);
+    fp8_set_ui(&f,1);
 
-//     gettimeofday(&tv_start,NULL);
-//     miller_opt_ate_proj(&f,&P,&Q);
-//     gettimeofday(&tv_end,NULL);
-//     MILLER_ATE_6SPARSE_TIME+=timedifference_msec(tv_start,tv_end);
+    gettimeofday(&tv_start,NULL);
+    miller_opt_ate_proj(&f,&P,&Q);
+    gettimeofday(&tv_end,NULL);
+    MILLER_ATE_6SPARSE_TIME+=timedifference_msec(tv_start,tv_end);
 
-//     gettimeofday(&tv_start,NULL);
-//     final_exp(&e,&f);
-//     gettimeofday(&tv_end,NULL);
-//     FINAL_EXP_TIME+=timedifference_msec(tv_start,tv_end);
-//   }
+    gettimeofday(&tv_start,NULL);
+    final_exp(&e,&f);
+    gettimeofday(&tv_end,NULL);
+    FINAL_EXP_TIME+=timedifference_msec(tv_start,tv_end);
+  }
 
-//   printf("miller_ate  :%.4f[ms]\n",MILLER_ATE_6SPARSE_TIME/CHECK_PAIRING_TIME_LOOP);
-//   printf("final_exp   :%.4f[ms]\n",FINAL_EXP_TIME/CHECK_PAIRING_TIME_LOOP);
+  printf("miller_ate  :%.4f[ms]\n",MILLER_ATE_6SPARSE_TIME/CHECK_PAIRING_TIME_LOOP);
+  printf("final_exp   :%.4f[ms]\n",FINAL_EXP_TIME/CHECK_PAIRING_TIME_LOOP);
 
-//   printf("*********************************************************************************************\n\n");
-// }
+  printf("*********************************************************************************************\n\n");
+}
 
 
 void check_pairing_time_2NAF(){
