@@ -66,7 +66,7 @@ int main(){
   // check_g2_dash();
 
   // check_pairing();
-  check_pairing_2NAF();
+  // check_pairing_2NAF();
   // check_pairing_static();
   // check_pairing_count_2NAF_lazy_montgomery();
   // check_pairing_count_2NAF();
@@ -95,6 +95,12 @@ int main(){
   // fp8_printf("B^4(p^8-1)/r",&b);  
 
   // printf("is A = B :%d\n", fp8_cmp(&a,&b));
+  fp_t A;
+  fp_init(&A);
+  fp_set_ui(&A, 1);
+  fp_set_neg(&A,&A);
+
+  printf("legender(-1): %d\n",fp_legendre(&A));
 
   return 0;
 }
