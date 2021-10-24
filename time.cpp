@@ -1,4 +1,5 @@
 #include "./time.h"
+#include <cstdio>
 /*----------------------------------------------------------------------------*/
 //time
 float timedifference_msec(struct timeval tv_start, struct timeval tv_end) {
@@ -98,6 +99,8 @@ void cost_zero() {
   cost_r1shift = 0;
   cost_sqr = 0;
   cost_inv = 0;
+  cost_mul_base = 0;
+  cost_mul_base_inv = 0;
   cost_mod = 0;
   cost_mod_nomal = 0;
 }
@@ -116,6 +119,8 @@ void cost_init(cost *A) {
   A->r1shift = 0;
   A->sqr = 0;
   A->inv = 0;
+  A->mul_base = 0;
+  A->mul_base_inv = 0;
   A->mod = 0;
   A->mod_nomal = 0;
 }
@@ -134,6 +139,8 @@ void cost_check(cost *A) {
   A->r1shift = cost_r1shift;
   A->sqr = cost_sqr;
   A->inv = cost_inv;
+  A->mul_base = cost_mul_base;
+  A->mul_base_inv = cost_mul_base_inv;
   A->mod = cost_mod;
   A->mod_nomal = cost_mod_nomal;
 }
@@ -151,6 +158,8 @@ void cost_addition(cost *A, cost *B) {
   A->r1shift += B->r1shift;
   A->sqr += B->sqr;
   A->inv += B->inv;
+  A->mul_base += B->mul_base;
+  A->mul_base_inv += B->mul_base_inv;
   A->mod += B->mod;
   A->mod_nomal += B->mod_nomal;
 }
@@ -168,6 +177,8 @@ void cost_substruction(cost *ANS, cost *A, cost *B) {
   ANS->r1shift = A->r1shift - B->r1shift;
   ANS->sqr = A->sqr - B->sqr;
   ANS->inv = A->inv - B->inv;
+  ANS->mul_base = A->mul_base - B->mul_base;
+  ANS->mul_base_inv = A->mul_base_inv - B->mul_base_inv;
   ANS->mod = A->mod - B->mod;
   ANS->mod_nomal = A->mod_nomal - B->mod_nomal;
 }
@@ -186,6 +197,8 @@ void cost_printf(std::string str, cost *A, int n) {
   printf("DIV2  :%d\n", A->r1shift / n);
   printf("SQR   :%d\n", A->sqr / n);
   printf("INV   :%d\n", A->inv / n);
+  printf("MUL_BASE:%d\n",A->mul_base/n);
+  printf("MUL_BASE_INV:%d\n",A->mul_base_inv/n);
   printf("MOD   :%d\n", A->mod / n);
   printf("MOD nomal:%d\n", A->mod_nomal / n);
 }

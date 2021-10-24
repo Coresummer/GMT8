@@ -179,6 +179,8 @@ void pre_montgomery() {
   mpz_clear(tmp_z);
   mpz_clear(R);
   mpz_clear(R3_z);
+
+  fp_to_montgomery(&base_cMR, &base_c);
 }
 
 
@@ -730,20 +732,30 @@ int fp_legendre_sqrt_montgomery(fp_t *ANS, fp_t *A) {
 void fp_mul_base(fp_t *ANS,fp_t *A){
   #ifdef DEBUG_COST_A
   cost_add++;
-  // cost_mul_base++;
-  // cost_mul--;
+  cost_add++;
+  cost_add++;
   #endif
-  fp_mul(ANS,A,&base_c);
-  // fp_l1shift(ANS,A);
+
+  static fp_t tmp_base;
+  fp_set(&tmp_base,A);
+  fp_l1shift(ANS,A);
+  fp_l1shift(ANS,ANS);
+  fp_add(ANS, ANS,&tmp_base);
+
 }
 
 void fp_mul_base_nonmod_sigle(fp_t *ANS,fp_t *A){
   #ifdef DEBUG_COST_A
   cost_add++;
-  // cost_mul_base++;
-  // cost_mul--;
+  cost_add++;
+  cost_add++;
+
   #endif
-  fp_mul(ANS,A,&base_c);
+  static fp_t tmp_base;
+  fp_set(&tmp_base,A);
+  fp_l1shift(ANS,A);
+  fp_l1shift(ANS,ANS);
+  fp_add(ANS, ANS,&tmp_base);
 }
 
 void fp_mul_base_nonmod_double(fpd_t *ANS,fpd_t *A){
@@ -757,21 +769,25 @@ void fp_mul_base_nonmod_double(fpd_t *ANS,fpd_t *A){
 }
 
 void fp_mul_base_inv(fp_t *ANS,fp_t *A){
-
+  #ifdef DEBUG_COST_A
+  cost_mul_base_inv++;
+  cost_mul--;
+  #endif
   // if( __builtin_ctzl(A->x0[0]) >= 1){
   // #ifdef DEBUG_COST_A
   // cost_add++;
   // #endif
   //   fp_r1shift(ANS,A);
   // }else{
-    fp_mul(ANS,A,&base_c_inv);
+  fp_mul(ANS,A,&base_c_inv);
   // }
 }
 
 void fp_mul_base_inv_single(fp_t *ANS,fp_t *A){
-  // #ifdef DEBUG_COST_A
-  // cost_add++;
-  // #endif
+  #ifdef DEBUG_COST_A
+  cost_mul_base_inv++;
+  cost_mul--;
+  #endif
   // fp_r1shift(ANS,A);
 
   // if( __builtin_ctzl(A->x0[0]) >= 1){

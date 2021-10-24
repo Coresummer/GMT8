@@ -2,6 +2,7 @@
 
 #include "fp8.h"
 #include "define.h"
+#include "fp2.h"
 #include "fp4.h"
 
 void fp8_init(fp8_t *A){
@@ -304,7 +305,6 @@ void fp8_sqr(fp8_t *ANS,fp8_t *A){
   fp4_sqr(&tmp3_fp, &tmp3_fp);  //(a+b)^2
   fp4_sub(&tmp3_fp,&tmp3_fp, &tmp1_fp); //(a+b)^2 - a^2 
   fp4_sub(&ANS->x1,&tmp3_fp, &tmp2_fp); //(a+b)^2 - a^2 - b^2 
-
 }
 
 // void fp8_sqr_lazy(fp8_t *ANS,fp8_t *A){
@@ -553,7 +553,7 @@ void fp8_pow_GS(fp8_t *ANS,fp8_t *A,mpz_t scalar){
 }
 
 
-void fp6_finalexpow_x_2NAF(fp8_t *ANS,fp8_t *A){
+void fp8_finalexpow_x_2NAF(fp8_t *ANS,fp8_t *A){
   static fp8_t tmp_A;
   fp8_set(&tmp_A,A);
 
@@ -573,6 +573,7 @@ void fp6_finalexpow_x_2NAF(fp8_t *ANS,fp8_t *A){
       case -1:
         fp8_sqr_GS(ANS, ANS);
         fp8_mul(ANS, ANS,&A_inv);
+
         break;
       default:
         break;
@@ -580,7 +581,7 @@ void fp6_finalexpow_x_2NAF(fp8_t *ANS,fp8_t *A){
   }
 }
 
-void fp6_finalexpow_x_2_2NAF(fp8_t *ANS,fp8_t *A){
+void fp8_finalexpow_x_2_2NAF(fp8_t *ANS,fp8_t *A){
   static fp8_t tmp_A;
   fp8_set(&tmp_A,A);
 
@@ -608,7 +609,7 @@ void fp6_finalexpow_x_2_2NAF(fp8_t *ANS,fp8_t *A){
 }
 
 
-void fp6_finalexpow_hy_neg_2NAF(fp8_t *ANS,fp8_t *A){
+void fp8_finalexpow_hy_neg_2NAF(fp8_t *ANS,fp8_t *A){
   static fp8_t tmp_A;
   fp8_set(&tmp_A,A);
 
@@ -635,7 +636,7 @@ void fp6_finalexpow_hy_neg_2NAF(fp8_t *ANS,fp8_t *A){
   }
 }
 
-void fp6_finalexpow_4hy_neg_2NAF(fp8_t *ANS,fp8_t *A){
+void fp8_finalexpow_4hy_neg_2NAF(fp8_t *ANS,fp8_t *A){
   static fp8_t tmp_A;
   fp8_set(&tmp_A,A);
 
@@ -839,4 +840,64 @@ void fp8_frobenius_map_p2(fp8_t *ANS, fp8_t *A){
 void fp8_frobenius_map_p4(fp8_t *ANS,fp8_t *A){
   fp4_set(&ANS->x0,&A->x0);
   fp4_set_neg(&ANS->x1,&A->x1);
+}
+
+void fp8_mul_sparse_add(fp8_t *ANS,fp8_t *A,fp8_t *B){  //?000?? * ??????
+  //fp2_mul*3 fp_mul*4 = 13 m
+  static fp8_t tmp_A,tmp_B;
+  fp8_set(&tmp_A,A);//?? ?? ?? 00 a+bβ+cγ+dβγ d=0 tmpA.x1.x1
+  fp8_set(&tmp_B,B);//?? ?? ?? ?? e+fβ+gγ+hβγ
+
+  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp,tmp4_fp,tmp5_fp;
+  fp4_mul(&tmp1_fp,&tmp_A.x0,&tmp_B.x0); //ac
+  // fp4_mul(&tmp2_fp,&tmp_A.x1,&tmp_B.x1); //bd       //here
+//---------------------------------------------------------
+  //(a + 0) * c + d
+  fp2_mul(&tmp2_fp.x0, &tmp_A.x1.x0, &tmp_B.x1.x0);
+  fp2_mul(&tmp2_fp.x1, &tmp_A.x1.x0, &tmp_B.x1.x1);
+//---------------------------------------------------------
+  fp4_mul_base(&tmp3_fp, &tmp2_fp);  //bdΘ^2
+  fp4_add(&ANS->x0, &tmp1_fp, &tmp3_fp);  //ab+bdΘ^2
+
+  fp4_add(&tmp3_fp,&tmp_A.x0,&tmp_A.x1);//a+b
+  fp4_add(&tmp4_fp,&tmp_B.x0,&tmp_B.x1);//c+d
+  fp4_mul(&tmp5_fp,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
+  
+  fp4_sub(&tmp3_fp,&tmp5_fp,&tmp1_fp);//(a+b)(c+d) - ac
+  fp4_sub(&ANS->x1,&tmp3_fp,&tmp2_fp);//(a+b)(c+d) - ac -bd
+
+}
+
+void fp8_mul_sparse_dbl(fp8_t *ANS,fp8_t *A,fp8_t *B){  //??0?00 * ??????
+  //fpmul*2 fp2mul*4 = 14 m prob because 2->6
+  static fp8_t tmp_A,tmp_B;
+  fp8_set(&tmp_A,A);//?? ?? 00 ?? a+b0+c0^2 tmpA.x1.x0
+  fp8_set(&tmp_B,B);//?? ?? ?? ?? d+e0+f0^2
+  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp,tmp4_fp,tmp5_fp;
+  fp4_mul(&tmp1_fp,&tmp_A.x0,&tmp_B.x0); //ac //here
+  // fp4_mul(&tmp2_fp,&tmp_A.x1,&tmp_B.x1); //bd
+  //---------------------------------------------------------
+  //(0 + b)* (c + d)
+  fp2_mul(&tmp2_fp.x0, &tmp_A.x1.x1, &tmp_B.x1.x0);
+  fp2_mul(&tmp2_fp.x1, &tmp_A.x1.x1, &tmp_B.x1.x1);
+  fp4_mul_base(&tmp2_fp, &tmp2_fp);
+//---------------------------------------------------------
+  fp4_mul_base(&tmp3_fp, &tmp2_fp);  //bdΘ^2
+  fp4_add(&ANS->x0, &tmp1_fp, &tmp3_fp);  //ab+bdΘ^2
+
+  fp4_add(&tmp3_fp,&tmp_A.x0,&tmp_A.x1);//a+b
+  fp4_add(&tmp4_fp,&tmp_B.x0,&tmp_B.x1);//c+d
+  fp4_mul(&tmp5_fp,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
+  
+  fp4_sub(&tmp3_fp,&tmp5_fp,&tmp1_fp);//(a+b)(c+d) - ac
+  fp4_sub(&ANS->x1,&tmp3_fp,&tmp2_fp);//(a+b)(c+d) - ac -bd
+
+}
+
+void fp8_mul_sparse_add_lazy_montgomery(fp8_t *ANS,fp8_t *A,fp8_t *B){  //?000?? * ??????
+
+}
+
+void fp8_mul_sparse_dbl_lazy_montgomery(fp8_t *ANS,fp8_t *A,fp8_t *B){  //??0?00 * ??????
+
 }

@@ -89,7 +89,7 @@ void ff_lttp(fp8_t *f, efp2_jacobian_t *S, efp_t *P){
   fp2_mul(&tmp3_fp,&t3,&S->x);                        //tmp3 = t3*X
   fp2_sub(&tmp1_fp8.x0.x0,&tmp3_fp,&tmp2_fp);         // = t3*X - 2*t1
 //------------------------------------
-  fp8_mul(f,&tmp1_fp8,f);
+  fp8_mul_sparse_dbl(f,&tmp1_fp8,f);
 
   fp2_set(&S->x,&nextX);
   fp2_set(&S->y,&nextY);
@@ -148,7 +148,7 @@ void ff_ltqp(fp8_t *f, efp2_jacobian_t *S, efp2_t *Q,efp_t *P){
   fp2_sub(&tmp1_fp8.x0.x1,&tmp1_fp,&tmp2_fp);
   fp2_mul_base_inv(&tmp1_fp8.x0.x1, &tmp1_fp8.x0.x1);
 //------------------------------------
-  fp8_mul(f,f,&tmp1_fp8);
+  fp8_mul_sparse_add(f,&tmp1_fp8,f);
 
   fp2_set(&S->x,&nextX);
   fp2_set(&S->y,&nextY);

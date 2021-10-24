@@ -18,9 +18,11 @@ void check_fp2_with_montgomery();
 void check_fp4_with_montgomery();
 void check_fp8_with_montgomery();
 
-void BENCH_fp2_fp6_mul_lazy_montgomery(int LOOP);
+void BENCH_fp2_fp4_fp8_mul_lazy_montgomery(int LOOP);
 void BENCH_miller_lazy_montgomery(int LOOP);
 void BENCH_finalexp_lazy_montgomery(int LOOP);
 void BENCH_Pairingn_lazy_montgomery(int LOOP);
 void BENCH_Pairingn_lazy_montgomery2(int LOOP);
+
+void check_finalexp_pow_cost_count_2NAF();
 #endif

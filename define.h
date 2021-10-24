@@ -30,7 +30,7 @@
 
 // #define DEBUG_COST_A
 //#define DEBUG_ASSERT
-#define CHECK_PAIRING_TIME_LOOP 1
+#define CHECK_PAIRING_TIME_LOOP 1000
 
 /**************Option**************/
 #define X64
@@ -139,12 +139,12 @@ typedef struct{
 
 
 TTT_EXTERN gmp_randstate_t state;//for random
-TTT_EXTERN int cost_add,cost_add_ui,cost_sub,cost_sub_ui,cost_mul,cost_mul_ui,cost_mul_base,cost_sqr,cost_inv,cost_mod,cost_set_neg;
+TTT_EXTERN int cost_add,cost_add_ui,cost_sub,cost_sub_ui,cost_mul,cost_mul_ui,cost_mul_base,cost_mul_base_inv,cost_sqr,cost_inv,cost_mod,cost_set_neg;
 TTT_EXTERN int cost_add_nonmod, cost_add_nonmod_double, cost_sub_nonmod, cost_sub_nonmod_double, cost_r1shift, cost_mod_nomal;
 TTT_EXTERN mpz_t X_z,prime_z,order_z,trace_z;
 TTT_EXTERN mp_limb_t X,prime[FPLIMB];
 TTT_EXTERN mp_limb_t prime2[FPLIMB2];
-TTT_EXTERN fp_t base_c;//α^7=c, β^2=α となるように逐次拡大で拡大体を構成する
+TTT_EXTERN fp_t base_c,base_cMR;//α^7=c, β^2=α となるように逐次拡大で拡大体を構成する
 TTT_EXTERN fp_t base_c_inv;//α^7=c, β^2=α に出てくるcの逆元の計算結果
 
 TTT_EXTERN fp_t curve_a,curve_a_dash,curve_b;
@@ -189,6 +189,8 @@ typedef struct {
   int r1shift;
   int sqr;
   int inv;
+  int mul_base;
+  int mul_base_inv;
   int mod;
   int mod_nomal;
 } cost;

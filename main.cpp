@@ -70,8 +70,8 @@ int main(){
   // check_pairing_static();
   // check_pairing_count_2NAF_lazy_montgomery();
   // check_pairing_count_2NAF();
-  // check_pairing_time_2NAF();
-
+  check_pairing_time_2NAF();
+  // check_finalexp_pow_cost_count_2NAF();
   printf("*********************************************************************************************\n\n");
   // //playground
   // fp8_t a,b;
@@ -95,12 +95,24 @@ int main(){
   // fp8_printf("B^4(p^8-1)/r",&b);  
 
   // printf("is A = B :%d\n", fp8_cmp(&a,&b));
-  fp_t A;
-  fp_init(&A);
-  fp_set_ui(&A, 1);
-  fp_set_neg(&A,&A);
+  // fp_t A;
+  // fp_init(&A);
+  // fp_set_ui(&A, 1);
+  // fp_set_neg(&A,&A);
 
-  printf("legender(-1): %d\n",fp_legendre(&A));
+  // printf("legender(-1): %d\n",fp_legendre(&A));
 
+  // fp_t t;
+  // fp_init(&t);
+  // // fp_set_ui(&t, 1);
+  // fp_set_random(&t, state);
+  // fp_println("&t", &t);
+
+  // // fp_mul(&t,&t,&base_c);
+  // // fp_println("&t * base_c", &t);
+  // // fp_set_ui(&t, 1);
+
+  // fp_mul_base(&t,&t);
+  // fp_println("&t * 4:=", &t);
   return 0;
 }

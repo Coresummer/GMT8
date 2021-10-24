@@ -259,171 +259,6 @@ int test_fp2(int fp2_n) {
   return 0;
 }
 
-// int test_fp6(int fp6_n) {
-//   int i, j, n = 0;
-//   float add_time = 0, add_lazy_time = 0;
-//   float sub_time = 0, sub_lazy_time = 0;
-//   float mul_time = 0, mul_lazy_time = 0;
-//   float inv_time = 0, inv_lazy_time = 0;
-//   float sqr_time = 0, sqr_lazy_time = 0;
-//   struct timeval tv_A, tv_B;
-//   fp6_t A_fp6, B_fp6, test1_fp6, test2_fp6;
-
-//   fp6_init(&A_fp6);
-//   fp6_init(&B_fp6);
-//   fp6_init(&test1_fp6);
-//   fp6_init(&test2_fp6);
-
-//   gmp_randinit_default(state);
-//   gmp_randseed_ui(state, (unsigned long)time(NULL));
-//   gmp_randseed_ui(state, 1);
-//   /*
-// printf("------------------------------------------------------------------------------------\n");
-//     printf("fp6_add test\n");
-// add_time=0,add_lazy_time=0;
-// n=1000;
-// for(i=0;i<fp6_n;i++){
-//     fp6_set_random(&A_fp6,state);
-//     fp6_set_random(&B_fp6,state);
-
-//     gettimeofday(&tv_A,NULL);
-//     for(j=0;j<n;j++)fp6_add(&test1_fp6,&A_fp6,&B_fp6);
-//     gettimeofday(&tv_B,NULL);
-//     add_time+=timedifference_msec(tv_A,tv_B)/n;
-
-//     gettimeofday(&tv_A,NULL);
-//     for(j=0;j<n;j++)fp6_add_lazy(&test2_fp6,FPLIMB,&A_fp6,FPLIMB,&B_fp6,FPLIMB);
-//     gettimeofday(&tv_B,NULL);
-//     add_lazy_time+=timedifference_msec(tv_A,tv_B)/n;
-//     fp6_mod(&test2_fp6,&test2_fp6,FPLIMB);
-
-//     if(fp6_cmp(&test1_fp6,&test2_fp6)!=0){
-//         printf("failed!\n\n");
-//     	fp6_printf("",&test1_fp6);
-// 	    fp6_printf("\n",&test2_fp6);
-// 	    printf("\n\n");
-// 	    return 1;
-//     }
-// }
-//     printf("fp6 add.      : %.7f[ms]\n",add_time/fp6_n);
-//     printf("fp6 add lazy. : %.7f[ms]\n",add_lazy_time/fp6_n);
-
-// printf("------------------------------------------------------------------------------------\n");
-//     printf("fp6_sub test\n");
-// sub_time=0,sub_lazy_time=0;
-// n=1000;
-// for(i=0;i<fp6_n;i++){
-//     fp6_set_random(&A_fp6,state);
-//     fp6_set_random(&B_fp6,state);
-
-//     gettimeofday(&tv_A,NULL);
-//     for(j=0;j<n;j++)fp6_sub(&test1_fp6,&A_fp6,&B_fp6);
-//     gettimeofday(&tv_B,NULL);
-//     sub_time+=timedifference_msec(tv_A,tv_B)/n;
-
-//     gettimeofday(&tv_A,NULL);
-//     for(j=0;j<n;j++)fp6_sub_lazy(&test2_fp6,FPLIMB,&A_fp6,FPLIMB,&B_fp6,FPLIMB);
-//     gettimeofday(&tv_B,NULL);
-//     sub_lazy_time+=timedifference_msec(tv_A,tv_B)/n;
-//     fp6_mod(&test2_fp6,&test2_fp6,FPLIMB);
-
-//     if(fp6_cmp(&test1_fp6,&test2_fp6)!=0){
-//         printf("failed!\n\n");
-//     	fp6_printf("",&test1_fp6);
-// 	    fp6_printf("\n",&test2_fp6);
-// 	    printf("\n\n");
-// 	    return 1;
-//     }
-// }
-//     printf("fp6 sub.      : %.7f[ms]\n",sub_time/fp6_n);
-//     printf("fp6 sub lazy. : %.7f[ms]\n",sub_lazy_time/fp6_n);
-//     */
-//   printf("------------------------------------------------------------------------------------\n");
-//   printf("fp6_mul test\n");
-//   mul_time = 0, mul_lazy_time = 0;
-//   n = 1000;
-//   for (i = 0; i < fp6_n; i++) {
-//     fp6_set_random(&A_fp6, state);
-//     fp6_set_random(&B_fp6, state);
-//     fp6_to_montgomery(&A_fp6, &A_fp6);
-//     fp6_to_montgomery(&B_fp6, &B_fp6);
-
-//     //fp2_println("A->x0=",&A_fp6.x0);
-//     //fp2_println("B->x0=",&B_fp6.x0);
-//     //printf("\n\n");
-
-//     gettimeofday(&tv_A, NULL);
-//     for (j = 0; j < n; j++) fp6_mul_lazy_montgomery(&test1_fp6, &A_fp6, &B_fp6);
-//     gettimeofday(&tv_B, NULL);
-//     mul_time += timedifference_msec(tv_A, tv_B) / n;
-//     fp6_mod_montgomery(&test1_fp6, &test1_fp6);
-
-//     /*
-//     gettimeofday(&tv_A,NULL);
-//     for(j=0;j<n;j++)fp6_mul_lazy_montgomery2(&test2_fp6,&A_fp6,&B_fp6);
-//     gettimeofday(&tv_B,NULL);
-//     mul_lazy_time+=timedifference_msec(tv_A,tv_B)/n;
-//     fp6_mod_montgomery(&test2_fp6,&test2_fp6);
-// */
-//     if (fp6_cmp(&test1_fp6, &test2_fp6) != 0) {
-//       printf("failed!\n\n");
-//       fp6_printf("", &test1_fp6);
-//       fp6_printf("\n", &test2_fp6);
-//       printf("\n\n");
-//       return 1;
-//     }
-//   }
-
-//   printf("fp6 mul.      : %.6f[ms]\n", mul_time / fp6_n);
-//   printf("fp6 mul lazy. : %.6f[ms]\n", mul_lazy_time / fp6_n);
-//   /*
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp6_sqr test\n");
-// sqr_time=0,sqr_lazy_time=0;
-// n=1000;
-// for(i=0;i<fp6_n;i++){
-//     fp6_set_random(&A_fp6,state);
-
-//     gettimeofday(&tv_A,NULL);
-//     for(j=0;j<n;j++)fp6_sqr(&test1_fp6,&A_fp6);
-//     gettimeofday(&tv_B,NULL);
-//     sqr_time+=timedifference_msec(tv_A,tv_B)/n;
-
-//     gettimeofday(&tv_A,NULL);
-//     for(j=0;j<n;j++)fp6_sqr_lazy(&test2_fp6,&A_fp6);
-//     gettimeofday(&tv_B,NULL);
-//     sqr_lazy_time+=timedifference_msec(tv_A,tv_B)/n;
-//     fp6_mod(&test2_fp6,&test2_fp6,FPLIMB2);
-
-//     if(fp6_cmp(&test1_fp6,&test2_fp6)!=0){
-//         printf("failed!\n\n");
-//     	fp6_printf("",&test1_fp6);
-// 	    fp6_printf("\n",&test2_fp6);
-// 	    printf("\n\n");
-// 	    return 1;
-//     }
-// }
-//     printf("fp6 sqr.      : %.6f[ms]\n",sqr_time/fp6_n);
-//     printf("fp6 sqr lazy. : %.6f[ms]\n",sqr_lazy_time/fp6_n);
-
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp6_inv test\n");
-// inv_time=0,inv_lazy_time=0;
-// n=1000;
-// for(i=0;i<fp6_n;i++){
-//     fp6_set_random(&A_fp6,state);
-//     fp6_set_random(&B_fp6,state);
-
-//     gettimeofday(&tv_A,NULL);
-//     for(j=0;j<n;j++)fp6_inv(&test1_fp6,&A_fp6);
-//     gettimeofday(&tv_B,NULL);
-//     inv_time+=timedifference_msec(tv_A,tv_B)/n;
-
-// }
-//     printf("fp6 inv.      : %.6f[ms]\n",inv_time/fp6_n);
-// */
-//   return 0;
-// }
 
 // int test_field(int fp_n, int fp2_n, int fp6_n, int sqr) {
 //   int i, j, n = 0;
@@ -1103,7 +938,7 @@ void check_fp_with_montgomery(){
 
 void check_fp2_with_montgomery(){
   printf("********************CHECK FP2 WITH MONTGOMERY*************************************************\n\n");
-  printf("check_fp_with_montogomery() start...\n");
+  printf("check_fp2_with_montogomery() start...\n");
   fp2_t A, ANS;
   fp2_t Am, ANSm;
 
@@ -1176,7 +1011,7 @@ void check_fp2_with_montgomery(){
 
 void check_fp4_with_montgomery(){
   printf("********************CHECK FP4 WITH MONTGOMERY*************************************************\n\n");
-  printf("check_fp_with_montogomery() start...\n");
+  printf("check_fp4_with_montogomery() start...\n");
   fp4_t A, ANS;
   fp4_t Am, ANSm;
 
@@ -1231,7 +1066,7 @@ void check_fp4_with_montgomery(){
   printf("Check Fermert's little theorem\n");
   mpz_t tmp;
   mpz_init(tmp);
-  mpz_pow_ui(tmp,prime_z,6);
+  mpz_pow_ui(tmp,prime_z,4);
   mpz_sub_ui(tmp,tmp,1);
   fp4_pow(&ANS,&A,tmp);
   fp4_println("A^(p^4-1) =  ",&ANS);
@@ -1248,7 +1083,7 @@ void check_fp4_with_montgomery(){
 
 void check_fp8_with_montgomery(){
   printf("********************CHECK FP8 WITH MONTGOMERY*************************************************\n\n");
-  printf("check_fp_with_montogomery() start...\n");
+  printf("check_fp8_with_montogomery() start...\n");
   fp8_t A, ANS;
   fp8_t Am, ANSm;
 
@@ -1303,7 +1138,7 @@ void check_fp8_with_montgomery(){
   printf("Check Fermert's little theorem\n");
   mpz_t tmp;
   mpz_init(tmp);
-  mpz_pow_ui(tmp,prime_z,6);
+  mpz_pow_ui(tmp,prime_z,8);
   mpz_sub_ui(tmp,tmp,1);
   fp8_pow(&ANS,&A,tmp);
   fp8_println("A^(p^8-1) =  ",&ANS);
@@ -1318,92 +1153,113 @@ void check_fp8_with_montgomery(){
   printf("*********************************************************************************************\n\n");
 }
 
+void BENCH_fp2_fp4_fp6_mul_lazy_montgomery(int LOOP){
+  printf("============================================================================\n");
+  printf("-------------------------------fp, fp2, fp6 BENCHMARK-----------------------\n");
+  printf("============================================================================\n");
 
-// void BENCH_fp2_fp6_mul_lazy_montgomery(int LOOP){
-//   printf("============================================================================\n");
-//   printf("-------------------------------fp, fp2, fp6 BENCHMARK-----------------------\n");
-//   printf("============================================================================\n");
+  fp_t ANS_fp, ANSm_fp, A_fp,Am_fp ,B_fp,Bm_fp;
+  fp_init(&A_fp);
+  fp_init(&Am_fp);
+  fp_init(&B_fp);
+  fp_init(&Bm_fp);
+  fp_init(&ANS_fp);
+  fp_init(&ANSm_fp);
+  fp_set_random(&A_fp,state);
+  fp_to_montgomery(&Am_fp, &A_fp);
+  fp_set_random(&B_fp,state);
+  fp_to_montgomery(&Bm_fp, &B_fp);
 
-//   fp_t ANS_fp, ANSm_fp, A_fp,Am_fp ,B_fp,Bm_fp;
-//   fp_init(&A_fp);
-//   fp_init(&Am_fp);
-//   fp_init(&B_fp);
-//   fp_init(&Bm_fp);
-//   fp_init(&ANS_fp);
-//   fp_init(&ANSm_fp);
-//   fp_set_random(&A_fp,state);
-//   fp_to_montgomery(&Am_fp, &A_fp);
-//   fp_set_random(&B_fp,state);
-//   fp_to_montgomery(&Bm_fp, &B_fp);
+  CYBOZU_BENCH_C("fp_mul()", LOOP, fp_mul,&ANS_fp,&A_fp,&B_fp);
+  CYBOZU_BENCH_C("fp_mul_lazy_montgomery()", LOOP, fp_mulmod_montgomery, &ANSm_fp,&Am_fp,&Bm_fp);
+  fp_println("ANS:", &ANS_fp);
+  fp_println_montgomery("ANSm:", &ANSm_fp);
 
-//   CYBOZU_BENCH_C("fp_mul()", LOOP, fp_mul,&ANS_fp,&A_fp,&B_fp);
-//   CYBOZU_BENCH_C("fp_mul_lazy_montgomery()", LOOP, fp_mulmod_montgomery, &ANSm_fp,&Am_fp,&Bm_fp);
-//   fp_println("ANS:", &ANS_fp);
-//   fp_println_montgomery("ANSm:", &ANSm_fp);
+  CYBOZU_BENCH_C("fp_sqr()", LOOP, fp_sqr,&ANS_fp,&A_fp);
+  CYBOZU_BENCH_C("fp_sqr_lazy_montgomery()", LOOP, fp_sqrmod_montgomery, &ANSm_fp,&Am_fp);
+  fp_println("ANS:", &ANS_fp);
+  fp_println_montgomery("ANSm:", &ANSm_fp);
 
-//   CYBOZU_BENCH_C("fp_sqr()", LOOP, fp_sqr,&ANS_fp,&A_fp);
-//   CYBOZU_BENCH_C("fp_sqr_lazy_montgomery()", LOOP, fp_sqrmod_montgomery, &ANSm_fp,&Am_fp);
-//   fp_println("ANS:", &ANS_fp);
-//   fp_println_montgomery("ANSm:", &ANSm_fp);
+  fp2_t ANS_fp2, ANSm_fp2, A_fp2,Am_fp2 ,B_fp2,Bm_fp2;
+  fp2_init(&A_fp2);
+  fp2_init(&Am_fp2);
+  fp2_init(&B_fp2);
+  fp2_init(&Bm_fp2);
+  fp2_init(&ANS_fp2);
+  fp2_init(&ANSm_fp2);
 
-//   fp2_t ANS_fp2, ANSm_fp2, A_fp2,Am_fp2 ,B_fp2,Bm_fp2;
-//   fp2_init(&A_fp2);
-//   fp2_init(&Am_fp2);
-//   fp2_init(&B_fp2);
-//   fp2_init(&Bm_fp2);
-//   fp2_init(&ANS_fp2);
-//   fp2_init(&ANSm_fp2);
+  fp2_set_random(&A_fp2,state);
+  fp2_to_montgomery(&Am_fp2, &A_fp2);
+  fp2_set_random(&B_fp2,state);
+  fp2_to_montgomery(&Bm_fp2, &B_fp2);
 
-//   fp2_set_random(&A_fp2,state);
-//   fp2_to_montgomery(&Am_fp2, &A_fp2);
-//   fp2_set_random(&B_fp2,state);
-//   fp2_to_montgomery(&Bm_fp2, &B_fp2);
+  CYBOZU_BENCH_C("fp2_mul()", LOOP, fp2_mul,&ANS_fp2,&A_fp2,&B_fp2);
+  CYBOZU_BENCH_C("fp2_mul_lazy_montgomery()", LOOP, fp2_mul_lazy_montgomery, &ANSm_fp2,&Am_fp2,&Bm_fp2);
+  fp2_println("ANS:", &ANS_fp2);
+  fp2_println_montgomery("ANSm:", &ANSm_fp2);
 
-//   CYBOZU_BENCH_C("fp2_mul()", LOOP, fp2_mul,&ANS_fp2,&A_fp2,&B_fp2);
-//   CYBOZU_BENCH_C("fp2_mul_lazy_montgomery()", LOOP, fp2_mul_lazy_montgomery, &ANSm_fp2,&Am_fp2,&Bm_fp2);
-//   fp2_println("ANS:", &ANS_fp2);
-//   fp2_println_montgomery("ANSm:", &ANSm_fp2);
+  CYBOZU_BENCH_C("fp2_sqr()", LOOP, fp2_sqr,&ANS_fp2,&A_fp2);
+  CYBOZU_BENCH_C("fp2_sqr_lazy_montgomery()", LOOP, fp2_sqr_lazy_montgomery, &ANSm_fp2,&Am_fp2);
+  fp2_println("ANS:", &ANS_fp2);
+  fp2_println_montgomery("ANSm:", &ANSm_fp2);
 
-//   CYBOZU_BENCH_C("fp2_sqr()", LOOP, fp2_sqr,&ANS_fp2,&A_fp2);
-//   CYBOZU_BENCH_C("fp2_sqr_lazy_montgomery()", LOOP, fp2_sqr_lazy_montgomery, &ANSm_fp2,&Am_fp2);
-//   fp2_println("ANS:", &ANS_fp2);
-//   fp2_println_montgomery("ANSm:", &ANSm_fp2);
+  fp4_t ANS_fp4, ANSm_fp4, A_fp4,Am_fp4 ,B_fp4,Bm_fp4;
+  fp4_init(&A_fp4);
+  fp4_init(&Am_fp4);
+  fp4_init(&B_fp4);
+  fp4_init(&Bm_fp4);
+  fp4_init(&ANS_fp4);
+  fp4_init(&ANSm_fp4);
 
+  fp4_set_random(&A_fp4,state);
+  fp4_to_montgomery(&Am_fp4, &A_fp4);
+  fp4_set_random(&B_fp4,state);
+  fp4_to_montgomery(&Bm_fp4, &B_fp4);
 
-//   fp6_t ANS_fp6, ANSm_fp6, A_fp6,Am_fp6 ,B_fp6,Bm_fp6;
-//   fp6_init(&A_fp6);
-//   fp6_init(&Am_fp6);
-//   fp6_init(&B_fp6);
-//   fp6_init(&Bm_fp6);
-//   fp6_init(&ANS_fp6);
-//   fp6_init(&ANSm_fp6);
+  CYBOZU_BENCH_C("fp4_mul()", LOOP, fp4_mul,&ANS_fp4,&A_fp4,&B_fp4);
+  CYBOZU_BENCH_C("fp4_mul_lazy_montgomery()", LOOP, fp4_mul_lazy_montgomery, &ANSm_fp4,&Am_fp4,&Bm_fp4);
+  fp4_println("ANS:", &ANS_fp4);
+  fp4_println_montgomery("ANSm:", &ANSm_fp4);
 
-//   fp6_set_random(&A_fp6,state);
-//   fp6_to_montgomery(&Am_fp6, &A_fp6);
-//   fp6_set_random(&B_fp6,state);
-//   fp6_to_montgomery(&Bm_fp6, &B_fp6);
+  CYBOZU_BENCH_C("fp4_sqr()", LOOP, fp4_sqr,&ANS_fp4,&A_fp4);
+  CYBOZU_BENCH_C("fp4_sqr_lazy_montgomery()", LOOP, fp4_sqr_lazy_montgomery, &ANSm_fp4,&Am_fp4);
+  fp4_println("ANS:", &ANS_fp4);
+  fp4_println_montgomery("ANSm:", &ANSm_fp4);
 
-//   CYBOZU_BENCH_C("fp6_mul()", LOOP, fp6_mul,&ANS_fp6,&A_fp6,&B_fp6);
-//   CYBOZU_BENCH_C("fp6_mul_lazy_montgomery()", LOOP, fp6_mul_lazy_montgomery, &ANSm_fp6,&Am_fp6,&Bm_fp6);
-//   fp6_println("ANS:", &ANS_fp6);
-//   fp6_println_montgomery("ANSm:", &ANSm_fp6);
+  fp8_t ANS_fp8, ANSm_fp8, A_fp8,Am_fp8 ,B_fp8,Bm_fp8;
+  fp8_init(&A_fp8);
+  fp8_init(&Am_fp8);
+  fp8_init(&B_fp8);
+  fp8_init(&Bm_fp8);
+  fp8_init(&ANS_fp8);
+  fp8_init(&ANSm_fp8);
 
-//   CYBOZU_BENCH_C("fp6_sqr()", LOOP, fp6_sqr,&ANS_fp6,&A_fp6);
-//   CYBOZU_BENCH_C("fp6_sqr_lazy_montgomery()", LOOP, fp6_sqr_lazy_montgomery, &ANSm_fp6,&Am_fp6);
-//   fp6_println("ANS:", &ANS_fp6);
-//   fp6_println_montgomery("ANSm:", &ANSm_fp6);
+  fp8_set_random(&A_fp8,state);
+  fp8_to_montgomery(&Am_fp8, &A_fp8);
+  fp8_set_random(&B_fp8,state);
+  fp8_to_montgomery(&Bm_fp8, &B_fp8);
 
-//   CYBOZU_BENCH_C("fp6_mul_sparse_add()", LOOP, fp6_mul_sparse_add,&ANS_fp6,&A_fp6,&B_fp6);
-//   CYBOZU_BENCH_C("fp6_mul_sparse_add_lazy_montgomery()", LOOP, fp6_mul_sparse_add_lazy_montgomery, &ANSm_fp6,&Am_fp6,&Bm_fp6);
-//   fp6_println("ANS:", &ANS_fp6);
-//   fp6_println_montgomery("ANSm:", &ANSm_fp6);
+  CYBOZU_BENCH_C("fp8_mul()", LOOP, fp8_mul,&ANS_fp8,&A_fp8,&B_fp8);
+  CYBOZU_BENCH_C("fp8_mul_lazy_montgomery()", LOOP, fp8_mul_lazy_montgomery, &ANSm_fp8,&Am_fp8,&Bm_fp8);
+  fp8_println("ANS:", &ANS_fp8);
+  fp8_println_montgomery("ANSm:", &ANSm_fp8);
 
-//   CYBOZU_BENCH_C("fp6_mul_sparse_dbl()", LOOP, fp6_mul_sparse_dbl,&ANS_fp6,&A_fp6,&B_fp6);
-//   CYBOZU_BENCH_C("fp6_mul_sparse_dbl_lazy_montgomery()", LOOP, fp6_mul_sparse_dbl_lazy_montgomery, &ANSm_fp6,&Am_fp6,&Bm_fp6);
-//   fp6_println("ANS:", &ANS_fp6);
-//   fp6_println_montgomery("ANSm:", &ANSm_fp6);
+  CYBOZU_BENCH_C("fp8_sqr()", LOOP, fp8_sqr,&ANS_fp8,&A_fp8);
+  CYBOZU_BENCH_C("fp8_sqr_lazy_montgomery()", LOOP, fp8_sqr_lazy_montgomery, &ANSm_fp8,&Am_fp8);
+  fp8_println("ANS:", &ANS_fp8);
+  fp8_println_montgomery("ANSm:", &ANSm_fp8);
 
-// }
+  CYBOZU_BENCH_C("fp8_mul_sparse_add()", LOOP, fp8_mul_sparse_add,&ANS_fp8,&A_fp8,&B_fp8);
+  CYBOZU_BENCH_C("fp8_mul_sparse_add_lazy_montgomery()", LOOP, fp8_mul_sparse_add_lazy_montgomery, &ANSm_fp8,&Am_fp8,&Bm_fp8);
+  fp8_println("ANS:", &ANS_fp8);
+  fp8_println_montgomery("ANSm:", &ANSm_fp8);
+
+  CYBOZU_BENCH_C("fp8_mul_sparse_dbl()", LOOP, fp8_mul_sparse_dbl,&ANS_fp8,&A_fp8,&B_fp8);
+  CYBOZU_BENCH_C("fp8_mul_sparse_dbl_lazy_montgomery()", LOOP, fp8_mul_sparse_dbl_lazy_montgomery, &ANSm_fp8,&Am_fp8,&Bm_fp8);
+  fp8_println("ANS:", &ANS_fp8);
+  fp8_println_montgomery("ANSm:", &ANSm_fp8);
+
+}
 
 // void BENCH_miller_lazy_montgomery(int LOOP){
 //   printf("============================================================================\n");
@@ -1718,3 +1574,56 @@ void check_fp8_with_montgomery(){
 
 //   printf("*********************************************************************************************\n\n");
 // }
+
+void check_finalexp_pow_cost_count_2NAF(){
+  printf("check_pairing_count_2NAF() 開始\n");
+  cost final_exp_x_cost, final_exp_x_2_cost,final_exp_hy_cost,final_exp_4hy_cost;
+
+  fp8_t f;
+  fp8_init(&f);
+  fp8_set_random(&f, state);
+
+  printf("fp8_finalexpow_x_2NAF count\n");
+  cost_zero();
+  fp8_finalexpow_x_2NAF(&f,&f);
+  cost_check(&final_exp_x_cost);
+  cost_printf("fp8_finalexpow_x_2NAF cost",&final_exp_x_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+
+  printf("fp8_finalexpow_x_2_2NAF count\n");
+  cost_zero();
+  fp8_finalexpow_x_2_2NAF(&f,&f);
+  cost_check(&final_exp_x_2_cost);
+  cost_printf("fp8_finalexpow_x_2_2NAF cost",&final_exp_x_2_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+
+  printf("fp8_finalexpow_hy_neg_2NAF count\n");
+  cost_zero();
+  fp8_finalexpow_hy_neg_2NAF(&f,&f);
+  cost_check(&final_exp_hy_cost);
+  cost_printf("fp8_finalexpow_hy_neg_2NAF cost",&final_exp_hy_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+
+  printf("fp8_finalexpow_4hy_neg_2NAF count\n");
+  cost_zero();
+  fp8_finalexpow_4hy_neg_2NAF(&f,&f);
+  cost_check(&final_exp_4hy_cost);
+  cost_printf("fp8_finalexpow_4hy_neg_2NAF cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+
+  printf("fp8_mul count\n");
+  cost_zero();
+  fp8_mul(&f,&f,&f);
+  cost_check(&final_exp_4hy_cost);
+  cost_printf("fp8_mul cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+
+  printf("fp8_sqr count\n");
+  cost_zero();
+  fp8_sqr(&f,&f);
+  cost_check(&final_exp_4hy_cost);
+  cost_printf("fp8_sqr cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+
+  printf("*********************************************************************************************\n\n");
+}
