@@ -68,9 +68,9 @@ int main(){
   // check_pairing();
   // check_pairing_2NAF();
   // check_pairing_static();
+  // check_pairing_time_2NAF();
+  check_pairing_count_2NAF();
   // check_pairing_count_2NAF_lazy_montgomery();
-  // check_pairing_count_2NAF();
-  check_pairing_time_2NAF();
   // check_finalexp_pow_cost_count_2NAF();
   printf("*********************************************************************************************\n\n");
   // //playground

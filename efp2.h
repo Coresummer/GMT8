@@ -47,4 +47,6 @@ void efp2_eca_mixture_lazy_montgomery(efp2_jacobian_t *ANS,efp2_jacobian_t *P1,e
 void efp2_scm(efp2_t *ANS,efp2_t *P,mpz_t scalar);
 void efp2_scm_dash(efp2_t *ANS,efp2_t *P,mpz_t scalar);
 void efp2_checkOnTwsitCurve(efp2_t *A);
+void efp2_jacobi_checkOnCurve_Twist(efp2_jacobian_t* A);
+void efp2_proj_w1_2_checkOnCurve_Twist(efp2_jacobian_t* A);
 #endif

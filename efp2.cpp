@@ -695,8 +695,6 @@ void efp2_scm_dash(efp2_t *ANS,efp2_t *P,mpz_t scalar){
   efp2_set(ANS,&Next_P);
 }
 
-
-
 void efp2_checkOnTwsitCurve(efp2_t *A){
   static fp2_t tmp_left_fp2, tmp_right_fp2,tmp_ax;
 
@@ -716,4 +714,52 @@ void efp2_checkOnTwsitCurve(efp2_t *A){
     printf("efp2 check on curve: NOT On twist curve\n");
   }
 
+}
+
+void efp2_jacobi_checkOnCurve_Twist(efp2_jacobian_t* A){
+  static fp2_t tmp1_fp, tmp2_fp, tmp3_fp, tmp4_fp;
+
+  fp2_sqr(&tmp1_fp,&A->z);           //Z^2
+  fp2_mul(&tmp2_fp,&tmp1_fp,&A->z);  //Z^3
+
+  fp2_inv(&tmp1_fp,&tmp1_fp);      //Z^-2
+  fp2_inv(&tmp2_fp,&tmp2_fp);      //Z^-3
+
+  fp2_mul(&tmp3_fp,&tmp1_fp,&A->x);  //x = X*Z^-2
+  fp2_mul(&tmp4_fp,&tmp2_fp,&A->y);  //y = Y*Z^-3
+
+  fp2_sqr(&tmp2_fp,&tmp4_fp);  //y^2
+  fp2_sqr(&tmp1_fp,&tmp3_fp);
+  fp2_mul(&tmp1_fp,&tmp1_fp,&tmp3_fp); //x^3
+
+  fp2_mul_mpn(&tmp4_fp,&tmp3_fp,curve_a.x0);
+  fp2_mul_base(&tmp4_fp, &tmp4_fp);
+
+  fp2_add(&tmp1_fp,&tmp1_fp,&tmp4_fp);
+
+  fp2_sub(&tmp3_fp,&tmp1_fp,&tmp2_fp);
+  fp2_println("proj_diff:",&tmp3_fp);
+}
+
+void efp2_proj_w1_2_checkOnCurve_Twist(efp2_jacobian_t* A){
+  static fp2_t tmp1_fp, tmp2_fp, tmp3_fp, tmp4_fp;
+
+  fp2_inv(&tmp1_fp,&A->z);          //Z^-1
+  fp2_sqr(&tmp2_fp,&A->z);          //Z^2
+  fp2_inv(&tmp2_fp,&tmp2_fp);      //Z^-2
+
+  fp2_mul(&tmp3_fp,&tmp1_fp,&A->x);  //x = X*Z^-1
+  fp2_mul(&tmp4_fp,&tmp2_fp,&A->y);  //y = Y*Z^-2
+
+  fp2_sqr(&tmp2_fp,&tmp4_fp);  //y^2
+  fp2_sqr(&tmp1_fp,&tmp3_fp);
+  fp2_mul(&tmp1_fp,&tmp1_fp,&tmp3_fp); //x^3
+
+  fp2_mul_mpn(&tmp4_fp,&tmp3_fp,curve_a.x0);
+  fp2_mul_base(&tmp4_fp, &tmp4_fp);
+
+  fp2_add(&tmp1_fp,&tmp1_fp,&tmp4_fp);
+
+  fp2_sub(&tmp3_fp,&tmp1_fp,&tmp2_fp);
+  fp2_println("proj_diff:",&tmp3_fp);
 }

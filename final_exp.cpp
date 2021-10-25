@@ -23,7 +23,10 @@ void final_exp(fp8_t *ANS, fp8_t *A){
   fp8_mul(&tmp3_fp8,&tmp3_fp8,  &tmp4_fp8);   //M^(p+x) = M'
 
   fp8_frobenius_map_p2(&tmp4_fp8,&tmp3_fp8);  //M'^(p^2)
-  fp8_finalexpow_x_2_2NAF(&tmp5_fp8,&tmp3_fp8);           //M'^(x^2)
+  // fp8_finalexpow_x_2_2NAF(&tmp5_fp8,&tmp3_fp8);           //M'^(x^2)
+  fp8_finalexpow_x_2NAF(&tmp5_fp8,&tmp3_fp8);           //M'^(x^2)
+  fp8_finalexpow_x_2NAF(&tmp5_fp8,&tmp5_fp8);           //M'^(x^2)
+
   fp8_mul(&tmp3_fp8,&tmp4_fp8,&tmp5_fp8);      //M" = M'(p^2 + x^2) = A(p^4-1)(p+x)(p^2+x^2)
 
   //L2 M"^4c = ((((4ℎ_𝑦+1)𝜒+〖4ℎ〗_𝑦 )𝜒−4ℎ_𝑦+1)𝜒)𝜒+4+〖4ℎ〗_𝑦^2
@@ -37,7 +40,10 @@ void final_exp(fp8_t *ANS, fp8_t *A){
   fp8_finalexpow_x_2NAF(&tmp5_fp8, &tmp5_fp8);         //M"^((4hy^2+1)x -4hy)x
   fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp6_fp8);     //M"^((4hy^2+1)x -4hy)x + 4hy
   fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp3_fp8);     //M"^((4hy^2+1)x -4hy)x + 4hy + 1
-  fp8_finalexpow_x_2_2NAF(&tmp5_fp8, &tmp5_fp8);         //M"^((4hy^2+1)x -4hy)x + 4hy + 1)x^2
+  // fp8_finalexpow_x_2_2NAF(&tmp5_fp8, &tmp5_fp8);         //M"^((4hy^2+1)x -4hy)x + 4hy + 1)x^2
+  fp8_finalexpow_x_2NAF(&tmp5_fp8, &tmp5_fp8);         //M"^((4hy^2+1)x -4hy)x + 4hy + 1)x^2
+  fp8_finalexpow_x_2NAF(&tmp5_fp8, &tmp5_fp8);
+  
   fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp1_fp8);     //M"^((4hy^2+1)x -4hy)x + 4hy + 1)x^2 + 4hy^2
   fp8_sqr_GS(&tmp1_fp8, &tmp3_fp8);              //M"^2
   fp8_sqr_GS(&tmp1_fp8, &tmp1_fp8);              //M"^4

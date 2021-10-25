@@ -731,9 +731,6 @@ int fp_legendre_sqrt_montgomery(fp_t *ANS, fp_t *A) {
 
 void fp_mul_base(fp_t *ANS,fp_t *A){
   #ifdef DEBUG_COST_A
-  cost_add++;
-  cost_add++;
-  cost_add++;
   #endif
 
   static fp_t tmp_base;
@@ -746,9 +743,7 @@ void fp_mul_base(fp_t *ANS,fp_t *A){
 
 void fp_mul_base_nonmod_sigle(fp_t *ANS,fp_t *A){
   #ifdef DEBUG_COST_A
-  cost_add++;
-  cost_add++;
-  cost_add++;
+
 
   #endif
   static fp_t tmp_base;

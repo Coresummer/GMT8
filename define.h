@@ -28,9 +28,9 @@
 #define ARCBIT 64  //64bit processor
 //#define ARCBIT 32 //32bit processor
 
-// #define DEBUG_COST_A
+#define DEBUG_COST_A
 //#define DEBUG_ASSERT
-#define CHECK_PAIRING_TIME_LOOP 1000
+#define CHECK_PAIRING_TIME_LOOP 1
 
 /**************Option**************/
 #define X64
@@ -159,6 +159,8 @@ TTT_EXTERN mpz_t hardpart,hy_neg,fourhy_neg,three;
 TTT_EXTERN fp_t frobenius_1_8,frobenius_2_8,frobenius_3_8,frobenius_5_8,frobenius_6_8,frobenius_7_8;//c^((p-1)/10)の計算結果
 TTT_EXTERN fp_t frobenius_1_8MR,frobenius_2_8MR,frobenius_3_8MR,frobenius_5_8MR,frobenius_6_8MR,frobenius_7_8MR;//c^((p-1)/10)の計算結果
 
+//miller precomp
+TTT_EXTERN fp2_t miller_precomp_X2Z2, miller_precomp_xSZ2_2,miller_precomp_ySZ2_2,miller_precomp_X2_Y2,miller_precomp_xS_Y2,miller_precomp_yS_Y2;
 
 //montgomery
 TTT_EXTERN mp_limb_t R[FPLIMB],Ri[FPLIMB],R1[FPLIMB],RR[FPLIMB],Ni[FPLIMB];

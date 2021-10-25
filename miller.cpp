@@ -5,6 +5,12 @@
 #include "mpn.h"
 #include <cstdio>
 
+
+void miller_proj_precomp_Costello(efp2_t *S,efp2_t *R){
+  //call this after generate P & Q_dash precomputed value wont change
+
+}
+
 //twist
 void efp8_to_Jacefp2(efp2_jacobian_t *ANS,efp8_t *A){ 
   fp2_mul_base(&ANS->x,&A->x.x0.x1);
@@ -96,6 +102,77 @@ void ff_lttp(fp8_t *f, efp2_jacobian_t *S, efp_t *P){
   fp2_set(&S->z,&nextZ);
 }
 
+void ff_lttp_Costello(fp8_t *f, efp2_jacobian_t *U, efp_t *S){
+  fp8_sqr(f,f); //update
+
+  static fp2_t tmpA_fp2, tmpB_fp2,tmpC_fp2,tmpD_fp2,tmpE_fp2,tmpF_fp2;
+  // static fp2_t t1,t2,t3;
+  static fp2_t nextX,nextY,nextZ;
+  static fp2_t tmp1_fp2,tmp2_fp2;
+  static fp8_t tmp1_fp8;
+
+  fp2_sqr(&tmpA_fp2,&U->x);              //A = X^2
+  fp2_sqr(&tmpB_fp2,&U->y);              //B = Y^2
+  fp2_sqr(&tmpC_fp2,&U->z);              //C = Z^2
+
+  fp2_mul_mpn(&tmpD_fp2, &tmpC_fp2, curve_a.x0);  //D=aC
+  fp2_mul_base(&tmpD_fp2, &tmpD_fp2);
+
+  fp2_sub(&tmp1_fp2,&tmpA_fp2,&tmpD_fp2);  //X3=(A-D)^2
+  fp2_sqr(&nextX,&tmp1_fp2);
+
+  fp2_add(&tmp2_fp2,&tmpA_fp2,&tmpD_fp2);  //E=(A+D)^2
+  fp2_sqr(&tmpE_fp2,&tmp2_fp2);
+  fp2_l1shift(&tmpE_fp2,&tmpE_fp2);
+  fp2_sub(&tmpE_fp2,&tmpE_fp2,&nextX);  //E=2(A+D)^2 - X3
+
+  fp2_add(&tmpF_fp2,&tmp1_fp2,&U->y);   //F = (A-D+Y1)
+  fp2_sqr(&tmpF_fp2,&tmpF_fp2);         //F = (A-D+Y1)^2
+  fp2_sub(&tmpF_fp2,&tmpF_fp2,&tmpB_fp2);  //F=(A-D+Y1)^2 - B
+  fp2_sub(&tmpF_fp2,&tmpF_fp2,&nextX);  //F=(A-D+Y1)^2 - B - X3
+
+  fp2_mul(&nextY,&tmpE_fp2 ,&tmpF_fp2); //Y3 = E*F
+
+  fp2_l1shift(&nextZ,&tmpB_fp2);
+  fp2_l1shift(&nextZ,&nextZ);           //Z3 = 4B
+
+//------------------------------------
+  // fp2_mul(&tmp3_fp,&t3,&S->x);                        //tmp3 = t3*X
+  // fp2_sub(&tmp1_fp8.x0.x0,&tmp3_fp,&tmp2_fp);         // = t3*X - 2*t1
+  fp2_add(&tmp1_fp8.x0.x0,&U->x,&tmp1_fp2);
+  fp2_sqr(&tmp1_fp8.x0.x0,&tmp1_fp8.x0.x0);
+  fp2_sub(&tmp1_fp8.x0.x0,&tmp1_fp8.x0.x0,&nextX);
+  fp2_sub(&tmp1_fp8.x0.x0,&tmp1_fp8.x0.x0,&tmpA_fp2);
+
+//------------------------------------
+  // fp2_mul(&tmp1_fp8.x1.x1,&nextZ,&tmp3_fp);           // = nextZ*Z^2
+  // fp2_mul_mpn(&tmp1_fp8.x1.x1,&tmp1_fp8.x1.x1,P->y.x0);     // = nextZ*Z^2Py
+  fp2_add(&tmp1_fp8.x1.x1,&U->y,&U->z);
+  fp2_sqr(&tmp1_fp8.x1.x1,&tmp1_fp8.x1.x1);
+  fp2_sub(&tmp1_fp8.x1.x1,&tmp1_fp8.x1.x1,&tmpB_fp2);
+  fp2_sub(&tmp1_fp8.x1.x1,&tmp1_fp8.x1.x1,&tmpC_fp2);
+  fp2_l1shift(&tmp1_fp8.x1.x1, &tmp1_fp8.x1.x1);
+  fp2_mul_mpn(&tmp1_fp8.x1.x1,&tmp1_fp8.x1.x1,S->y.x0);     // = nextZ*Z^2Py
+
+//------------------------------------
+  // fp2_mul(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1,&tmp3_fp);  // = t3*Px*Z^2
+  fp2_l1shift(&tmp1_fp2, &tmpA_fp2);
+  fp2_add(&tmp1_fp8.x0.x1,&tmp1_fp2,&tmp2_fp2);
+  fp2_mul(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1,&U->z);
+  fp2_l1shift(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1);
+  fp2_mul_mpn(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1,S->x.x0);                 // = t3*Px
+  fp2_set_neg(&tmp1_fp8.x0.x1,&tmp1_fp8.x0.x1);       // = -t3*Px*Z^2
+
+//------------------------------------
+  fp8_mul_sparse_dbl(f,&tmp1_fp8,f);
+
+  fp2_set(&U->x,&nextX);
+  fp2_set(&U->y,&nextY);
+  fp2_set(&U->z,&nextZ);
+  // efp2_proj_w1_2_checkOnCurve_Twist(S);
+
+}
+
 //add line 
 void ff_ltqp(fp8_t *f, efp2_jacobian_t *S, efp2_t *Q,efp_t *P){
   static fp2_t tmp1_fp, tmp2_fp,tmp3_fp;
@@ -154,6 +231,37 @@ void ff_ltqp(fp8_t *f, efp2_jacobian_t *S, efp2_t *Q,efp_t *P){
   fp2_set(&S->y,&nextY);
   fp2_set(&S->z,&nextZ);
 }
+
+
+// void ff_ltqp_Costello_mixed(fp8_t *f, efp2_jacobian_t *U, efp2_t *R,efp_t *S){
+
+//   static fp2_t tmpA_fp2, tmpB_fp2,tmpC_fp2,tmpD_fp2,tmpE_fp2,tmpF_fp2;
+//   static fp2_t tmpG_fp2, tmpH_fp2,tmpI_fp2,tmpI2_fp2,tmpJ_fp2,tmpK_fp2;
+
+//   // static fp2_t t1,t2,t3;
+//   static fp2_t nextX,nextY,nextZ;
+//   static fp2_t tmp1_fp2,tmp2_fp2;
+//   static fp8_t tmp1_fp8;
+
+
+// //------------------------------------
+//   fp2_mul_mpn(&tmp1_fp8.x1.x0,&nextZ,P->y.x0);//Zt1*py
+// //------------------------------------
+//   fp2_mul_mpn(&tmp1_fp8.x0.x0,&t2,P->x.x0);     //t2xp
+//   fp2_set_neg(&tmp1_fp8.x0.x0,&tmp1_fp8.x0.x0); //-t2xp
+// //------------------------------------
+//   fp2_mul(&tmp1_fp,&t2,&Q->x);      //t2Qx
+//   fp2_mul(&tmp2_fp,&nextZ,&Q->y);   //Zt1Qy
+//   fp2_sub(&tmp1_fp8.x0.x1,&tmp1_fp,&tmp2_fp);
+//   fp2_mul_base_inv(&tmp1_fp8.x0.x1, &tmp1_fp8.x0.x1);
+// //------------------------------------
+//   fp8_mul_sparse_add(f,&tmp1_fp8,f);
+
+//   fp2_set(&S->x,&nextX);
+//   fp2_set(&S->y,&nextY);
+//   fp2_set(&S->z,&nextZ);
+//   efp2_proj_w1_2_checkOnCurve_Twist(S);
+// }
 
 // void ff_lttp_lazy_montgomery(fp8_t *f, efp2_jacobian_t *S, efp_t *P){
 //   fp8_sqr_lazy_montgomery(f,f); //update
@@ -272,7 +380,7 @@ void ff_ltqp(fp8_t *f, efp2_jacobian_t *S, efp2_t *Q,efp_t *P){
 //   fp_set(&S->z,&nextZ);
 // }
 
-void miller_opt_ate_proj(fp8_t *f,efp8_t *P,efp8_t *Q){
+void miller_opt_ate_jac(fp8_t *f,efp8_t *P,efp8_t *Q){
     static efp_t mapped_P;
     static efp2_t mapped_Q;
     static efp2_jacobian_t S;
@@ -296,7 +404,7 @@ void miller_opt_ate_proj(fp8_t *f,efp8_t *P,efp8_t *Q){
     }
 }
 
-void miller_opt_ate_proj_2NAF(fp8_t *f,efp8_t *P,efp8_t *Q){
+void miller_opt_ate_jac_2NAF(fp8_t *f,efp8_t *P,efp8_t *Q){
     static efp_t mapped_P;
     static efp2_t mapped_Q,mapped_Q_neg;
     static efp2_jacobian_t S;
@@ -321,12 +429,10 @@ void miller_opt_ate_proj_2NAF(fp8_t *f,efp8_t *P,efp8_t *Q){
         case 1:
           ff_lttp(f,&S,&mapped_P);
           ff_ltqp(f,&S,&mapped_Q,&mapped_P);
-          // fp8_println("&f1", f);
           break;
         case -1:
           ff_lttp(f,&S,&mapped_P);
           ff_ltqp(f,&S,&mapped_Q_neg,&mapped_P);
-
           break;
         default:
             break;
@@ -372,3 +478,39 @@ void miller_opt_ate_proj_2NAF(fp8_t *f,efp8_t *P,efp8_t *Q){
 //       }
 //     }
 // }
+
+void miller_opt_ate_proj_2NAF(fp8_t *f,efp8_t *P,efp8_t *Q){
+    static efp_t mapped_P;
+    static efp2_t mapped_Q,mapped_Q_neg;
+    static efp2_jacobian_t S;
+    
+    fp8_set_ui_ui(f,0);
+    fp_set_ui(&f->x0.x0.x0,1);
+
+    fp_set(&mapped_P.x,&P->x.x0.x0.x0);
+    fp_set(&mapped_P.y,&P->y.x0.x0.x0);
+    mapped_P.infinity = 0;
+
+    efp8_to_efp2(&mapped_Q,Q);//twist
+    efp8_to_Jacefp2(&S,Q);
+    efp2_set_neg(&mapped_Q_neg,&mapped_Q);
+
+    mp_bitcnt_t i;
+    for(i=(miller_loop_v.size() -2);i!=-1;i--){
+      switch(miller_loop_v[i]){
+        case 0:
+          ff_lttp(f,&S,&mapped_P);
+          break;
+        case 1:
+          ff_lttp(f,&S,&mapped_P);
+          ff_ltqp(f,&S,&mapped_Q,&mapped_P);
+          break;
+        case -1:
+          ff_lttp(f,&S,&mapped_P);
+          ff_ltqp(f,&S,&mapped_Q_neg,&mapped_P);
+          break;
+        default:
+            break;
+      }
+    }
+}
