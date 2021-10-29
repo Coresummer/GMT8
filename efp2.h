@@ -36,6 +36,7 @@ void efp2_mod_montgomery(efp2_t *ANS,efp2_t *A);
 void efp2_projective_mod_montgomery(efp2_projective_t *ANS,efp2_projective_t *A);
 void efp2_set_mpn(efp2_t *ANS,mp_limb_t *A);
 void efp2_set_neg(efp2_t *ANS,efp2_t *A);
+void efp2_set_neg_montgomery(efp2_t *ANS,efp2_t *A);
 void efp2_jacobian_set_neg(efp2_jacobian_t *ANS,efp2_jacobian_t *A);
 int efp2_cmp(efp2_t *A,efp2_t *B);
 void efp2_rational_point(efp2_t *P);

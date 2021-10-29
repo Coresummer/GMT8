@@ -895,9 +895,51 @@ void fp8_mul_sparse_dbl(fp8_t *ANS,fp8_t *A,fp8_t *B){  //??0?00 * ??????
 }
 
 void fp8_mul_sparse_add_lazy_montgomery(fp8_t *ANS,fp8_t *A,fp8_t *B){  //?000?? * ??????
+  //fp2_mul*3 fp_mul*4 = 13 m
+  static fp8_t tmp_A,tmp_B;
+  fp8_set(&tmp_A,A);//?? ?? ?? 00 a+bβ+cγ+dβγ d=0 tmpA.x1.x1
+  fp8_set(&tmp_B,B);//?? ?? ?? ?? e+fβ+gγ+hβγ
 
+  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp,tmp4_fp,tmp5_fp;
+  fp4_mul_lazy_montgomery(&tmp1_fp,&tmp_A.x0,&tmp_B.x0); //ac
+  // fp4_mul(&tmp2_fp,&tmp_A.x1,&tmp_B.x1); //bd       //here
+//---------------------------------------------------------
+  //(a + 0) * c + d
+  fp2_mul_lazy_montgomery(&tmp2_fp.x0, &tmp_A.x1.x0, &tmp_B.x1.x0);
+  fp2_mul_lazy_montgomery(&tmp2_fp.x1, &tmp_A.x1.x0, &tmp_B.x1.x1);
+//---------------------------------------------------------
+  fp4_mul_base(&tmp3_fp, &tmp2_fp);  //bdΘ^2
+  fp4_add_nonmod_single(&ANS->x0, &tmp1_fp, &tmp3_fp);  //ab+bdΘ^2
+
+  fp4_add_nonmod_single(&tmp3_fp,&tmp_A.x0,&tmp_A.x1);//a+b
+  fp4_add_nonmod_single(&tmp4_fp,&tmp_B.x0,&tmp_B.x1);//c+d
+  fp4_mul_lazy_montgomery(&tmp5_fp,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
+  
+  fp4_sub_nonmod_single(&tmp3_fp,&tmp5_fp,&tmp1_fp);//(a+b)(c+d) - ac
+fp4_sub_nonmod_single(&ANS->x1,&tmp3_fp,&tmp2_fp);//(a+b)(c+d) - ac -bd
 }
 
 void fp8_mul_sparse_dbl_lazy_montgomery(fp8_t *ANS,fp8_t *A,fp8_t *B){  //??0?00 * ??????
+  //fpmul*2 fp2mul*4 = 14 m prob because 2->6
+  static fp8_t tmp_A,tmp_B;
+  fp8_set(&tmp_A,A);//?? ?? 00 ?? a+b0+c0^2 tmpA.x1.x0
+  fp8_set(&tmp_B,B);//?? ?? ?? ?? d+e0+f0^2
+  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp,tmp4_fp,tmp5_fp;
+  fp4_mul_lazy_montgomery(&tmp1_fp,&tmp_A.x0,&tmp_B.x0); //ac //here
+  // fp4_mul(&tmp2_fp,&tmp_A.x1,&tmp_B.x1); //bd
+  //---------------------------------------------------------
+  //(0 + b)* (c + d)
+  fp2_mul_lazy_montgomery(&tmp2_fp.x0, &tmp_A.x1.x1, &tmp_B.x1.x0);
+  fp2_mul_lazy_montgomery(&tmp2_fp.x1, &tmp_A.x1.x1, &tmp_B.x1.x1);
+  fp4_mul_base(&tmp2_fp, &tmp2_fp);
+//---------------------------------------------------------
+  fp4_mul_base(&tmp3_fp, &tmp2_fp);  //bdΘ^2
+  fp4_add_nonmod_single(&ANS->x0, &tmp1_fp, &tmp3_fp);  //ab+bdΘ^2
 
+  fp4_add_nonmod_single(&tmp3_fp,&tmp_A.x0,&tmp_A.x1);//a+b
+  fp4_add_nonmod_single(&tmp4_fp,&tmp_B.x0,&tmp_B.x1);//c+d
+  fp4_mul_lazy_montgomery(&tmp5_fp,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
+  
+  fp4_sub_nonmod_single(&tmp3_fp,&tmp5_fp,&tmp1_fp);//(a+b)(c+d) - ac
+  fp4_sub_nonmod_single(&ANS->x1,&tmp3_fp,&tmp2_fp);//(a+b)(c+d) - ac -bd
 }

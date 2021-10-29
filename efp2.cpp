@@ -301,6 +301,13 @@ void efp2_set_neg(efp2_t *ANS,efp2_t *A){
   ANS->infinity=A->infinity;
 }
 
+void efp2_set_neg_montgomery(efp2_t *ANS,efp2_t *A){
+  fp2_set(&ANS->x,&A->x);
+  fp2_set_neg_montgomery(&ANS->y,&A->y);
+  ANS->infinity=A->infinity;
+}
+
+
 void efp2_jacobian_set_neg(efp2_jacobian_t *ANS,efp2_jacobian_t *A){
   fp2_set(&ANS->x,&A->x);
   fp2_set_neg(&ANS->y,&A->y);
