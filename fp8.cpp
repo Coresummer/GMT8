@@ -2,6 +2,7 @@
 
 #include "fp8.h"
 #include "define.h"
+#include "fp.h"
 #include "fp2.h"
 #include "fp4.h"
 
@@ -401,6 +402,25 @@ void fp8_sqr_GS(fp8_t *ANS,fp8_t *A){
   fp4_sub(&ANS->x1,&ANS->x1, &tmp3_fp);//(a+b)^2 - a^2 - (a^2-1)/2
 }
 
+void fp8_sqr_GS_lazy_montgomery(fp8_t *ANS,fp8_t *A){
+  static fp8_t tmp_A;
+  fp8_set(&tmp_A,A);
+
+  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp;
+
+  fp4_sqr_lazy_montgomery(&tmp1_fp, &tmp_A.x0);  //a^2
+  fp4_add_nonmod_single(&tmp2_fp, &tmp_A.x0, &tmp_A.x1);  //(a+b)
+  fp4_sqr_lazy_montgomery(&tmp2_fp,&tmp2_fp);  //(a+b)^2
+
+  fp4_set(&tmp3_fp,&tmp1_fp);
+  fp_sub_nonmod_single(&tmp3_fp.x0.x0,&tmp3_fp.x0.x0,&oneMR);//a^2-1
+  fp4_add_nonmod_single(&ANS->x0,&tmp3_fp,&tmp1_fp);//2a^2-1
+
+  fp4_mul_base_inv_montgomery(&tmp3_fp,&tmp3_fp);//(a^2-1)/3
+  fp4_sub_nonmod_single(&ANS->x1,&tmp2_fp,&tmp1_fp);//(a+b)^2 - a^2
+  fp4_sub_nonmod_single(&ANS->x1,&ANS->x1, &tmp3_fp);//(a+b)^2 - a^2 - (a^2-1)/2
+}
+
 void fp8_add(fp8_t *ANS,fp8_t *A,fp8_t *B){
   fp4_add(&ANS->x0,&A->x0,&B->x0);
   fp4_add(&ANS->x1,&A->x1,&B->x1);
@@ -581,34 +601,6 @@ void fp8_finalexpow_x_2NAF(fp8_t *ANS,fp8_t *A){
   }
 }
 
-void fp8_finalexpow_x_2_2NAF(fp8_t *ANS,fp8_t *A){
-  static fp8_t tmp_A;
-  fp8_set(&tmp_A,A);
-
-  static fp8_t A_inv;
-  fp8_frobenius_map_p4(&A_inv, A);
-
-  fp8_set(ANS,&tmp_A);
-  for(int i=(finalexp_pow_x_2.size()-2);i!=-1;i--){
-    switch(finalexp_pow_x_2[i]){
-      case 0:
-        fp8_sqr_GS(ANS, ANS);
-        break;
-      case 1:
-        fp8_sqr_GS(ANS, ANS);
-        fp8_mul(ANS,ANS,&tmp_A);
-        break;
-      case -1:
-        fp8_sqr_GS(ANS, ANS);
-        fp8_mul(ANS, ANS,&A_inv);
-        break;
-      default:
-        break;
-    }
-  }
-}
-
-
 void fp8_finalexpow_hy_neg_2NAF(fp8_t *ANS,fp8_t *A){
   static fp8_t tmp_A;
   fp8_set(&tmp_A,A);
@@ -656,6 +648,89 @@ void fp8_finalexpow_4hy_neg_2NAF(fp8_t *ANS,fp8_t *A){
       case -1:
         fp8_sqr_GS(ANS, ANS);
         fp8_mul(ANS, ANS,&A_inv);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+
+void fp8_finalexpow_x_2NAF_lazy_montgomery(fp8_t *ANS,fp8_t *A){
+  static fp8_t tmp_A;
+  fp8_set(&tmp_A,A);
+
+  static fp8_t A_inv;
+  fp8_frobenius_map_p4_montgomery(&A_inv, A);
+
+  fp8_set(ANS,&tmp_A);
+  for(int i=(finalexp_pow_x.size()-2);i!=-1;i--){
+    switch(finalexp_pow_x[i]){
+      case 0:
+        fp8_sqr_GS_lazy_montgomery(ANS, ANS);
+        break;
+      case 1:
+        fp8_sqr_GS_lazy_montgomery(ANS, ANS);
+        fp8_mul_lazy_montgomery(ANS,ANS,&tmp_A);
+        break;
+      case -1:
+        fp8_sqr_GS_lazy_montgomery(ANS, ANS);
+        fp8_mul_lazy_montgomery(ANS, ANS,&A_inv);
+
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+void fp8_finalexpow_hy_neg_2NAF_lazy_montgomery(fp8_t *ANS,fp8_t *A){
+  static fp8_t tmp_A;
+  fp8_set(&tmp_A,A);
+
+  static fp8_t A_inv;
+  fp8_frobenius_map_p4_montgomery(&A_inv, A);
+
+  fp8_set(ANS,&tmp_A);
+  for(int i=(finalexp_pow_hy.size()-2);i!=-1;i--){
+    switch(finalexp_pow_hy[i]){
+      case 0:
+        fp8_sqr_GS_lazy_montgomery(ANS, ANS);
+        break;
+      case 1:
+        fp8_sqr_GS_lazy_montgomery(ANS, ANS);
+        fp8_mul_lazy_montgomery(ANS,ANS,&tmp_A);
+        break;
+      case -1:
+        fp8_sqr_GS_lazy_montgomery(ANS, ANS);
+        fp8_mul_lazy_montgomery(ANS, ANS,&A_inv);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+void fp8_finalexpow_4hy_neg_2NAF_lazy_montgomery(fp8_t *ANS,fp8_t *A){
+  static fp8_t tmp_A;
+  fp8_set(&tmp_A,A);
+
+  static fp8_t A_inv;
+  fp8_frobenius_map_p4_montgomery(&A_inv, A);
+
+  fp8_set(ANS,&tmp_A);
+  for(int i=(finalexp_pow_4hy.size()-2);i!=-1;i--){
+    switch(finalexp_pow_4hy[i]){
+      case 0:
+        fp8_sqr_GS_lazy_montgomery(ANS, ANS);
+        break;
+      case 1:
+        fp8_sqr_GS_lazy_montgomery(ANS, ANS);
+        fp8_mul_lazy_montgomery(ANS,ANS,&tmp_A);
+        break;
+      case -1:
+        fp8_sqr_GS_lazy_montgomery(ANS, ANS);
+        fp8_mul_lazy_montgomery(ANS, ANS,&A_inv);
         break;
       default:
         break;
@@ -757,7 +832,6 @@ void fp8_pow_montgomery(fp8_t *ANS, fp8_t *A, mpz_t scalar) {
   mpz_get_str(binary, 2, scalar);
   fp8_t tmp;
   fp8_init(&tmp); // not need?
-
   fp8_set(&tmp, A);
 
   for (int i = 1; i < length; i++) {
@@ -840,6 +914,39 @@ void fp8_frobenius_map_p2(fp8_t *ANS, fp8_t *A){
 void fp8_frobenius_map_p4(fp8_t *ANS,fp8_t *A){
   fp4_set(&ANS->x0,&A->x0);
   fp4_set_neg(&ANS->x1,&A->x1);
+}
+
+void fp8_frobenius_map_p1_montgomery(fp8_t *ANS, fp8_t *A){
+  fp_set(&ANS->x0.x0.x0 ,&A->x0.x0.x0);
+  fp_set_neg_montgomery(&ANS->x0.x0.x1 ,&A->x0.x0.x1);
+
+  fp_mulmod_montgomery(&ANS->x0.x1.x0 ,&A->x0.x1.x0,&frobenius_2_8MR);
+  fp_mulmod_montgomery(&ANS->x0.x1.x1 ,&A->x0.x1.x1,&frobenius_6_8MR);
+
+  fp_mulmod_montgomery(&ANS->x1.x0.x0 ,&A->x1.x0.x0,&frobenius_1_8MR);
+  fp_mulmod_montgomery(&ANS->x1.x0.x1 ,&A->x1.x0.x1,&frobenius_5_8MR);
+  
+  fp_mulmod_montgomery(&ANS->x1.x1.x0 ,&A->x1.x1.x0,&frobenius_3_8MR);
+  fp_mulmod_montgomery(&ANS->x1.x1.x1 ,&A->x1.x1.x1,&frobenius_7_8MR);
+}
+
+void fp8_frobenius_map_p2_montgomery(fp8_t *ANS, fp8_t *A){
+  fp_set(&ANS->x0.x0.x0 ,&A->x0.x0.x0);
+  fp_set(&ANS->x0.x0.x1 ,&A->x0.x0.x1);
+
+  fp_set_neg_montgomery(&ANS->x0.x1.x0 ,&A->x0.x1.x0);
+  fp_set_neg_montgomery(&ANS->x0.x1.x1 ,&A->x0.x1.x1);
+
+  fp_mulmod_montgomery(&ANS->x1.x0.x0 ,&A->x1.x0.x0,&frobenius_2_8MR);
+  fp_mulmod_montgomery(&ANS->x1.x0.x1 ,&A->x1.x0.x1,&frobenius_2_8MR);
+  
+  fp_mulmod_montgomery(&ANS->x1.x1.x0 ,&A->x1.x1.x0,&frobenius_6_8MR);
+  fp_mulmod_montgomery(&ANS->x1.x1.x1 ,&A->x1.x1.x1,&frobenius_6_8MR);
+}
+
+void fp8_frobenius_map_p4_montgomery(fp8_t *ANS,fp8_t *A){
+  fp4_set(&ANS->x0,&A->x0);
+  fp4_set_neg_montgomery(&ANS->x1,&A->x1);
 }
 
 void fp8_mul_sparse_add(fp8_t *ANS,fp8_t *A,fp8_t *B){  //?000?? * ??????

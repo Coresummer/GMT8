@@ -39,6 +39,8 @@ void fp8_sqr(fp8_t *ANS,fp8_t *A);
 void fp8_sqr_GS(fp8_t *ANS,fp8_t *A);
 void fp8_sqr_lazy(fp8_t *ANS,fp8_t *A);
 void fp8_sqr_lazy_montgomery(fp8_t *ANS,fp8_t *A);
+void fp8_sqr_GS_lazy_montgomery(fp8_t *ANS,fp8_t *A);
+
 void fp8_sqr_nonmod_montgomery(fpd8_t *ANS, fp8_t *A);
 void fp8_add(fp8_t *ANS,fp8_t *A,fp8_t *B);
 void fp8_add_nonmod_single(fp8_t *ANS,fp8_t *A,fp8_t *B);
@@ -59,10 +61,17 @@ int fp8_legendre(fp8_t *A);
 void fp8_sqrt(fp8_t *ANS,fp8_t *A);
 void fp8_pow(fp8_t *ANS,fp8_t *A,mpz_t scalar);
 void fp8_pow_GS(fp8_t *ANS,fp8_t *A,mpz_t scalar);
+
 void fp8_finalexpow_x_2NAF(fp8_t *ANS,fp8_t *A);
 void fp8_finalexpow_x_2_2NAF(fp8_t *ANS,fp8_t *A);
 void fp8_finalexpow_hy_neg_2NAF(fp8_t *ANS,fp8_t *A);
 void fp8_finalexpow_4hy_neg_2NAF(fp8_t *ANS,fp8_t *A);
+
+void fp8_finalexpow_x_2NAF_lazy_montgomery(fp8_t *ANS,fp8_t *A);
+void fp8_finalexpow_x_2_2NAF_lazy_montgomery(fp8_t *ANS,fp8_t *A);
+void fp8_finalexpow_hy_neg_2NAF_lazy_montgomery(fp8_t *ANS,fp8_t *A);
+void fp8_finalexpow_4hy_neg_2NAF_lazy_montgomery(fp8_t *ANS,fp8_t *A);
+
 void fp8_pow_montgomery(fp8_t *ANS, fp8_t *A, mpz_t scalar);
 int fp8_cmp(fp8_t *A,fp8_t *B);
 int fp8_cmp_ui(fp8_t *A,unsigned long int UI);
@@ -73,8 +82,11 @@ int fp8_montgomery_trick_montgomery(fp8_t *A_inv,fp8_t *A,int n);
 
 void fp8_frobenius_map_p1(fp8_t *ANS,fp8_t *A);
 void fp8_frobenius_map_p2(fp8_t *ANS,fp8_t *A);
-void fp8_frobenius_map_p3(fp8_t *ANS,fp8_t *A);
 void fp8_frobenius_map_p4(fp8_t *ANS,fp8_t *A);
+
+void fp8_frobenius_map_p1_montgomery(fp8_t *ANS,fp8_t *A);
+void fp8_frobenius_map_p2_montgomery(fp8_t *ANS,fp8_t *A);
+void fp8_frobenius_map_p4_montgomery(fp8_t *ANS,fp8_t *A);
 
 void fp8_mul_base(fp8_t *ANS,fp8_t *A);
 void fp8_mul_base_nonmod_single(fp8_t *ANS,fp8_t *A);

@@ -1,20 +1,24 @@
 #include "create.h"
+#include "define.h"
 #include "fp.h"
+#include "efp.h"
 #include "fp2.h"
 #include <ELiPS/define.h>
 #include <gmp.h>
 
+
 void create_prt(){
   //c=22,HW=6
-  mpz_set_str(X_z,"ffc00020fffffffc",16);
-  mpz_set_str(prime_z,"bb9dfd549299f1c803ddd5d7c05e7cc0373d9b1ac15b47aa5aa84626f33e58fe66943943049031ae4ca1d2719b3a84fa363bcd2539a5cd02c6f4b6b645a58c1085e14411",16);
+  mpz_set_str(X_z,"ffc0000004020002",16);
+  mpz_set_str(prime_z,"347111bfc75e57d130de7be68437c8d75455d209459d421455023bee14df9fe75aa4734686ca3d08c1fa594100d79421d56c53899ee0f066fad9eb45b0985dbdbba2dcc1",16);
   //p = ((4*(hy**2)+4) + 4*x + ((4*hy)+1)*(x**2) - (4*hy)*(x**3) + (8*(hy**2)+5)*(x**4) + ((4*hy)+1)*(x**6) - (4*hy)*(x**7) + (1+4*(hy**2))*(x**8) )//4
   if(!mpz_probab_prime_p(prime_z,30))printf("Inputed p*(prime_z) is not a prime");
 
-  mpz_set_str(order_z,"ff0060739e18d7594a978b0ab6ae4ce3dbfd52a9d00197603fffdf0000000101",16);
-  mpz_set_str(trace_z,"ff0060739e18d7594a978b0ab6ae4ce3dbfd52a9d00197613fbfdf21000000fe",16);
-  const unsigned char* xai = reinterpret_cast<const unsigned char *>("ffc00020fffffffc");
-  mpn_set_str(&X,xai,sizeof(char)*16,10); //ui(&X,1,319014718988379808906617884108577046528);
+  mpz_set_str(order_z,"ff005ff010fbfd093a41afce5a026f5b55729902a9b26b3179c1806080400011",16);
+  mpz_set_str(trace_z,"ff005ff010fbfd093a41afce5a026f5b55729902a9b26b307a0180607c3e000e",16);
+  //trace_z is a negative value
+  const unsigned char* xai = reinterpret_cast<const unsigned char *>("ffc0000004020002");
+  mpn_set_str(&X,xai,sizeof(char)*16,16); //ui(&X,1,319014718988379808906617884108577046528);
   mpn_set_mpz(prime,prime_z);
   mpn_mul_n(prime2,prime,prime,FPLIMB);
 
@@ -26,8 +30,8 @@ void create_prt(){
   mpz_out_str(stdout,2,X_z);printf("\n");
   printf("trace (HW :%2ld)(binary) = ",mpz_popcount(trace_z));
   mpz_out_str(stdout,2,trace_z);printf("\n");
-  fp_set_ui(&base_c,5);
-  fp_inv(&base_c_inv,&base_c);
+  fp_set_ui(&base_c,3);
+  fp_inv(&base_c_inv, &base_c);
   gmp_printf("\nmodulo polynomial\n");
 
   gmp_printf("fp2 = fp[alpha] /(alpha^2 - %Nu  )\n",base_c.x0,FPLIMB);
@@ -36,11 +40,11 @@ void create_prt(){
   fp_println("base_c     = ",&base_c);
   fp_println("base_c_inv = ",&base_c_inv);
   printf("---------------------------------\n");
-  miller_loop_v =    {0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-  finalexp_pow_x =   {0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-  finalexp_pow_x_2 = {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-  finalexp_pow_4hy = {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, 1};
-  finalexp_pow_hy =  {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, 1};
+  miller_loop_v =    {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+  finalexp_pow_x =   {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+  finalexp_pow_x_2 = {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+  finalexp_pow_hy =  {0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, -1, 0, 0, 1};
+  finalexp_pow_4hy = {0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, -1, 0, 0, 1};
 
 }
 
@@ -131,19 +135,16 @@ void frobenius_precalculation(){
 
 void curve_search(){
   //s = p + 1 - t を計算する
-  mpz_t s;
-  mpz_init(s);
-  mpz_add_ui(s,prime_z,1);
-  mpz_sub(s,s,trace_z);
-
-  fp_set_ui(&curve_a,2);
-
-  // fp_set_neg(&curve_b,&curve_b);
-
-
   // efp_t efp_P,efp_sP;
   // efp_init(&efp_P);
   // efp_init(&efp_sP);
+  // mpz_t s;
+  // mpz_init(s);
+  // mpz_add_ui(s,prime_z,1);
+  // mpz_add(s,s,trace_z);
+
+  fp_set_ui(&curve_a,1);
+  // fp_set_neg(&curve_b,&curve_b);
 
   // while(1){
   //   fp_add_ui(&curve_a,&curve_a,1);
@@ -152,22 +153,11 @@ void curve_search(){
   //   if(efp_sP.infinity==1)  break;
   // }
 
-  mpz_clear(s);
+  // mpz_clear(s);
+  // fp_println("curve_a", &curve_a);
 
   printf("Elliptic curve search is done\n");
 }
-
-// void create_twist_curve(){
-//   //2次ツイスト曲線を求める(v in Fp7 がQNR)
-//   //今回はv=BETA
-//   //よって、y^2 = x^3 + b*α^(-2)x
-//   //curve_b_twistは a*α^(-2)=(0,0,0,0,0,ac^-1,0)となる
-//   fp_init(&curve_b_twist_x3);
-//   fp_mul(&curve_b_twist_x3,&curve_b,&base_c_inv);////base_c=D Type  //base_c_inv=M Type
-//   printf("curve_b_twist = (");
-//   fp_printf("",&curve_b_twist_x3);
-//   printf("0,0,0,0,0)\n");
-// } 
 
 void frobenius_trace(mpz_t *trace,unsigned int m){
   mpz_t t_m[33];
@@ -182,6 +172,7 @@ void frobenius_trace(mpz_t *trace,unsigned int m){
   mpz_mul(t_2,trace_z,trace_z);
   mpz_mul_ui(tmp1,prime_z,2);
   mpz_sub(t_2,t_2,tmp1);
+  
   mpz_set(t_m[1],t_2);
 
   for(int i=2;i<m;i++){
@@ -204,7 +195,11 @@ void efpm_order(mpz_t *order,unsigned int m){
   frobenius_trace(&trace,m);
   mpz_pow_ui(*order,prime_z,m);
   mpz_add_ui(*order,*order,1);
-  mpz_sub(*order,*order,trace);
+  if(m==1){
+    mpz_add(*order,*order,trace);
+  }else{
+    mpz_sub(*order,*order,trace);
+  }
 
   mpz_clear(trace);
 }
@@ -221,18 +216,16 @@ void create_weil(){
   mpz_add(fp8_total_r,efp8_total,temp);
   mpz_sub_ui(fp8_total_r,fp8_total_r,2);
   mpz_divexact(fp8_total_r,fp8_total_r,order_z);
-  // gmp_printf("fp6_total_r:%Zd\n",fp6_total_r);
+  // gmp_printf("fp8_total_r:%Zd\n",fp8_total_r);
 
   mpz_set(miller_loop_s,X_z);
   //X = 1 (mod 2) である
   //(X+1)/2をあらかじめ求めておく
-  mpz_set_str(hy_neg,"dc04",16);
-  mpz_set(fourhy_neg,hy_neg);
-  mpz_mul_ui(fourhy_neg,fourhy_neg,4);
+  // mpz_set_str(hy_neg,"dc04",16);
+  // mpz_set(fourhy_neg,hy_neg);
+  // mpz_mul_ui(fourhy_neg,fourhy_neg,4);
   // mpz_mul(hy_neg,fourhy_neg,hy_neg);
   // mpz_set_str(X_1,"",16);
-  //2f16841b8a74cdb2fcd03caee60923ff01c6548f4c8cf1ace427220b8af48946f4ec8bc50
-  //2f16841b8a74cdb2fcd03caee60923ff01c6548f4c8cf1ace427220b8af48946f4ec8bc54
   mpz_set(X_2,X_z);
   mpz_mul(X_2,X_2,X_2);
 }

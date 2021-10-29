@@ -26,4 +26,5 @@ void BENCH_Pairingn_lazy_montgomery(int LOOP);
 void BENCH_Pairingn_lazy_montgomery2(int LOOP);
 
 void check_finalexp_pow_cost_count_2NAF();
+void check_finalexp_pow_cost_count_2NAF_montgomery();
 #endif

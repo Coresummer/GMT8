@@ -237,7 +237,6 @@ void fp2_mul_lazy_montgomery(fp2_t *ANS,fp2_t *A,fp2_t *B){
   fp_sub(&ANS->x1,&tmp3_fp,&tmp2_fp);//(a+b)(c+d) - ac -bd
 } 
 
-
 void fp2_mul_nonmod_montgomery(fpd2_t *ANS, fp2_t *A, fp2_t *B) {
   static fp2_t tmp_A,tmp_B;
   fp2_set(&tmp_A,A);
@@ -726,6 +725,15 @@ void fp2_mul_base_inv(fp2_t *ANS,fp2_t *A){
   fp2_set(&tmp_A,A);
 
   fp_mul_base_inv(&ANS->x1, &tmp_A.x0);
+  fp_set(&ANS->x0,&tmp_A.x1);    //@^2 = 2
+
+}
+
+void fp2_mul_base_inv_montgomery(fp2_t *ANS,fp2_t *A){
+  static fp2_t tmp_A;
+  fp2_set(&tmp_A,A);
+
+  fp_mul_base_inv_montgomery(&ANS->x1, &tmp_A.x0);
   fp_set(&ANS->x0,&tmp_A.x1);    //@^2 = 2
 
 }

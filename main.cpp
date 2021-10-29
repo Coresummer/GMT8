@@ -54,10 +54,6 @@ int main(){
   // check_fp4_with_montgomery();
   // check_fp8_with_montgomery();
 
-  BENCH_fp2_fp4_fp8_mul_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
-  BENCH_miller_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
-  // BENCH_finalexp_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
-  // BENCH_Pairingn_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   // check_efp();
   // check_efp2();
   // check_efp4();
@@ -72,47 +68,14 @@ int main(){
   // check_pairing_count_2NAF();
   // check_pairing_count_2NAF_lazy_montgomery();
   // check_finalexp_pow_cost_count_2NAF();
+  // check_finalexp_pow_cost_count_2NAF_montgomery();
+
+  // BENCH_fp2_fp4_fp8_mul_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
+  // BENCH_miller_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
+  // BENCH_finalexp_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
+  BENCH_Pairingn_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
+
   printf("*********************************************************************************************\n\n");
-  // //playground
-  // fp8_t a,b;
-  // fp8_init(&a);
-  // fp8_init(&b);
-  // fp8_set_random(&a, state);
-  // fp8_set(&b,&a);
-  // // printf("here"),getchar();
-  // mpz_t exp;
-  // mpz_init(exp);
-  // // mpz_init_set(exp,fp8_total_r);
-  // mpz_pow_ui(exp,prime_z,4);
-  // // mpz_init(exp);
-  // // mpz_sub_ui(exp,prime_z,1);
 
-  // fp8_printf("A",&a);
-  // fp8_pow_GS(&a, &a, X_z);
-  // // fp8_pow(&a, &a, X_z);
-  // fp8_printf("A^4(p^8-1)/r",&a);
-  // fp6_finalexpow_x_2NAF(&b, &b);
-  // fp8_printf("B^4(p^8-1)/r",&b);  
-
-  // printf("is A = B :%d\n", fp8_cmp(&a,&b));
-  // fp_t A;
-  // fp_init(&A);
-  // fp_set_ui(&A, 1);
-  // fp_set_neg(&A,&A);
-
-  // printf("legender(-1): %d\n",fp_legendre(&A));
-
-  // fp_t t;
-  // fp_init(&t);
-  // // fp_set_ui(&t, 1);
-  // fp_set_random(&t, state);
-  // fp_println("&t", &t);
-
-  // // fp_mul(&t,&t,&base_c);
-  // // fp_println("&t * base_c", &t);
-  // // fp_set_ui(&t, 1);
-
-  // fp_mul_base(&t,&t);
-  // fp_println("&t * 4:=", &t);
   return 0;
 }

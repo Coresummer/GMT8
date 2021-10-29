@@ -83,6 +83,7 @@ void fp_mul_base_nonmod_sigle(fp_t *ANS,fp_t *A);
 void fp_mul_base_nonmod_double(fpd_t *ANS,fpd_t *A);
 
 void fp_mul_base_inv(fp_t *ANS,fp_t *A);
+void fp_mul_base_inv_montgomery(fp_t *ANS,fp_t *A);
 void fp_mul_base_inv_single(fp_t *ANS,fp_t *A);
 
 #endif

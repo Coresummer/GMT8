@@ -76,6 +76,7 @@ void fp4_frobenius_map_p3(fp4_t *ANS,fp4_t *A);
 
 void fp4_mul_base(fp4_t *ANS,fp4_t *A);
 void fp4_mul_base_inv(fp4_t *ANS,fp4_t *A);
+void fp4_mul_base_inv_montgomery(fp4_t *ANS,fp4_t *A);
 void fp4_mul_base_nonmod_single(fp4_t *ANS,fp4_t *A);
 void fp4_mul_base_nonmod_double(fpd4_t *ANS,fpd4_t *A);
 #endif
