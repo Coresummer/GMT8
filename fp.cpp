@@ -646,6 +646,13 @@ int fp_cmp_one(fp_t *A) {
     return 1;
 }
 
+int fp_cmp_neg_one(fp_t *A) {
+  if (!mpn_cmp(A->x0, p_1.x0,FPLIMB))
+    return 0;
+  else
+    return 1;
+}
+
 int fpd_cmp_zero(fpd_t *A) {
   if (!mpn_cmp_ui(A->x0, FPLIMB2, 0))
     return 0;

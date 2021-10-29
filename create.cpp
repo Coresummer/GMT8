@@ -228,6 +228,7 @@ void create_weil(){
   // mpz_set_str(X_1,"",16);
   mpz_set(X_2,X_z);
   mpz_mul(X_2,X_2,X_2);
+  mpn_sub_ui(p_1.x0,prime,FPLIMB,1);
 }
 
 void tmp_init(){
