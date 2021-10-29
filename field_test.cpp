@@ -169,6 +169,7 @@ int test_fp(int fp_n) {
 
   return 0;
 }
+
 int test_fp2(int fp2_n) {
   int i, j, n = 0;
   float add_time = 0, add_lazy_time = 0;
