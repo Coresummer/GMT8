@@ -180,7 +180,6 @@ void fp2_mul(fp2_t *ANS,fp2_t *A,fp2_t *B){
   fp_sub(&ANS->x1,&tmp1_fp,&tmp3_fp);
 }
 
-
 void fp2_mul_lazy(fp2_t *ANS,fp2_t *A,fp2_t *B){ 
   static fp2_t tmp_A,tmp_B;
   fp2_set(&tmp_A,A);
@@ -328,7 +327,7 @@ void fp2_add_nonmod_double(fpd2_t *ANS,fpd2_t *A,fpd2_t *B){
 
 void fp2_add_ui(fp2_t *ANS,fp2_t *A,unsigned long int UI){
   fp_sub_ui(&ANS->x0,&A->x0,UI);
-  fp_set(&ANS->x1,&A->x1);
+  fp_sub_ui(&ANS->x1,&A->x1,UI);
 
 }
 
@@ -364,7 +363,7 @@ void fp2_sub_nonmod_double(fpd2_t *ANS,fpd2_t *A,fpd2_t *B){
 
 void fp2_sub_ui(fp2_t *ANS,fp2_t *A,unsigned long int UI){
   fp_add_ui(&ANS->x0,&A->x0,UI);
-  fp_set(&ANS->x1,&A->x1);
+  fp_add_ui(&ANS->x1,&A->x1,UI);
 
 }
 
@@ -626,22 +625,17 @@ void fp2_frobenius_map_p1(fp2_t *ANS,fp2_t *A){
 }
 
 void fp2_mul_base(fp2_t *ANS,fp2_t *A){
-  // static fp2_t tmp_A;
-  // fp2_set(&tmp_A,A);
-
-  // fp_mul_base(&ANS->x0, &A->x1);
-  // fp_set(&ANS->x1,&tmp_A.x0);    //@^2 = 2
-  fp2_swap(ANS, A);
-
+  static fp2_t tmp_A;
+  fp2_l1shift(&tmp_A, A);
+  fp_sub(&ANS->x0,&A->x0,&tmp_A.x1);
+  fp_sub(&ANS->x1,&tmp_A.x0,&A->x1);
 }
 
 void fp2_mul_base_inv(fp2_t *ANS,fp2_t *A){
-  // static fp2_t tmp_A;
-  // fp2_set(&tmp_A,A);
-
-  // fp_mul_base_inv(&ANS->x1, &tmp_A.x0);
-  // fp_set(&ANS->x0,&tmp_A.x1);    //@^2 = 2
-  fp2_swap(ANS, A);
+  static fp2_t tmp_A;
+  fp2_l1shift(&tmp_A, A);
+  fp_sub(&ANS->x0,&A->x0,&tmp_A.x1);
+  fp_sub(&ANS->x1,&tmp_A.x0,&A->x1);
 }
 
 void fp2_mul_base_inv_montgomery(fp2_t *ANS,fp2_t *A){
@@ -650,5 +644,5 @@ void fp2_mul_base_inv_montgomery(fp2_t *ANS,fp2_t *A){
 
   // fp_mul_base_inv_montgomery(&ANS->x1, &tmp_A.x0);
   // fp_set(&ANS->x0,&tmp_A.x1);    //@^2 = 2
-  fp2_swap(ANS, A);
+  // fp2_swap(ANS, A);
 }

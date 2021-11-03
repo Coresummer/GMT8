@@ -363,7 +363,8 @@ void efp2_ecd(efp2_t *ANS,efp2_t *P){
   fp2_sqr(&tmp2_fp2,&tmp1_efp2.x);
   fp2_add(&tmp3_fp2,&tmp2_fp2,&tmp2_fp2);
   fp2_add(&tmp2_fp2,&tmp2_fp2,&tmp3_fp2);
-  fp_add(&tmp2_fp2.x0,&tmp2_fp2.x0,&curve_a);
+  fp2_add_mpn(&tmp2_fp2,&tmp2_fp2,curve_a.x0);
+
   //tmp3_fp = lambda
   fp2_mul(&tmp3_fp2,&tmp1_fp2,&tmp2_fp2);
 

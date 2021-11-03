@@ -1,4 +1,5 @@
 #include "efp4.h"
+#include "fp4.h"
 
 void efp4_init(efp4_t *P){
   fp4_init(&P->x);
@@ -355,7 +356,7 @@ void efp4_ecd(efp4_t *ANS,efp4_t *P){
   fp4_sqr(&tmp2_fp4,&tmp1_efp4.x);
   fp4_add(&tmp3_fp4,&tmp2_fp4,&tmp2_fp4);
   fp4_add(&tmp2_fp4,&tmp2_fp4,&tmp3_fp4);
-  fp_add(&tmp2_fp4.x0.x0,&tmp2_fp4.x0.x0,&curve_a);
+  fp2_add_mpn(&tmp2_fp4.x0,&tmp2_fp4.x0,curve_a.x0);
   //tmp3_fp = lambda
   fp4_mul(&tmp3_fp4,&tmp1_fp4,&tmp2_fp4);
 

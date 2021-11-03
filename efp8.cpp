@@ -1,4 +1,5 @@
 #include "efp8.h"
+#include "fp4.h"
 #include "fp8.h"
 
 void efp8_init(efp8_t *P){
@@ -397,7 +398,7 @@ void efp8_ecd(efp8_t *ANS,efp8_t *P){
   fp8_sqr(&tmp2_fp8,&tmp1_efp8.x);
   fp8_add(&tmp3_fp8,&tmp2_fp8,&tmp2_fp8);
   fp8_add(&tmp2_fp8,&tmp2_fp8,&tmp3_fp8);
-  fp_add(&tmp2_fp8.x0.x0.x0,&tmp2_fp8.x0.x0.x0,&curve_a);
+  fp2_add_mpn(&tmp2_fp8.x0.x0,&tmp2_fp8.x0.x0,curve_a.x0);
   //tmp3_fp = lambda
   fp8_mul(&tmp3_fp8,&tmp1_fp8,&tmp2_fp8);
 

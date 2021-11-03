@@ -34,8 +34,8 @@ void create_prt(){
   fp_inv(&base_c_inv, &base_c);
   gmp_printf("\nmodulo polynomial\n");
 
-  gmp_printf("fp2 = fp[alpha] /(alpha^2 - %Nu  )\n",base_c.x0,FPLIMB);
-  gmp_printf("fp4 = fp2[beta] /(beta^2  - alpha)\n");
+  gmp_printf("fp2 = fp[alpha] /(alpha^p + alpha + 1 )\n");
+  gmp_printf("fp4 = fp2[beta] /(beta^2  - (1,-1))\n");
   gmp_printf("fp8 = fp4[gamma]/(gamma^2 - beta )\n");
   fp_println("base_c     = ",&base_c);
   fp_println("base_c_inv = ",&base_c_inv);
@@ -45,7 +45,7 @@ void create_prt(){
   finalexp_pow_x_2 = {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1};
   finalexp_pow_hy =  {0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, -1, 0, 0, 1};
   finalexp_pow_4hy = {0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, -1, 0, 0, 1};
-
+  mpn_sub_ui(p_1.x0,prime,FPLIMB,1);
 }
 
 void check_base(){
@@ -57,31 +57,32 @@ void check_base(){
   mpz_init(expo);
 
   //check base_c = QNR
-  fp_set(&tmp,&base_c);
+  // fp_set(&tmp,&base_c);
 
-  mpz_sub_ui(expo,prime_z,1);
-  mpz_divexact_ui(expo,expo,2);
-  fp_pow(&tmp,&base_c,expo);
-  if(fp_cmp_one(&tmp)==0) printf("error!!! c^((p-1)/2)==1\n\n");
+  // mpz_sub_ui(expo,prime_z,1);
+  // mpz_divexact_ui(expo,expo,2);
+  // fp_pow(&tmp,&base_c,expo);
+  // if(fp_cmp_one(&tmp)==0) printf("error!!! c^((p-1)/2)==1\n\n");
 
-  mpz_set_ui(expo,2);
-  fp_pow(&tmp,&tmp,expo);
-  // fp_println("c^(p-1) :",&tmp);
-  if(fp_cmp_one(&tmp)!=0) printf("error!!! c^(p-1)!=1\n\n");
+  // mpz_set_ui(expo,2);
+  // fp_pow(&tmp,&tmp,expo);
+  // // fp_println("c^(p-1) :",&tmp);
+  // if(fp_cmp_one(&tmp)!=0) printf("error!!! c^(p-1)!=1\n\n");
   
   //check base_c = QNR
-  fp_set_ui(&tmp2.x0,0);
+  fp_set_ui(&tmp2.x0,1);
+  // fp_set_neg(&tmp2.x0, &tmp2.x0);
   fp_set_ui(&tmp2.x1,1);
+  fp_set_neg(&tmp2.x1, &tmp2.x1);
   mpz_pow_ui(expo,prime_z,2);
   mpz_sub_ui(expo,expo,1);
   mpz_divexact_ui(expo,expo,2);
   fp2_pow(&tmp2,&tmp2,expo);
-  // fp2_println("fp2",&tmp2);
   if(fp2_cmp_one(&tmp2)==0) printf("error!!! alpha^((p^2-1)/2)==1\n\n");
-  
+
   mpz_set_ui(expo,2);
   fp2_pow(&tmp2,&tmp2,expo);
-  if(fp2_cmp_one(&tmp2)!=0) printf("error!!! alpha^(p^2-1)!=1\n\n");
+  if(fp2_cmp_one(&tmp2)!=0) printf("error!!! alpha^(p^2-1)!=1\n\n"),fp2_println("fp2_base:",&tmp2);
 
   fp_mul(&tmp,&base_c,&base_c_inv);
   //fp_println("base_c * base_c_inv = ",&tmp);
@@ -101,32 +102,32 @@ void frobenius_precalculation(){
 
   fp_pow(&tmp,&base_c,expo);
   fp_set(&frobenius_1_8,&tmp);
-  fp_println("c^(p-1)/8", &frobenius_1_8);
+  // fp_println("c^(p-1)/8", &frobenius_1_8);
   fp_to_montgomery(&frobenius_1_8MR, &frobenius_1_8);
 
   mpz_set_ui(expo,2);
   fp_pow(&frobenius_2_8,&tmp,expo);
-  fp_println("c^2(p-1)/8", &frobenius_2_8);
+  // fp_println("c^2(p-1)/8", &frobenius_2_8);
   fp_to_montgomery(&frobenius_2_8MR, &frobenius_2_8);
 
-  mpz_set_ui(expo,3);
+  mpz_set_ui(expo,3);;
   fp_pow(&frobenius_3_8,&tmp,expo);
-  fp_println("c^3(p-1)/8", &frobenius_3_8);
+  // fp_println("c^3(p-1)/8", &frobenius_3_8);
   fp_to_montgomery(&frobenius_3_8MR, &frobenius_3_8);
 
   mpz_set_ui(expo,5);
   fp_pow(&frobenius_5_8,&tmp,expo);
-  fp_println("c^5(p-1)/8", &frobenius_5_8);
+  // fp_println("c^5(p-1)/8", &frobenius_5_8);
   fp_to_montgomery(&frobenius_5_8MR, &frobenius_5_8);
 
   mpz_set_ui(expo,6);
   fp_pow(&frobenius_6_8,&tmp,expo);
-  fp_println("c^6(p-1)/8", &frobenius_6_8);
+  // fp_println("c^6(p-1)/8", &frobenius_6_8);
   fp_to_montgomery(&frobenius_6_8MR, &frobenius_6_8);
 
   mpz_set_ui(expo,7);
   fp_pow(&frobenius_7_8,&tmp,expo);
-  fp_println("c^7(p-1)/8", &frobenius_7_8);
+  // fp_println("c^7(p-1)/8", &frobenius_7_8);
   fp_to_montgomery(&frobenius_7_8MR, &frobenius_7_8);
 
   mpz_clear(expo);
@@ -228,7 +229,8 @@ void create_weil(){
   // mpz_set_str(X_1,"",16);
   mpz_set(X_2,X_z);
   mpz_mul(X_2,X_2,X_2);
-  mpn_sub_ui(p_1.x0,prime,FPLIMB,1);
+
+  // gmp_printf("p-1:%Nu",p_1.x0,FPLIMB);
 }
 
 void tmp_init(){
