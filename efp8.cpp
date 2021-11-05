@@ -1,4 +1,6 @@
 #include "efp8.h"
+#include "efp.h"
+#include "fp2.h"
 #include "fp4.h"
 #include "fp8.h"
 
@@ -412,6 +414,17 @@ void efp8_ecd(efp8_t *ANS,efp8_t *P){
   fp8_sub(&ANS->y,&tmp2_fp8,&tmp1_efp8.y);
 }
 
+void efp8_ecd_fp(efp8_t *ANS,efp8_t *P){  //for point p
+  static efp_t _P;
+  fp_set(&_P.x,&P->x.x0.x0.x0);
+  fp_set(&_P.y,&P->y.x0.x0.x0);
+  _P.infinity = P->infinity;
+
+  efp_ecd(&_P, &_P);
+  fp_set(&ANS->x.x0.x0.x0,&_P.x);
+  fp_set(&ANS->y.x0.x0.x0,&_P.y);
+  ANS->infinity = _P.infinity;
+}
 
 void efp8_ecd_dash(efp8_t *ANS,efp8_t *P){
   static efp8_t tmp1_efp8;
@@ -426,7 +439,9 @@ void efp8_ecd_dash(efp8_t *ANS,efp8_t *P){
   }
   ANS->infinity=0;
   efp8_set(&tmp1_efp8,P);
-  fp8_set_mpn(&tmpa_fp8,curve_a.x0);
+  fp2_set_ui_ui(&tmpa_fp8.x0.x0,1);
+  // fp2_set_neg(&tmpa_fp8.x0.x0, &tmpa_fp8.x0.x0);
+  // fp8_set_mpn(&tmpa_fp8,curve_a.x0);
   fp2_mul_base(&tmpa_fp8.x0.x0, &tmpa_fp8.x0.x0);
 
   //tmp1_fp = 1/2yp
@@ -535,6 +550,22 @@ void efp8_eca(efp8_t *ANS,efp8_t *P1,efp8_t *P2){
   fp8_sub(&tmp1_fp8,&tmp1_efp8.x,&ANS->x);
   fp8_mul(&tmp2_fp8,&tmp3_fp8,&tmp1_fp8);
   fp8_sub(&ANS->y,&tmp2_fp8,&tmp1_efp8.y);
+}
+
+void efp8_eca_fp(efp8_t *ANS,efp8_t *P1,efp8_t *P2){  //for point p
+  static efp_t _P1,_P2;
+  fp_set(&_P1.x,&P1->x.x0.x0.x0);
+  fp_set(&_P1.y,&P1->y.x0.x0.x0);
+  _P1.infinity = P1->infinity;
+  fp_set(&_P2.x,&P2->x.x0.x0.x0);
+  fp_set(&_P2.y,&P2->y.x0.x0.x0);
+  _P2.infinity = P2->infinity;
+
+
+  efp_eca(&_P1, &_P1, &_P2);
+  fp_set(&ANS->x.x0.x0.x0,&_P1.x);
+  fp_set(&ANS->y.x0.x0.x0,&_P1.y);
+  ANS->infinity = _P1.infinity;
 }
 
 // void efp8_eca_jacobian_lazy_montgomery(efp8_jacobian_t *ANS,efp8_jacobian_t *P1,efp8_jacobian_t *P2){
@@ -709,6 +740,32 @@ void efp8_scm(efp8_t *ANS,efp8_t *P,mpz_t scalar){
   for(i=1;i<length;i++){
     efp8_ecd(&Next_P,&Next_P);
     if(binary[i]=='1')  efp8_eca(&Next_P,&Next_P,&Tmp_P);
+  }
+  efp8_set(ANS,&Next_P);
+}
+
+void efp8_scm_fp(efp8_t *ANS,efp8_t *P,mpz_t scalar){
+  if(mpz_cmp_ui(scalar,0)==0){
+    ANS->infinity=1;
+    return;
+  }else if(mpz_cmp_ui(scalar,1)==0){
+    efp8_set(ANS,P);
+    return;
+  }
+
+  efp8_t Tmp_P,Next_P;
+  efp8_init(&Tmp_P);
+  efp8_set(&Tmp_P,P);
+  efp8_init(&Next_P);
+  int i,length;
+  length=(int)mpz_sizeinbase(scalar,2);
+  char binary[length+1];
+  mpz_get_str(binary,2,scalar);
+
+  efp8_set(&Next_P,&Tmp_P);
+  for(i=1;i<length;i++){
+    efp8_ecd_fp(&Next_P,&Next_P);
+    if(binary[i]=='1')  efp8_eca_fp(&Next_P,&Next_P,&Tmp_P);
   }
   efp8_set(ANS,&Next_P);
 }

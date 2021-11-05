@@ -330,7 +330,7 @@ void efp2_rational_point(efp2_t *P){
   P->infinity=0;
   while(1){
     fp2_set_random(&P->x,state);
-    //y^2 = x^3 + b
+    //y^2 = x^3 + ax
     fp2_sqr(&tmp_y2,&P->x);
     fp2_mul(&tmp_y2,&tmp_y2,&P->x);
     fp2_mul_mpn(&tmp_ax,&P->x,curve_a.x0); //ax
@@ -391,7 +391,7 @@ void efp2_ecd_dash(efp2_t *ANS,efp2_t *P){
   }
   ANS->infinity=0;
   efp2_set(&tmp1_efp2,P);
-  fp2_set_mpn(&tmpa_fp2,curve_a.x0);
+  fp2_set_ui_ui(&tmpa_fp2,1); //warning!! hard coded 
   fp2_mul_base(&tmpa_fp2, &tmpa_fp2);
   //tmp1_fp = 1/2yp
   fp2_add(&tmp1_fp2,&tmp1_efp2.y,&tmp1_efp2.y);
@@ -736,17 +736,18 @@ void efp2_jacobi_checkOnCurve_Twist(efp2_jacobian_t* A){
   fp2_mul(&tmp3_fp,&tmp1_fp,&A->x);  //x = X*Z^-2
   fp2_mul(&tmp4_fp,&tmp2_fp,&A->y);  //y = Y*Z^-3
 
-  fp2_sqr(&tmp2_fp,&tmp4_fp);  //y^2
+  fp2_sqr(&tmp2_fp,&tmp4_fp);  //y^2  = left
+
   fp2_sqr(&tmp1_fp,&tmp3_fp);
   fp2_mul(&tmp1_fp,&tmp1_fp,&tmp3_fp); //x^3
 
-  fp2_mul_mpn(&tmp4_fp,&tmp3_fp,curve_a.x0);
-  fp2_mul_base(&tmp4_fp, &tmp4_fp);
+  fp2_mul_mpn(&tmp4_fp,&tmp3_fp,curve_a.x0);  //x*a
+  fp2_mul_base(&tmp3_fp, &tmp4_fp); //x*a*z
 
-  fp2_add(&tmp1_fp,&tmp1_fp,&tmp4_fp);
+  fp2_add(&tmp1_fp,&tmp1_fp,&tmp3_fp);//x^3 + x*a*z
 
   fp2_sub(&tmp3_fp,&tmp1_fp,&tmp2_fp);
-  fp2_println("proj_diff:",&tmp3_fp);
+  fp2_println("jac_diff:",&tmp3_fp);
 }
 
 void efp2_proj_w1_2_checkOnCurve_Twist(efp2_jacobian_t* A){

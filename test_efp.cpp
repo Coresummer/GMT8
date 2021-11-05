@@ -1,6 +1,7 @@
 #include "test_efp.h"
 #include "efp2.h"
 #include "efp8.h"
+#include "fp.h"
 #include "fp2.h"
 
 void check_efp(){
@@ -89,13 +90,17 @@ void check_efp8(){
 void check_g1_g2(){
   printf("check_g1_g2() 開始\n");
   efp8_t P,Q;
+  efp_t _P;
   efp8_init(&P);
   efp8_init(&Q);
+  efp_init(&_P);
 
   generate_g1(&P);
-  efp8_println("P in G1 = ",&P);
-  efp8_scm(&P,&P,order_z);
-  efp8_println("[r]P = ",&P);
+  fp_set(&_P.x, &P.x.x0.x0.x0);
+  fp_set(&_P.y, &P.y.x0.x0.x0);
+  efp_println("P in G1 = ",&_P);
+  efp_scm(&_P,&_P,order_z);
+  efp_println("[r]P = ",&_P);
   printf("---------------------------------\n");
   generate_g2(&Q);
   efp8_println("Q in G2 = ",&Q);

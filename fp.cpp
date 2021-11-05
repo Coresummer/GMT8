@@ -180,7 +180,7 @@ void pre_montgomery() {
   mpz_clear(R);
   mpz_clear(R3_z);
 
-  fp_to_montgomery(&base_c_invMR, &base_c_inv);
+  // fp_to_montgomery(&base_c_invMR, &base_c_inv);
   fp_set_ui(&oneMR, 1);
   fp_to_montgomery(&oneMR, &oneMR);
 }
@@ -389,12 +389,20 @@ void fp_sub_nonmod_single(fp_t *ANS, fp_t *A, fp_t *B) {
 #ifdef DEBUG_COST_A
   cost_sub_nonmod++;
 #endif
-
+  static mp_limb_t buf[FPLIMB];
   if (mpn_cmp(A->x0, B->x0, FPLIMB) < 0) {
-    mpn_sub_n(ANS->x0, B->x0, A->x0, FPLIMB);
+    // printf("size(A)%d",mpn_sizeinbase(A->x0,FPLIMB,2));
+    // printf("size(B)%d",mpn_sizeinbase(B->x0,FPLIMB,2));
+    mpn_sub_n(ANS->x0,B->x0,A->x0,FPLIMB);
+    // printf("size(ANS)%d",mpn_sizeinbase(ANS->x0,FPLIMB,2));
+
+    // int i = 0;
     while (mpn_cmp(ANS->x0, prime, FPLIMB) >= 0) {
       mpn_sub_n(ANS->x0, ANS->x0, prime, FPLIMB);
+      // i++;
     }
+    
+    // printf("sub:%d\n",i);
     mpn_sub_n(ANS->x0, prime, ANS->x0, FPLIMB);
   } else {
     mpn_sub_n(ANS->x0, A->x0, B->x0, FPLIMB);
@@ -772,35 +780,35 @@ void fp_mul_base_nonmod_double(fpd_t *ANS,fpd_t *A){
   fp_l1shift_double(ANS,A);
 }
 
-void fp_mul_base_inv(fp_t *ANS,fp_t *A){
-  #ifdef DEBUG_COST_A
-  cost_mul_base_inv++;
-  cost_mul--;
-  #endif
-  // if( __builtin_ctzl(A->x0[0]) >= 1){
-  // #ifdef DEBUG_COST_A
-  // cost_add++;
-  // #endif
-  //   fp_r1shift(ANS,A);
-  // }else{
-  fp_mul(ANS,A,&base_c_inv);
-  // }
-}
+// void fp_mul_base_inv(fp_t *ANS,fp_t *A){
+//   #ifdef DEBUG_COST_A
+//   cost_mul_base_inv++;
+//   cost_mul--;
+//   #endif
+//   // if( __builtin_ctzl(A->x0[0]) >= 1){
+//   // #ifdef DEBUG_COST_A
+//   // cost_add++;
+//   // #endif
+//   //   fp_r1shift(ANS,A);
+//   // }else{
+//   fp_mul(ANS,A,&base_c_inv);
+//   // }
+// }
 
-void fp_mul_base_inv_montgomery(fp_t *ANS,fp_t *A){
-  #ifdef DEBUG_COST_A
-  cost_mul_base_inv++;
-  cost_mul--;
-  #endif
-  // if( __builtin_ctzl(A->x0[0]) >= 1){
-  // #ifdef DEBUG_COST_A
-  // cost_add++;
-  // #endif
-  //   fp_r1shift(ANS,A);
-  // }else{
-  fp_mulmod_montgomery(ANS,A,&base_c_invMR);
-  // }
-}
+// void fp_mul_base_inv_montgomery(fp_t *ANS,fp_t *A){
+//   #ifdef DEBUG_COST_A
+//   cost_mul_base_inv++;
+//   cost_mul--;
+//   #endif
+//   // if( __builtin_ctzl(A->x0[0]) >= 1){
+//   // #ifdef DEBUG_COST_A
+//   // cost_add++;
+//   // #endif
+//   //   fp_r1shift(ANS,A);
+//   // }else{
+//   fp_mulmod_montgomery(ANS,A,&base_c_invMR);
+//   // }
+// }
 
 void fp_mul_base_inv_single(fp_t *ANS,fp_t *A){
   #ifdef DEBUG_COST_A

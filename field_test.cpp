@@ -1331,6 +1331,7 @@ void BENCH_miller_lazy_montgomery(int LOOP){
   fp8_println_montgomery("ANSm:", &fm);
   fp8_set_ui_ui(&f,0);
   fp8_set_ui(&f,1);
+  
   fp8_set_ui_ui(&fm,0);
   fp8_set_ui(&fm,1);
   fp_to_montgomery(&fm.x0.x0.x0, &fm.x0.x0.x0);
@@ -1383,7 +1384,6 @@ void BENCH_finalexp_lazy_montgomery(int LOOP){
 
   fp8_println("final_exp\n", &ANS);
   fp8_println_montgomery("final_exp_lazy_montgomery\n", &ANSm);
-
 }
 
 void BENCH_Pairingn_lazy_montgomery(int LOOP){
@@ -1414,7 +1414,7 @@ void BENCH_Pairingn_lazy_montgomery(int LOOP){
   efp8_println("P = ",&P);
   efp8_println("Q = ",&Q);
 
-  efp8_scm(&tmp1,&P,order_z);
+  efp8_scm_fp(&tmp1,&P,order_z);
   efp8_println("[r]P = ",&tmp1);
   efp8_scm(&tmp1,&Q,order_z);
   efp8_println("[r]Q = ",&tmp1);
@@ -1428,7 +1428,7 @@ void BENCH_Pairingn_lazy_montgomery(int LOOP){
   printf("check regular pairing()\n");
   printf("---------------------------------\n");
   //e([a]P,[b]Q) を求める
-  efp8_scm(&aP,&P,a);
+  efp8_scm_fp(&aP,&P,a);
   efp8_scm(&bQ,&Q,b);
   miller_opt_ate_jac_2NAF(&f,&aP,&bQ);
   final_exp(&e1,&f);
@@ -1452,6 +1452,7 @@ void BENCH_Pairingn_lazy_montgomery(int LOOP){
   printf("---------------------------------\n");
   miller_opt_ate_jac_2NAF_lazy_montgomery(&f,&aP,&bQ);
   final_exp_lazy_montgomery(&e1,&f);
+
   //e(P,Q)^(a*b) を求める
   miller_opt_ate_jac_2NAF_lazy_montgomery(&f,&P,&Q);
   final_exp_lazy_montgomery(&e2,&f);

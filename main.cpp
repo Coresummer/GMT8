@@ -58,8 +58,8 @@ int main(){
   // check_efp2();
   // check_efp4();
   // check_efp8();
-  check_g1_g2();
-  check_g2_dash();
+  // check_g1_g2();
+  // check_g2_dash();
 
   // check_pairing();
   // check_pairing_2NAF();
@@ -73,9 +73,21 @@ int main(){
   // BENCH_fp2_fp4_fp8_mul_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   // BENCH_miller_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   // BENCH_finalexp_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
-  // BENCH_Pairingn_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
+  BENCH_Pairingn_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
 
   printf("*********************************************************************************************\n\n");
-
+  // mpz_t expo;
+  // mpz_init(expo);
+  // mpz_mul(expo,prime_z,prime_z);
+  // mpz_mul(expo,expo,expo);
+  // fp8_t ANS, A;
+  // fp8_init(&A);
+  // fp8_init(&ANS);
+  // fp8_set_random(&A, state);
+  // fp8_println("A=", &A);
+  // fp8_pow(&ANS,&A,expo);
+  // fp8_println("ANS^p^4=", &ANS);
+  // fp8_frobenius_map_p4(&ANS, &A);
+  // fp8_println("fp^4(ANS)=", &ANS);
   return 0;
 }

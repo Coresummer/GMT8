@@ -390,7 +390,6 @@ void fp4_add(fp4_t *ANS,fp4_t *A,fp4_t *B){
 void fp4_add_nonmod_single(fp4_t *ANS,fp4_t *A,fp4_t *B){
   fp2_add_nonmod_single(&ANS->x0,&A->x0,&B->x0);
   fp2_add_nonmod_single(&ANS->x1,&A->x1,&B->x1);
-
 }
 
 void fp4_add_nonmod_double(fpd4_t *ANS,fpd4_t *A,fpd4_t *B){
