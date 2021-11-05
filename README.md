@@ -15,3 +15,9 @@ t = 0xff0060739e18d7594a978b0ab6ae4ce3dbfd52a9d00197613fbfdf21000000fe
 
 REFERENCE
 Cocks-Pinch curves of embedding degrees five to eight and optimal ate pairing computation Aurore Guillevic 1 Simon Masson 1, 2 Emmanuel Thomé 1
+
+Specifically For this branch CP2_AOPF_-4_8MR
+The extension field has following stracture
+Fp2[x]/(-1=x+x^p)
+Fp4[beta]/(z=beta^2) (z=QNR, also has to be a light element)
+Fp8[gamma]/(beta=gamma^2)

@@ -230,7 +230,6 @@ void ff_lttp_Costello(fp8_t *f, efp2_jacobian_t *U, efp_t *S){
   fp2_set(&U->y,&nextY);
   fp2_set(&U->z,&nextZ);
   // efp2_proj_w1_2_checkOnCurve_Twist(S);
-
 }
 
 //add line 
