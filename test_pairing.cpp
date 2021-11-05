@@ -37,7 +37,7 @@ void check_pairing(){
   efp8_println("Q = ",&Q);
   efp8_println("Q' = ",&Q_dash);
 
-  efp8_scm(&tmp1,&P,order_z);
+  efp8_scm_fp(&tmp1,&P,order_z);
   efp8_println("[r]P = ",&tmp1);
   efp8_scm(&tmp1,&Q,order_z);
   efp8_println("[r]Q = ",&tmp1);
@@ -51,7 +51,7 @@ void check_pairing(){
 
   printf("miller_ate() の動作確認\n");
   //e([a]P,[b]Q) を求める
-  efp8_scm(&aP,&P,a);
+  efp8_scm_fp(&aP,&P,a);
   efp8_scm(&bQ,&Q,b);
   miller_opt_ate_jac(&f,&aP,&bQ);
   final_exp(&e1,&f);
@@ -107,7 +107,7 @@ void check_pairing_2NAF(){
   efp8_println("Q = ",&Q);
   efp8_println("Q' = ",&Q_dash);
 
-  efp8_scm(&tmp1,&P,order_z);
+  efp8_scm_fp(&tmp1,&P,order_z);
   efp8_println("[r]P = ",&tmp1);
   efp8_scm(&tmp1,&Q,order_z);
   efp8_println("[r]Q = ",&tmp1);
@@ -122,7 +122,7 @@ void check_pairing_2NAF(){
 
   printf("miller_ate() の動作確認\n");
   //e([a]P,[b]Q) を求める
-  efp8_scm(&aP,&P,a);
+  efp8_scm_fp(&aP,&P,a);
   efp8_scm(&bQ,&Q,b);
   miller_opt_ate_jac_2NAF(&f,&aP,&bQ);
   final_exp(&e1,&f);

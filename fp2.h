@@ -12,6 +12,7 @@ void fpd2_println(std::string str ,fpd2_t *A);
 void fp2_printf_montgomery(std::string str ,fp2_t *A);
 void fp2_println_montgomery(std::string str, fp2_t *A);
 void fp2_set(fp2_t *ANS,fp2_t *A);
+void fp2_swap(fp2_t *ANS,fp2_t *A);
 void fpd2_set(fpd2_t *ANS, fpd2_t *A);
 void fp2_set_ui(fp2_t *ANS,unsigned long int UI);
 void fp2_set_ui_ui(fp2_t *ANS,unsigned long int UI);
@@ -75,6 +76,8 @@ void fp2_frobenius_map_p2(fp2_t *ANS,fp2_t *A);
 void fp2_frobenius_map_p3(fp2_t *ANS,fp2_t *A);
 
 void fp2_mul_base(fp2_t *ANS,fp2_t *A);
+void fp2_mul_base_nonmod_single(fp2_t *ANS,fp2_t *A);
+
 void fp2_mul_base_inv(fp2_t *ANS,fp2_t *A);
 void fp2_mul_base_inv_montgomery(fp2_t *ANS,fp2_t *A);
 // void fp2_mul_base_nonmod_single(fp2_t *ANS,fp2_t *A);

@@ -61,8 +61,11 @@ void fp2_set(fp2_t *ANS,fp2_t *A){
 }
 
 void fp2_swap(fp2_t *ANS,fp2_t *A){ //frobenius p1
-  fp_set(&ANS->x0,&A->x1);
+  static fp_t tmp;
+  
+  fp_set(&tmp,&A->x1);
   fp_set(&ANS->x1,&A->x0);
+  fp_set(&ANS->x0,&tmp);
 }
 
 void fpd2_set(fpd2_t *ANS, fpd2_t *A) {
@@ -87,7 +90,9 @@ void fp2_set_ui_ui(fp2_t *ANS,unsigned long int UI){
 void fp2_set_mpn(fp2_t *ANS,mp_limb_t *A){
   fp_set_mpn(&ANS->x0,A);
   fp_set_neg(&ANS->x0,&ANS->x0);
-  fp_set_ui(&ANS->x1,0);
+  fp_set_mpn(&ANS->x1,A);
+  fp_set_neg(&ANS->x1,&ANS->x1);
+  // fp_set_ui(&ANS->x1,0);
 }
 
 void fp2_set_neg(fp2_t *ANS,fp2_t *A){
@@ -179,7 +184,6 @@ void fp2_mul(fp2_t *ANS,fp2_t *A,fp2_t *B){
   fp_sub(&ANS->x0,&tmp1_fp,&tmp2_fp);
   fp_sub(&ANS->x1,&tmp1_fp,&tmp3_fp);
 }
-
 
 void fp2_mul_lazy(fp2_t *ANS,fp2_t *A,fp2_t *B){ 
   static fp2_t tmp_A,tmp_B;
@@ -284,9 +288,9 @@ void fp2_sqr_lazy_montgomery(fp2_t *ANS,fp2_t *A){
 
   static fp_t tmp1_fp,tmp2_fp,tmp3_fp;
 
-  fp_sub_nonmod_single(&tmp1_fp,&A->x0,&A->x1);
-  fp_add_nonmod_single(&tmp2_fp,&tmp1_fp,&A->x0);
-  fp_sub_nonmod_single(&tmp3_fp,&tmp1_fp,&A->x1);
+  fp_sub(&tmp1_fp,&A->x0,&A->x1);
+  fp_add(&tmp2_fp,&tmp1_fp,&A->x0);
+  fp_sub(&tmp3_fp,&tmp1_fp,&A->x1);
   fp_mulmod_montgomery(&ANS->x0,&tmp_A.x1,&tmp2_fp);
   fp_set_neg_montgomery(&ANS->x0,&ANS->x0);
   fp_mulmod_montgomery(&ANS->x1,&tmp_A.x0,&tmp3_fp);
@@ -328,7 +332,7 @@ void fp2_add_nonmod_double(fpd2_t *ANS,fpd2_t *A,fpd2_t *B){
 
 void fp2_add_ui(fp2_t *ANS,fp2_t *A,unsigned long int UI){
   fp_sub_ui(&ANS->x0,&A->x0,UI);
-  fp_set(&ANS->x1,&A->x1);
+  fp_sub_ui(&ANS->x1,&A->x1,UI);
 
 }
 
@@ -364,7 +368,7 @@ void fp2_sub_nonmod_double(fpd2_t *ANS,fpd2_t *A,fpd2_t *B){
 
 void fp2_sub_ui(fp2_t *ANS,fp2_t *A,unsigned long int UI){
   fp_add_ui(&ANS->x0,&A->x0,UI);
-  fp_set(&ANS->x1,&A->x1);
+  fp_add_ui(&ANS->x1,&A->x1,UI);
 
 }
 
@@ -626,29 +630,27 @@ void fp2_frobenius_map_p1(fp2_t *ANS,fp2_t *A){
 }
 
 void fp2_mul_base(fp2_t *ANS,fp2_t *A){
-  // static fp2_t tmp_A;
-  // fp2_set(&tmp_A,A);
+  static fp2_t tmp_A;
+  fp2_l1shift(&tmp_A, A);
+  fp_sub(&ANS->x0,&A->x0,&tmp_A.x1);
+  fp_sub(&ANS->x1,&tmp_A.x0,&A->x1);
+}
 
-  // fp_mul_base(&ANS->x0, &A->x1);
-  // fp_set(&ANS->x1,&tmp_A.x0);    //@^2 = 2
-  fp2_swap(ANS, A);
-
+void fp2_mul_base_nonmod_single(fp2_t *ANS,fp2_t *A){
+  static fp2_t tmp_A;
+  fp2_l1shift_nonmod_single(&tmp_A, A);
+  fp_sub_nonmod_single(&ANS->x0,&A->x0,&tmp_A.x1);
+  fp_sub_nonmod_single(&ANS->x1,&tmp_A.x0,&A->x1);
 }
 
 void fp2_mul_base_inv(fp2_t *ANS,fp2_t *A){
-  // static fp2_t tmp_A;
-  // fp2_set(&tmp_A,A);
-
-  // fp_mul_base_inv(&ANS->x1, &tmp_A.x0);
-  // fp_set(&ANS->x0,&tmp_A.x1);    //@^2 = 2
-  fp2_swap(ANS, A);
+  static fp2_t tmp_A;
+  fp2_set(&tmp_A,A);
+  fp2_mul(ANS,&tmp_A,&base_c_inv);
 }
 
 void fp2_mul_base_inv_montgomery(fp2_t *ANS,fp2_t *A){
-  // static fp2_t tmp_A;
-  // fp2_set(&tmp_A,A);
-
-  // fp_mul_base_inv_montgomery(&ANS->x1, &tmp_A.x0);
-  // fp_set(&ANS->x0,&tmp_A.x1);    //@^2 = 2
-  fp2_swap(ANS, A);
+  static fp2_t tmp_A;
+  fp2_set(&tmp_A,A);
+  fp2_mul_lazy_montgomery(ANS,&tmp_A,&base_c_invMR);
 }

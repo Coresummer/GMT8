@@ -138,7 +138,6 @@ void fp4_l1shift_nonmod_double(fpd4_t *ANS, fpd4_t *A) {
   fp2_l1shift_nonmod_double(&ANS->x1, &A->x1);
 }
 
-
 void fp4_r1shift(fp4_t *ANS, fp4_t *A) {
   fp2_r1shift(&ANS->x0, &A->x0);
   fp2_r1shift(&ANS->x1, &A->x1);
@@ -342,7 +341,6 @@ void fp4_sqr_lazy_montgomery(fp4_t *ANS,fp4_t *A){
   fp2_sub(&tmp3_fp,&tmp3_fp, &tmp1_fp); //(a+b)^2 - a^2 
   fp2_sub(&ANS->x1,&tmp3_fp, &tmp2_fp); //(a+b)^2 - a^2 - b^2 
 
-    
 }
 
 void fp4_sqr_nonmod_montgomery(fpd4_t *ANS, fp4_t *A) {
@@ -392,7 +390,6 @@ void fp4_add(fp4_t *ANS,fp4_t *A,fp4_t *B){
 void fp4_add_nonmod_single(fp4_t *ANS,fp4_t *A,fp4_t *B){
   fp2_add_nonmod_single(&ANS->x0,&A->x0,&B->x0);
   fp2_add_nonmod_single(&ANS->x1,&A->x1,&B->x1);
-
 }
 
 void fp4_add_nonmod_double(fpd4_t *ANS,fpd4_t *A,fpd4_t *B){
