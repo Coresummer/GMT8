@@ -386,28 +386,22 @@ void fp_sub(fp_t *ANS, fp_t *A, fp_t *B) {
 }
 
 void fp_sub_nonmod_single(fp_t *ANS, fp_t *A, fp_t *B) {
-#ifdef DEBUG_COST_A
-  cost_sub_nonmod++;
-#endif
+  #ifdef DEBUG_COST_A
+  cost_sub++;
+  #endif
   static mp_limb_t buf[FPLIMB];
-  if (mpn_cmp(A->x0, B->x0, FPLIMB) < 0) {
-    // printf("size(A)%d",mpn_sizeinbase(A->x0,FPLIMB,2));
-    // printf("size(B)%d",mpn_sizeinbase(B->x0,FPLIMB,2));
-    mpn_sub_n(ANS->x0,B->x0,A->x0,FPLIMB);
-    // printf("size(ANS)%d",mpn_sizeinbase(ANS->x0,FPLIMB,2));
 
-    // int i = 0;
-    while (mpn_cmp(ANS->x0, prime, FPLIMB) >= 0) {
-      mpn_sub_n(ANS->x0, ANS->x0, prime, FPLIMB);
-      // i++;
+  if(mpn_cmp(A->x0,B->x0,FPLIMB)<0){
+    mpn_sub_n(ANS->x0,B->x0,A->x0,FPLIMB);
+    while(mpn_cmp(ANS->x0,prime,FPLIMB)>=0){
+      mpn_sub_n(ANS->x0,ANS->x0,prime,FPLIMB);
     }
-    
-    // printf("sub:%d\n",i);
-    mpn_sub_n(ANS->x0, prime, ANS->x0, FPLIMB);
-  } else {
-    mpn_sub_n(ANS->x0, A->x0, B->x0, FPLIMB);
+    mpn_sub_n(ANS->x0,prime,ANS->x0,FPLIMB);
+  }else{
+    mpn_sub_n(ANS->x0,A->x0,B->x0,FPLIMB);
   }
 }
+
 
 void fp_sub_nonmod_double(fpd_t *ANS, fpd_t *A, fpd_t *B) {
 #ifdef DEBUG_COST_A
