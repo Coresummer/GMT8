@@ -73,7 +73,7 @@ int main(){
   // BENCH_fp2_fp4_fp8_mul_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   // BENCH_miller_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   // BENCH_finalexp_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
-  BENCH_Pairingn_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
+  // BENCH_Pairingn_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
 
   printf("*********************************************************************************************\n\n");
   // mpz_t expo;

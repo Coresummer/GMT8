@@ -1470,11 +1470,11 @@ void BENCH_Pairingn_lazy_montgomery(int LOOP){
 
   // printf("--------Benching pairing()-------\n");
 
-  // CYBOZU_BENCH_C("miller_opt_ate_proj_2NAF()", LOOP, miller_opt_ate_proj_2NAF,&f,&P,&Q);
+  // CYBOZU_BENCH_C("miller_opt_ate_jac_2NAF()", LOOP, miller_opt_ate_jac_2NAF,&f,&P,&Q);
   // CYBOZU_BENCH_C("final_exp()               ", LOOP, final_exp,&e2, &e1);
   // printf("---------------------------------\n");
 
-  CYBOZU_BENCH_C("miller_opt_ate_proj_2NAF_lazy_montgomery()", LOOP, miller_opt_ate_jac_2NAF_lazy_montgomery,&f,&P,&Q);
+  CYBOZU_BENCH_C("miller_opt_ate_jac_2NAF_lazy_montgomery()", LOOP, miller_opt_ate_jac_2NAF_lazy_montgomery,&f,&P,&Q);
   CYBOZU_BENCH_C("final_exp_lazy_montgomery()               ", LOOP, final_exp_lazy_montgomery, &e2, &e1);
   printf("---------------------------------\n");
 
@@ -1529,6 +1529,14 @@ void check_finalexp_pow_cost_count_2NAF(){
   cost_printf("fp8_sqr cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
   printf("---------------------------------\n");
 
+
+  printf("fp8_sqr_GS count\n");
+  cost_zero();
+  fp8_sqr_GS(&f,&f);
+  cost_check(&final_exp_4hy_cost);
+  cost_printf("fp8_sqr_GS cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+
   printf("*********************************************************************************************\n\n");
 }
 
@@ -1575,6 +1583,14 @@ void check_finalexp_pow_cost_count_2NAF_montgomery(){
   cost_check(&final_exp_4hy_cost);
   cost_printf("fp8_sqr cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
   printf("---------------------------------\n");
+
+  printf("fp8_sqr_GS count\n");
+  cost_zero();
+  fp8_sqr_GS_lazy_montgomery(&f,&f);
+  cost_check(&final_exp_4hy_cost);
+  cost_printf("fp8_sqr_GS cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+
 
   printf("*********************************************************************************************\n\n");
 }

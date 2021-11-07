@@ -56,7 +56,7 @@ void create_prt(){
   fp_set_ui(&fp2_neg_1.x1,1);
   fp2_inv(&base_c_inv, &base_c);
   fp2_to_montgomery(&base_c_invMR, &base_c_inv);
-  // fp2_println("base_c_inv", &base_c_inv);
+  fp2_println("base_c_inv", &base_c_inv);
 }
 
 void check_base(){
@@ -66,13 +66,21 @@ void check_base(){
   fp2_init(&tmp2);
   mpz_t expo;
   mpz_init(expo);
+  std::string x = "7864352814187761672954208385054718516586573559536409605479181947936697562602380972863469522882765880267143715565140764573573332968082475950434711738861351634506540";
+  std::string y = "7864352814187761672954208385054718516586573559536409605479181947936697562602380972863469522882765880267143715565140764573573332968082475950434711738861351634506538";
+
+  mpn_set_char(tmp2.x0.x0, FPLIMB, x.c_str());
+  mpn_set_char(tmp2.x1.x0, FPLIMB, y.c_str());
+  fp2_println("base_c", &tmp2);
+  fp2_inv(&tmp2, &tmp2);
+  fp2_println("base_c_inv", &tmp2);
 
   //check base_c = QNR
   // fp_set(&tmp,&base_c);
 
   // mpz_sub_ui(expo,prime_z,1);
   // mpz_divexact_ui(expo,expo,2);
-  // fp_pow(&tmp,&base_c,expo);
+  // fp2_pow(&tmp,&base_c,expo);
   // if(fp_cmp_one(&tmp)==0) printf("error!!! c^((p-1)/2)==1\n\n");
 
   // mpz_set_ui(expo,2);
@@ -80,11 +88,11 @@ void check_base(){
   // // fp_println("c^(p-1) :",&tmp);
   // if(fp_cmp_one(&tmp)!=0) printf("error!!! c^(p-1)!=1\n\n");
   
-  //check base_c = QNR
-  fp_set_ui(&tmp2.x0,1);
-  // fp_set_neg(&tmp2.x0, &tmp2.x0);
-  fp_set_ui(&tmp2.x1,1);
-  fp_set_neg(&tmp2.x1, &tmp2.x1);
+  // //check base_c = QNR
+  // fp_set_ui(&tmp2.x0,1);
+  // // fp_set_neg(&tmp2.x0, &tmp2.x0);
+  // fp_set_ui(&tmp2.x1,1);
+  // fp_set_neg(&tmp2.x1, &tmp2.x1);
   mpz_pow_ui(expo,prime_z,2);
   mpz_sub_ui(expo,expo,1);
   mpz_divexact_ui(expo,expo,2);

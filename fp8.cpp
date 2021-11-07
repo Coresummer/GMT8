@@ -360,7 +360,6 @@ void fp8_sqr_lazy_montgomery(fp8_t *ANS,fp8_t *A){
   fp4_sqr_lazy_montgomery(&tmp3_fp, &tmp3_fp);  //(a+b)^2
   fp4_sub(&tmp3_fp,&tmp3_fp, &tmp1_fp); //(a+b)^2 - a^2 
   fp4_sub(&ANS->x1,&tmp3_fp, &tmp2_fp); //(a+b)^2 - a^2 - b^2 
-<<<<<<< HEAD
 }
 
 void fp8_sqr_nonmod_montgomery(fpd8_t *ANS, fp8_t *A) {
@@ -380,9 +379,6 @@ void fp8_sqr_nonmod_montgomery(fpd8_t *ANS, fp8_t *A) {
   fp4_sub_nonmod_double(&tmp3_fpd,&tmp3_fpd, &tmp1_fpd); //(a+b)^2 - a^2 
   fp4_sub_nonmod_double(&ANS->x1,&tmp3_fpd, &tmp2_fpd); //(a+b)^2 - a^2 - b^2 
 
-=======
-   
->>>>>>> f4ebcc830f03e1cfc8a1af94b67c3b1c64f64627
 }
 
 void fp8_sqr_GS(fp8_t *ANS,fp8_t *A){
