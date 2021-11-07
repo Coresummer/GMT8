@@ -79,6 +79,8 @@ void fp2_mul_base(fp2_t *ANS,fp2_t *A);
 void fp2_mul_base_nonmod_single(fp2_t *ANS,fp2_t *A);
 
 void fp2_mul_base_inv(fp2_t *ANS,fp2_t *A);
+void fp2_mul_base_inv_classic(fp2_t *ANS,fp2_t *A);
+
 void fp2_mul_base_inv_montgomery(fp2_t *ANS,fp2_t *A);
 // void fp2_mul_base_nonmod_single(fp2_t *ANS,fp2_t *A);
 

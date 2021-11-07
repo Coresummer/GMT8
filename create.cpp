@@ -57,6 +57,11 @@ void create_prt(){
   fp2_inv(&base_c_inv, &base_c);
   fp2_to_montgomery(&base_c_invMR, &base_c_inv);
   fp2_println("base_c_inv", &base_c_inv);
+  fp_set_ui(&three_1, 3);
+  fp_inv(&three_1,&three_1);
+  fp_set_neg(&three_1,&three_1);
+  fp_to_montgomery(&three_1MR,&three_1);
+
 }
 
 void check_base(){

@@ -28,7 +28,7 @@
 #define ARCBIT 64  //64bit processor
 //#define ARCBIT 32 //32bit processor
 
-#define DEBUG_COST_A
+// #define DEBUG_COST_A
 //#define DEBUG_ASSERT
 #define CHECK_PAIRING_TIME_LOOP 1
 
@@ -145,7 +145,7 @@ TTT_EXTERN mpz_t X_z,prime_z,order_z,trace_z;
 TTT_EXTERN mp_limb_t X,prime[FPLIMB],few_prime[FPLIMB];
 TTT_EXTERN mp_limb_t prime2[FPLIMB2];
 TTT_EXTERN fp2_t base_c,base_cMR,base_c_inv, base_c_invMR,fp2_neg_1;//α^7=c, β^2=α となるように逐次拡大で拡大体を構成する
-TTT_EXTERN fp_t oneMR, p_1;//α^7=c, β^2=α に出てくるcの逆元の計算結果
+TTT_EXTERN fp_t oneMR, p_1,three_1,three_1MR;//α^7=c, β^2=α に出てくるcの逆元の計算結果
 
 TTT_EXTERN fp_t curve_a,curve_a_dash,curve_b;
 TTT_EXTERN mpz_t sqrt_power_z;
