@@ -26,8 +26,10 @@
 
 
 int main(){
-  // mcl_init();
+  // 
 
+  const char * sPtr= "0x347111bfc75e57d130de7be68437c8d75455d209459d421455023bee14df9fe75aa4734686ca3d08c1fa594100d79421d56c53899ee0f066fad9eb45b0985dbdbba2dcc1";
+  mcl_init(sPtr);
   gmp_randinit_default(state);
   gmp_randseed_ui(state,(unsigned long int)time(NULL));
   tmp_init();
