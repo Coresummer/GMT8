@@ -634,6 +634,14 @@ void fp2_mul_base(fp2_t *ANS,fp2_t *A){
   fp2_l1shift(&tmp_A, A);
   fp_sub(&ANS->x0,&A->x0,&tmp_A.x1);
   fp_sub(&ANS->x1,&tmp_A.x0,&A->x1);
+} 
+
+void fp2_mul_base_1(fp2_t *ANS,fp2_t *A){
+  static fp_t tmp_A;
+  fp_l1shift(&ANS->x1,&A->x0);      //z1=2x0
+  
+  fp_sub(&tmp_A,&A->x0,&A->x1);     //(x0-x1)
+  fp_l1shift(&ANS->x0,&tmp_A);      //z0=2(x0-x1)
 }
 
 void fp2_mul_base_nonmod_single(fp2_t *ANS,fp2_t *A){
