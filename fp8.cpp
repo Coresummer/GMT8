@@ -381,43 +381,63 @@ void fp8_sqr_nonmod_montgomery(fpd8_t *ANS, fp8_t *A) {
 
 }
 
+// void fp8_sqr_GS(fp8_t *ANS,fp8_t *A){
+//   static fp8_t tmp_A;
+//   fp8_set(&tmp_A,A);
+
+//   static fp4_t tmp1_fp,tmp2_fp,tmp3_fp;
+
+//   fp4_sqr(&tmp1_fp, &tmp_A.x0);  //a^2
+//   fp4_add(&tmp2_fp, &tmp_A.x0, &tmp_A.x1);  //(a+b)
+//   fp4_sqr(&tmp2_fp,&tmp2_fp);  //(a+b)^2
+
+//   fp4_sub_ui(&tmp3_fp,&tmp1_fp,1);//a^2-1
+//   fp4_add(&ANS->x0,&tmp3_fp,&tmp1_fp);//2a^2-1
+
+//   fp4_mul_base_inv(&tmp3_fp,&tmp3_fp);//(a^2-1)/2
+  
+//   fp4_sub(&ANS->x1,&tmp2_fp,&tmp1_fp);//(a+b)^2 - a^2
+//   fp4_sub(&ANS->x1,&ANS->x1, &tmp3_fp);//(a+b)^2 - a^2 - (a^2-1)/2
+// }
+
 void fp8_sqr_GS(fp8_t *ANS,fp8_t *A){
   static fp8_t tmp_A;
   fp8_set(&tmp_A,A);
 
-  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp;
+  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp,tmp4_fp;
 
-  fp4_sqr(&tmp1_fp, &tmp_A.x0);  //a^2
+  fp4_sqr(&tmp1_fp, &tmp_A.x1);  //a1^2
   fp4_add(&tmp2_fp, &tmp_A.x0, &tmp_A.x1);  //(a+b)
   fp4_sqr(&tmp2_fp,&tmp2_fp);  //(a+b)^2
 
-  fp4_sub_ui(&tmp3_fp,&tmp1_fp,1);//a^2-1
-  fp4_add(&ANS->x0,&tmp3_fp,&tmp1_fp);//2a^2-1
+  fp4_mul_base(&tmp3_fp, &tmp1_fp); //va^2
+  fp4_l1shift(&tmp3_fp, &tmp3_fp); //2va^2
+  fp4_add_ui(&ANS->x0,&tmp3_fp,1);
 
-  fp4_mul_base_inv(&tmp3_fp,&tmp3_fp);//(a^2-1)/2
-  
-  fp4_sub(&ANS->x1,&tmp2_fp,&tmp1_fp);//(a+b)^2 - a^2
-  fp4_sub(&ANS->x1,&ANS->x1, &tmp3_fp);//(a+b)^2 - a^2 - (a^2-1)/2
+  fp4_mul_base_1(&tmp4_fp,&tmp1_fp);//a1^2*(v+1)
+  fp4_sub_ui(&ANS->x1,&tmp2_fp,1);//(a+b)^2-1
+  fp4_sub(&ANS->x1,&ANS->x1,&tmp4_fp);//(a+b)^2-1-(v+1)a1^
 }
 
 void fp8_sqr_GS_lazy_montgomery(fp8_t *ANS,fp8_t *A){
   static fp8_t tmp_A;
   fp8_set(&tmp_A,A);
 
-  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp;
+  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp,tmp4_fp;
 
-  fp4_sqr_lazy_montgomery(&tmp1_fp, &tmp_A.x0);  //a^2
+  fp4_sqr_lazy_montgomery(&tmp1_fp, &tmp_A.x1);  //a^2
   fp4_add(&tmp2_fp, &tmp_A.x0, &tmp_A.x1);  //(a+b)
   fp4_sqr_lazy_montgomery(&tmp2_fp,&tmp2_fp);  //(a+b)^2
 
-  fp2_sub_mpn(&tmp3_fp.x0, &tmp1_fp.x0, oneMR.x0);//a^2-1
-  fp2_set(&tmp3_fp.x1, &tmp1_fp.x1);
-  fp4_add(&ANS->x0,&tmp3_fp,&tmp1_fp);//2a^2-1
+  fp4_mul_base(&tmp3_fp, &tmp1_fp); //va^2
+  fp4_l1shift(&ANS->x0, &tmp3_fp); //2va^2
+  fp_sub(&ANS->x0.x0.x0,&ANS->x0.x0.x0,&oneMR);
+  fp_sub(&ANS->x0.x0.x1,&ANS->x0.x0.x1,&oneMR);
 
-  fp4_mul_base_inv_montgomery(&tmp3_fp,&tmp3_fp);//(a^2-1)/z
-
-  fp4_sub(&ANS->x1,&tmp2_fp,&tmp1_fp);//(a+b)^2 - a^2
-  fp4_sub(&ANS->x1,&ANS->x1, &tmp3_fp);//(a+b)^2 - a^2 - (a^2-1)/z
+  fp4_mul_base_1(&tmp4_fp,&tmp1_fp);//a1^2*(v+1)
+  fp4_sub(&ANS->x1,&tmp2_fp,&tmp4_fp);//(a+b)^2-1-(v+1)a1^
+  fp_add(&ANS->x1.x0.x0,&ANS->x1.x0.x0,&oneMR);
+  fp_add(&ANS->x1.x0.x1,&ANS->x1.x0.x1,&oneMR);
 }
 
 void fp8_add(fp8_t *ANS,fp8_t *A,fp8_t *B){
