@@ -169,6 +169,7 @@ int test_fp(int fp_n) {
 
   return 0;
 }
+
 int test_fp2(int fp2_n) {
   int i, j, n = 0;
   float add_time = 0, add_lazy_time = 0;
@@ -1350,6 +1351,79 @@ void BENCH_miller_lazy_montgomery(int LOOP){
   CYBOZU_BENCH_C("miller_opt_ate_jac_2NAF_lazy_montgomery()", LOOP, miller_opt_ate_jac_2NAF_lazy_montgomery,&fm,&P,&Q);
   fp8_println_montgomery("ANSm:", &fm);
 }
+
+void BENCH_miller_coordinates(int LOOP){
+  printf("============================================================================\n");
+  printf("--------------------------------------ltpq, lttp----------------------------\n");
+  printf("============================================================================\n");
+
+  efp8_t P,Q;
+  fp8_t f,e1,e2;
+
+  mpz_t a,b,ab;
+  efp8_init(&P);
+  efp8_init(&Q);
+
+  fp8_init(&f);
+  fp8_init(&e1);
+  fp8_init(&e2);
+
+  mpz_init(a);
+  mpz_init(b);
+  mpz_init(ab);
+
+  generate_g1(&P);
+  generate_g2(&Q);
+
+  static efp_t mapped_P;
+  static efp2_t mapped_Q,mapped_Q_neg;
+
+  static efp2_jacobian_t S;
+  static efp2_jacobian_t Sp;
+
+  fp8_set_ui_ui(&f,0);
+  fp8_set_ui(&f,1);
+
+  fp_set(&mapped_P.x,&P.x.x0.x0.x0);
+  fp_set(&mapped_P.y,&P.y.x0.x0.x0);
+  mapped_P.infinity = 0;
+
+  efp8_to_efp2(&mapped_Q,&Q);//twist
+  efp8_to_Jacefp2(&S,&Q);
+  efp8_to_Jacefp2(&Sp,&Q);
+  efp2_set_neg(&mapped_Q_neg,&mapped_Q);
+  miller_proj_precomp_Costello(&mapped_P, &mapped_Q);
+//-----------------------------------------
+
+  CYBOZU_BENCH_C("ff_lttp()", LOOP, ff_lttp,&f,&S,&mapped_P);
+  fp8_set_ui(&f,1);
+  CYBOZU_BENCH_C("ff_lttp_Costello()", LOOP, ff_lttp_Costello, &f,&Sp,&mapped_P);
+  fp8_println("ANS:", &f);
+  fp8_println_montgomery("ANS:", &f);
+
+  fp8_set_ui(&f,1);
+  CYBOZU_BENCH_C("ff_ltpq()", LOOP, ff_ltqp,&f,&S,&mapped_Q,&mapped_P);
+  fp8_set_ui(&f,1);
+  CYBOZU_BENCH_C("ff_ltqp_Costello_mixed()", LOOP, ff_ltqp_Costello_mixed, &f,&Sp,&mapped_Q,&mapped_P);
+  fp8_println("ANS:", &f);
+  fp8_println_montgomery("ANS:", &f);
+
+  printf("============================================================================\n");
+  printf("--------------------------------------Miller--------------------------------\n");
+  printf("============================================================================\n");
+
+//------------------Jacobi(mixed)-----------------------
+
+  CYBOZU_BENCH_C("miller_opt_ate_jac_2NAF()", LOOP, miller_opt_ate_jac_2NAF,&f,&P,&Q);
+  fp8_println("ANS:", &f);
+  //------------------Projective*[1:2](mixed)-----------------------
+  fp8_set_ui(&f,1);
+
+  CYBOZU_BENCH_C("miller_opt_ate_proj_2NAF()", LOOP, miller_opt_ate_proj_2NAF,&f,&P,&Q);
+  fp8_println_montgomery("ANS:", &f);
+}
+
+
 
 void BENCH_finalexp_lazy_montgomery(int LOOP){
   printf("********************CHECK Finalexp WITH MONTGOMERY*************************************************\n\n");
