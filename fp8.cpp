@@ -1,5 +1,3 @@
-
-
 #include "fp8.h"
 #include "define.h"
 #include "fp.h"
@@ -380,6 +378,25 @@ void fp8_sqr_nonmod_montgomery(fpd8_t *ANS, fp8_t *A) {
   fp4_sub_nonmod_double(&ANS->x1,&tmp3_fpd, &tmp2_fpd); //(a+b)^2 - a^2 - b^2 
 
 }
+
+// void fp8_sqr_GS(fp8_t *ANS,fp8_t *A){
+//   static fp8_t tmp_A;
+//   fp8_set(&tmp_A,A);
+
+//   static fp4_t tmp1_fp,tmp2_fp,tmp3_fp;
+
+//   fp4_sqr(&tmp1_fp, &tmp_A.x0);  //a^2
+//   fp4_add(&tmp2_fp, &tmp_A.x0, &tmp_A.x1);  //(a+b)
+//   fp4_sqr(&tmp2_fp,&tmp2_fp);  //(a+b)^2
+
+//   fp4_sub_ui(&tmp3_fp,&tmp1_fp,1);//a^2-1
+//   fp4_add(&ANS->x0,&tmp3_fp,&tmp1_fp);//2a^2-1
+
+//   fp4_mul_base_inv(&tmp3_fp,&tmp3_fp);//(a^2-1)/2
+  
+//   fp4_sub(&ANS->x1,&tmp2_fp,&tmp1_fp);//(a+b)^2 - a^2
+//   fp4_sub(&ANS->x1,&ANS->x1, &tmp3_fp);//(a+b)^2 - a^2 - (a^2-1)/2
+// }
 
 void fp8_sqr_GS(fp8_t *ANS,fp8_t *A){
   static fp8_t tmp_A;
@@ -962,6 +979,32 @@ void fp8_mul_sparse_add(fp8_t *ANS,fp8_t *A,fp8_t *B){  //?000?? * ??????
 
 }
 
+void fp8_mul_sparse_add_costello(fp8_t *ANS,fp8_t *A,fp8_t *B){  //?000?? * ??????
+  //fp2_mul*3 fp_mul*4 = 13 m
+  static fp8_t tmp_A,tmp_B;
+  fp8_set(&tmp_A,A);//00 ?? ?? ??  a+bβ+cγ+dβγ d=0 tmpA.x1.x1
+  fp8_set(&tmp_B,B);//?? ?? ?? ?? e+fβ+gγ+hβγ
+
+  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp,tmp4_fp,tmp5_fp;
+  // fp4_mul(&tmp1_fp,&tmp_A.x0,&tmp_B.x0); //ac
+//---------------------------------------------------------//ac
+  fp2_mul(&tmp1_fp.x1, &tmp_A.x0.x1, &tmp_B.x0.x0); 
+  fp2_mul(&tmp1_fp.x0, &tmp_A.x0.x1, &tmp_B.x0.x1);
+  fp2_mul_base(&tmp1_fp.x0, &tmp1_fp.x0);
+//---------------------------------------------------------
+  fp4_mul(&tmp2_fp,&tmp_A.x1,&tmp_B.x1); //bd       //here
+  fp4_mul_base(&tmp3_fp, &tmp2_fp);  //bdΘ^2
+
+  fp4_add(&ANS->x0, &tmp1_fp, &tmp3_fp);  //ac+bdΘ^2
+
+  fp4_add(&tmp3_fp,&tmp_A.x0,&tmp_A.x1);//a+b
+  fp4_add(&tmp4_fp,&tmp_B.x0,&tmp_B.x1);//c+d
+  fp4_mul(&tmp5_fp,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
+  
+  fp4_sub(&tmp3_fp,&tmp5_fp,&tmp1_fp);//(a+b)(c+d) - ac
+  fp4_sub(&ANS->x1,&tmp3_fp,&tmp2_fp);//(a+b)(c+d) - ac -bd
+}
+
 void fp8_mul_sparse_dbl(fp8_t *ANS,fp8_t *A,fp8_t *B){  //??0?00 * ??????
   //fpmul*2 fp2mul*4 = 14 m prob because 2->6
   static fp8_t tmp_A,tmp_B;
@@ -1004,6 +1047,32 @@ void fp8_mul_sparse_add_lazy_montgomery(fp8_t *ANS,fp8_t *A,fp8_t *B){  //?000??
 //---------------------------------------------------------
   fp4_mul_base(&tmp3_fp, &tmp2_fp);  //bdΘ^2
   fp4_add(&ANS->x0, &tmp1_fp, &tmp3_fp);  //ab+bdΘ^2
+
+  fp4_add(&tmp3_fp,&tmp_A.x0,&tmp_A.x1);//a+b
+  fp4_add(&tmp4_fp,&tmp_B.x0,&tmp_B.x1);//c+d
+  fp4_mul_lazy_montgomery(&tmp5_fp,&tmp3_fp,&tmp4_fp); //(a+b)(c+d)
+  
+  fp4_sub(&tmp3_fp,&tmp5_fp,&tmp1_fp);//(a+b)(c+d) - ac
+  fp4_sub(&ANS->x1,&tmp3_fp,&tmp2_fp);//(a+b)(c+d) - ac -bd
+}
+
+void fp8_mul_sparse_add_costello_lazy_montgomery(fp8_t *ANS,fp8_t *A,fp8_t *B){  //?000?? * ??????
+  //fp2_mul*3 fp_mul*4 = 13 m
+  static fp8_t tmp_A,tmp_B;
+  fp8_set(&tmp_A,A);//00 ?? ?? ??  a+bβ+cγ+dβγ d=0 tmpA.x1.x1
+  fp8_set(&tmp_B,B);//?? ?? ?? ?? e+fβ+gγ+hβγ
+
+  static fp4_t tmp1_fp,tmp2_fp,tmp3_fp,tmp4_fp,tmp5_fp;
+  // fp4_mul(&tmp1_fp,&tmp_A.x0,&tmp_B.x0); //ac
+//---------------------------------------------------------//ac
+  fp2_mul_lazy_montgomery(&tmp1_fp.x1, &tmp_A.x0.x1, &tmp_B.x0.x0); 
+  fp2_mul_lazy_montgomery(&tmp1_fp.x0, &tmp_A.x0.x1, &tmp_B.x0.x1);
+  fp2_mul_base(&tmp1_fp.x0, &tmp1_fp.x0);
+//---------------------------------------------------------
+  fp4_mul_lazy_montgomery(&tmp2_fp,&tmp_A.x1,&tmp_B.x1); //bd       //here
+  fp4_mul_base(&tmp3_fp, &tmp2_fp);  //bdΘ^2
+
+  fp4_add(&ANS->x0, &tmp1_fp, &tmp3_fp);  //ac+bdΘ^2
 
   fp4_add(&tmp3_fp,&tmp_A.x0,&tmp_A.x1);//a+b
   fp4_add(&tmp4_fp,&tmp_B.x0,&tmp_B.x1);//c+d
