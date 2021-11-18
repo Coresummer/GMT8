@@ -261,354 +261,6 @@ int test_fp2(int fp2_n) {
   return 0;
 }
 
-
-// int test_field(int fp_n, int fp2_n, int fp6_n, int sqr) {
-//   int i, j, n = 0;
-//   float add_time = 0, add_lazy_time = 0;
-//   float shift2_time = 0, shift4_time = 0, shift8_time = 0;
-//   float mul_time = 0, mul_lazy_time = 0;
-//   float inv_time = 0, inv_lazy_time = 0;
-//   float sqr_time = 0, sqr_lazy_time = 0;
-//   float com_time = 0, rec_time = 0, gs_time = 0;
-//   float com_lazy_time = 0, rec_lazy_time = 0, gs_lazy_time = 0;
-//   cost tmp_cost, fp2_mul_cost, fp6_mul_cost;
-
-//   efp6_t P, Q;
-//   fp6_t tmp, t0, t1, f;
-//   struct timeval tv_A, tv_B;
-
-//   printf("====================================================================================\n");
-//   printf("Field test\n");
-//   mp_limb_t test1_mpn[FPLIMB2], test2_mpn[FPLIMB2];
-//   fp_t A_fp, B_fp, test1_fp, test2_fp;
-//   fp2_t A_fp2, B_fp2, test1_fp2, test2_fp2;
-//   fp6_t A_fp6, B_fp6, test1_fp6, test2_fp6, test3_fp6;
-
-//   fp_init(&A_fp);
-//   fp_init(&B_fp);
-//   fp_init(&test1_fp);
-//   fp_init(&test2_fp);
-
-//   fp2_init(&A_fp2);
-//   fp2_init(&B_fp2);
-//   fp2_init(&test1_fp2);
-//   fp2_init(&test2_fp2);
-
-//   fp6_init(&A_fp6);
-//   fp6_init(&B_fp6);
-//   fp6_init(&test1_fp6);
-//   fp6_init(&test2_fp6);
-//   fp6_init(&test3_fp6);
-
-//   cost_init(&tmp_cost);
-//   cost_init(&fp2_mul_cost);
-//   cost_init(&fp6_mul_cost);
-
-//   gmp_randinit_default(state);
-//   gmp_randseed_ui(state, (unsigned long)time(NULL));
-
-//   if (fp_n > 0) {
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp_add test\n");
-//     add_time = 0, add_lazy_time = 0;
-//     n = 1000;
-//     for (i = 0; i < fp_n; i++) {
-//       fp_set_random(&A_fp, state);
-//       fp_set_random(&B_fp, state);
-
-//       gettimeofday(&tv_A, NULL);
-//       for (j = 0; j < n; j++) fp_add(&test1_fp, &A_fp, &B_fp);
-//       gettimeofday(&tv_B, NULL);
-//       add_time += timedifference_msec(tv_A, tv_B) / n;
-
-//       gettimeofday(&tv_A, NULL);
-//       //for(j=0;j<n;j++)fp_add_lazy(test2_mpn,FPLIMB,A_fp.x0,FPLIMB,B_fp.x0,FPLIMB);
-//       gettimeofday(&tv_B, NULL);
-//       add_lazy_time += timedifference_msec(tv_A, tv_B) / n;
-//       fp_mod(&test2_fp, test2_mpn, FPLIMB);
-
-//       if (fp_cmp(&test1_fp, &test2_fp) != 0) {
-//         printf("failed!\n\n");
-//         fp_printf("", &test1_fp);
-//         fp_printf("\n", &test2_fp);
-//         printf("\n\n");
-//         return 1;
-//       }
-//     }
-//     printf("fp add.      : %.6f[ms]\n", add_time / fp_n);
-//     printf("fp add lazy. : %.6f[ms]\n", add_lazy_time / fp_n);
-
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp_mul test\n");
-//     mul_time = 0, mul_lazy_time = 0;
-//     n = 1000;
-//     for (i = 0; i < fp_n; i++) {
-//       fp_set_random(&A_fp, state);
-//       fp_set_random(&B_fp, state);
-
-//       gettimeofday(&tv_A, NULL);
-//       for (j = 0; j < n; j++) fp_mul(&test1_fp, &A_fp, &B_fp);
-//       gettimeofday(&tv_B, NULL);
-//       mul_time += timedifference_msec(tv_A, tv_B) / n;
-
-//       gettimeofday(&tv_A, NULL);
-//       //for(j=0;j<n;j++)fp_mul_lazy(test2_mpn,A_fp.x0,B_fp.x0);
-//       gettimeofday(&tv_B, NULL);
-//       mul_lazy_time += timedifference_msec(tv_A, tv_B) / n;
-//       fp_mod(&test2_fp, test2_mpn, FPLIMB2);
-
-//       if (fp_cmp(&test1_fp, &test2_fp) != 0) {
-//         printf("failed!\n\n");
-//         fp_printf("", &test1_fp);
-//         fp_printf("\n", &test2_fp);
-//         printf("\n\n");
-//         return 1;
-//       }
-//     }
-
-//     printf("fp mul.      : %.6f[ms]\n", mul_time / fp_n);
-//     printf("fp mul lazy. : %.6f[ms]\n", mul_lazy_time / fp_n);
-
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp_sqr test\n");
-//     sqr_time = 0, sqr_lazy_time = 0;
-//     n = 1000;
-//     for (i = 0; i < fp_n; i++) {
-//       fp_set_random(&A_fp, state);
-
-//       gettimeofday(&tv_A, NULL);
-//       for (j = 0; j < n; j++) fp_sqr(&test1_fp, &A_fp);
-//       gettimeofday(&tv_B, NULL);
-//       sqr_time += timedifference_msec(tv_A, tv_B) / n;
-
-//       gettimeofday(&tv_A, NULL);
-//       //for(j=0;j<n;j++)fp_sqr_lazy(test2_mpn,A_fp.x0);
-//       gettimeofday(&tv_B, NULL);
-//       sqr_lazy_time += timedifference_msec(tv_A, tv_B) / n;
-//       fp_mod(&test2_fp, test2_mpn, FPLIMB2);
-
-//       if (fp_cmp(&test1_fp, &test2_fp) != 0) {
-//         printf("failed!\n\n");
-//         fp_printf("", &test1_fp);
-//         fp_printf("\n", &test2_fp);
-//         printf("\n\n");
-//         return 1;
-//       }
-//     }
-//     printf("fp sqr.      : %.6f[ms]\n", sqr_time / fp_n);
-//     printf("fp sqr lazy. : %.6f[ms]\n", sqr_lazy_time / fp_n);
-
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp_inv test\n");
-//     inv_time = 0, inv_lazy_time = 0;
-//     n = 1000;
-//     for (i = 0; i < fp_n; i++) {
-//       fp_set_random(&A_fp, state);
-//       fp_set_random(&B_fp, state);
-
-//       gettimeofday(&tv_A, NULL);
-//       for (j = 0; j < n; j++) fp_inv(&test1_fp, &A_fp);
-//       gettimeofday(&tv_B, NULL);
-//       inv_time += timedifference_msec(tv_A, tv_B) / n;
-//     }
-//     printf("fp inv.      : %.6f[ms]\n", inv_time / fp_n);
-//   }
-//   if (fp2_n > 0) {
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp2_add test\n");
-//     add_time = 0, add_lazy_time = 0;
-//     for (i = 0; i < fp2_n; i++) {
-//       fp2_set_random(&A_fp2, state);
-//       fp2_set_random(&B_fp2, state);
-
-//       gettimeofday(&tv_A, NULL);
-//       fp2_add(&test1_fp2, &A_fp2, &B_fp2);
-//       gettimeofday(&tv_B, NULL);
-//       add_time += timedifference_msec(tv_A, tv_B);
-//     }
-//     printf("fp2 add.      : %.6f[ms]\n", add_time / fp2_n);
-
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp2_shift test\n");
-//     shift2_time = 0, shift4_time = 0, shift8_time = 0;
-//     for (i = 0; i < fp2_n; i++) {
-//       fp2_set_random(&A_fp2, state);
-//       fp2_set_random(&B_fp2, state);
-
-//       gettimeofday(&tv_A, NULL);
-//       fp2_l1shift(&test1_fp2, &A_fp2);
-//       gettimeofday(&tv_B, NULL);
-//       shift2_time += timedifference_msec(tv_A, tv_B);
-
-//       gettimeofday(&tv_A, NULL);
-//       fp2_lshift(&test1_fp2, &A_fp2, 2);
-//       gettimeofday(&tv_B, NULL);
-//       shift4_time += timedifference_msec(tv_A, tv_B);
-
-//       gettimeofday(&tv_A, NULL);
-//       fp2_lshift(&test1_fp2, &A_fp2, 3);
-//       gettimeofday(&tv_B, NULL);
-//       shift8_time += timedifference_msec(tv_A, tv_B);
-//     }
-
-//     printf("fp2 shift2.      : %.6f[ms]\n", shift2_time / fp2_n);
-//     printf("fp2 shift4.      : %.6f[ms]\n", shift4_time / fp2_n);
-//     printf("fp2 shift8.      : %.6f[ms]\n", shift8_time / fp2_n);
-
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp2_mul test\n");
-//     mul_time = 0, mul_lazy_time = 0;
-//     n = 100;
-//     for (i = 0; i < fp2_n; i++) {
-//       fp2_set_random(&A_fp2, state);
-//       fp2_set_random(&B_fp2, state);
-
-//       cost_zero();
-//       gettimeofday(&tv_A, NULL);
-//       for (j = 0; j < n; j++) fp2_mul(&test1_fp2, &A_fp2, &B_fp2);
-//       gettimeofday(&tv_B, NULL);
-//       mul_time += timedifference_msec(tv_A, tv_B) / n;
-//       cost_check(&tmp_cost);
-//       cost_addition(&fp2_mul_cost, &tmp_cost);
-
-//       gettimeofday(&tv_A, NULL);
-//       for (j = 0; j < n; j++) fp2_mul_lazy(&test2_fp2, &A_fp2, &B_fp2);
-//       gettimeofday(&tv_B, NULL);
-//       mul_lazy_time += timedifference_msec(tv_A, tv_B) / n;
-
-//       if (fp2_cmp(&test1_fp2, &test2_fp2) != 0) {
-//         printf("failed!\n\n");
-//         fp2_printf("", &test1_fp2);
-//         fp2_printf("\n", &test2_fp2);
-//         printf("\n\n");
-//         return 1;
-//       }
-//     }
-//     printf("fp2 mul.      : %.6f[ms]\n", mul_time / fp2_n);
-//     printf("fp2 mul lazy. : %.6f[ms]\n", mul_lazy_time / fp2_n);
-// #ifdef DEBUG_COST_A
-//     printf("*********CP6 fp2 mul fp COST.********         \n");
-//     cost_printf("CP6 fp2 mul cost", &fp2_mul_cost, fp2_n * n);
-//     printf("***************************************         \n");
-// #endif
-
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp2_sqr test\n");
-//     sqr_time = 0, sqr_lazy_time = 0;
-//     n = 100;
-//     for (i = 0; i < fp2_n; i++) {
-//       fp2_set_random(&A_fp2, state);
-
-//       gettimeofday(&tv_A, NULL);
-//       for (j = 0; j < n; j++) fp2_sqr(&test1_fp2, &A_fp2);
-//       gettimeofday(&tv_B, NULL);
-//       sqr_time += timedifference_msec(tv_A, tv_B) / n;
-
-//       gettimeofday(&tv_A, NULL);
-//       for (j = 0; j < n; j++) fp2_sqr_lazy(&test2_fp2, &A_fp2);
-//       gettimeofday(&tv_B, NULL);
-//       sqr_lazy_time += timedifference_msec(tv_A, tv_B) / n;
-
-//       if (fp2_cmp(&test1_fp2, &test2_fp2) != 0) {
-//         printf("failed!\n\n");
-//         fp2_printf("", &test1_fp2);
-//         fp2_printf("\n", &test2_fp2);
-//         printf("\n\n");
-//         return 1;
-//       }
-//     }
-//     printf("fp2 sqr.      : %.6f[ms]\n", sqr_time / fp2_n);
-//     printf("fp2 sqr lazy. : %.6f[ms]\n", sqr_lazy_time / fp2_n);
-
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp2_inv test\n");
-//     inv_time = 0, inv_lazy_time = 0;
-//     n = 1000;
-//     for (i = 0; i < fp2_n; i++) {
-//       fp2_set_random(&A_fp2, state);
-//       fp2_set_random(&B_fp2, state);
-
-//       gettimeofday(&tv_A, NULL);
-//       for (j = 0; j < n; j++) fp2_inv(&test1_fp2, &A_fp2);
-//       gettimeofday(&tv_B, NULL);
-//       inv_time += timedifference_msec(tv_A, tv_B) / n;
-
-//       gettimeofday(&tv_A, NULL);
-//       for (j = 0; j < n; j++) fp2_inv_lazy(&test1_fp2, &A_fp2);
-//       gettimeofday(&tv_B, NULL);
-//       inv_lazy_time += timedifference_msec(tv_A, tv_B) / n;
-//     }
-//     printf("fp2 inv.      : %.6f[ms]\n", inv_time / fp2_n);
-//     printf("fp2 inv_lazy. : %.6f[ms]\n", inv_lazy_time / fp2_n);
-//   }
-//   if (fp6_n > 0) {
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp6_mul test\n");
-//     mul_time = 0, mul_lazy_time = 0;
-//     for (i = 0; i < fp6_n; i++) {
-//       fp6_set_random(&A_fp6, state);
-//       fp6_set_random(&B_fp6, state);
-
-//       cost_zero();
-//       gettimeofday(&tv_A, NULL);
-//       fp6_mul(&test1_fp6, &A_fp6, &B_fp6);
-//       gettimeofday(&tv_B, NULL);
-//       mul_time += timedifference_msec(tv_A, tv_B);
-//       cost_check(&tmp_cost);
-//       cost_addition(&fp6_mul_cost, &tmp_cost);
-
-//       gettimeofday(&tv_A, NULL);
-//       fp6_mul_lazy(&test2_fp6, &A_fp6, &B_fp6);
-//       gettimeofday(&tv_B, NULL);
-//       mul_lazy_time += timedifference_msec(tv_A, tv_B);
-
-//       if (fp6_cmp(&test1_fp6, &test2_fp6) != 0) {
-//         printf("failed!\n\n");
-//         fp6_printf("", &test1_fp6);
-//         fp6_printf("\n", &test2_fp6);
-//         printf("\n\n");
-//         return 1;
-//       }
-//     }
-
-//     printf("fp6 mul.       : %.4f[ms]\n", mul_time / fp6_n);
-//     printf("fp6 mul lazy.  : %.4f[ms]\n", mul_lazy_time / fp6_n);
-// #ifdef DEBUG_COST_A
-//     printf("*********CP6 fp6 mul fp COST.********         \n");
-//     cost_printf("CP6 fp6 mul cost", &fp6_mul_cost, fp6_n);
-//     printf("***************************************         \n");
-// #endif
-
-//     printf("------------------------------------------------------------------------------------\n");
-//     printf("fp6_sqr test\n");
-//     sqr_time = 0, sqr_lazy_time = 0;
-//     for (i = 0; i < fp6_n; i++) {
-//       fp6_set_random(&A_fp6, state);
-
-//       gettimeofday(&tv_A, NULL);
-//       fp6_sqr(&test1_fp6, &A_fp6);
-//       gettimeofday(&tv_B, NULL);
-//       sqr_time += timedifference_msec(tv_A, tv_B);
-
-//       gettimeofday(&tv_A, NULL);
-//       fp6_sqr_lazy(&test2_fp6, &A_fp6);
-//       gettimeofday(&tv_B, NULL);
-//       sqr_lazy_time += timedifference_msec(tv_A, tv_B);
-
-//       if (fp6_cmp(&test1_fp6, &test2_fp6) != 0) {
-//         printf("failed!\n\n");
-//         fp6_printf("", &test1_fp6);
-//         fp6_printf("\n", &test2_fp6);
-//         printf("\n\n");
-//         return 1;
-//       }
-//     }
-//     printf("fp6 sqr.      : %.4f[ms]\n", sqr_time / fp6_n);
-//     printf("fp6 sqr lazy. : %.4f[ms]\n", sqr_lazy_time / fp6_n);
-//   }
-//   return 0;
-// }
-
 int test_fp_montgomery(int fp_n) {
   int i, j, n = 0;
   float add_time = 0, add_nonmod_single = 0, add_nonmod_double = 0;
@@ -1331,7 +983,6 @@ void BENCH_miller_lazy_montgomery(int LOOP){
   fp8_println_montgomery("ANSm:", &fm);
   fp8_set_ui_ui(&f,0);
   fp8_set_ui(&f,1);
-  
   fp8_set_ui_ui(&fm,0);
   fp8_set_ui(&fm,1);
   fp_to_montgomery(&fm.x0.x0.x0, &fm.x0.x0.x0);
@@ -1352,6 +1003,79 @@ void BENCH_miller_lazy_montgomery(int LOOP){
   CYBOZU_BENCH_C("miller_opt_ate_jac_2NAF_lazy_montgomery()", LOOP, miller_opt_ate_jac_2NAF_lazy_montgomery,&fm,&P,&Q);
   fp8_println_montgomery("ANSm:", &fm);
 }
+
+void BENCH_miller_coordinates(int LOOP){
+  printf("============================================================================\n");
+  printf("--------------------------------------ltpq, lttp----------------------------\n");
+  printf("============================================================================\n");
+
+  efp8_t P,Q;
+  fp8_t f,e1,e2;
+
+  mpz_t a,b,ab;
+  efp8_init(&P);
+  efp8_init(&Q);
+
+  fp8_init(&f);
+  fp8_init(&e1);
+  fp8_init(&e2);
+
+  mpz_init(a);
+  mpz_init(b);
+  mpz_init(ab);
+
+  generate_g1(&P);
+  generate_g2(&Q);
+
+  static efp_t mapped_P;
+  static efp2_t mapped_Q,mapped_Q_neg;
+
+  static efp2_jacobian_t S;
+  static efp2_jacobian_t Sp;
+
+  fp8_set_ui_ui(&f,0);
+  fp8_set_ui(&f,1);
+
+  fp_set(&mapped_P.x,&P.x.x0.x0.x0);
+  fp_set(&mapped_P.y,&P.y.x0.x0.x0);
+  mapped_P.infinity = 0;
+
+  efp8_to_efp2(&mapped_Q,&Q);//twist
+  efp8_to_Jacefp2(&S,&Q);
+  efp8_to_Jacefp2(&Sp,&Q);
+  efp2_set_neg(&mapped_Q_neg,&mapped_Q);
+  // miller_proj_precomp_Costello(&mapped_P, &mapped_Q);
+//-----------------------------------------
+
+  CYBOZU_BENCH_C("ff_lttp()", LOOP, ff_lttp,&f,&S,&mapped_P);
+  fp8_set_ui(&f,1);
+  CYBOZU_BENCH_C("ff_lttp_Costello()", LOOP, ff_lttp_Costello, &f,&Sp,&mapped_P);
+  fp8_println("ANS:", &f);
+  fp8_println_montgomery("ANS:", &f);
+
+  fp8_set_ui(&f,1);
+  CYBOZU_BENCH_C("ff_ltpq()", LOOP, ff_ltqp,&f,&S,&mapped_Q,&mapped_P);
+  fp8_set_ui(&f,1);
+  CYBOZU_BENCH_C("ff_ltqp_Costello_mixed()", LOOP, ff_ltqp_Costello_mixed, &f,&Sp,&mapped_Q,&mapped_P);
+  fp8_println("ANS:", &f);
+  fp8_println_montgomery("ANS:", &f);
+
+  printf("============================================================================\n");
+  printf("--------------------------------------Miller--------------------------------\n");
+  printf("============================================================================\n");
+
+//------------------Jacobi(mixed)-----------------------
+
+  CYBOZU_BENCH_C("miller_opt_ate_jac_2NAF()", LOOP, miller_opt_ate_jac_2NAF,&f,&P,&Q);
+  fp8_println("ANS:", &f);
+  //------------------Projective*[1:2](mixed)-----------------------
+  fp8_set_ui(&f,1);
+
+  CYBOZU_BENCH_C("miller_opt_ate_proj_2NAF()", LOOP, miller_opt_ate_proj_2NAF,&f,&P,&Q);
+  fp8_println_montgomery("ANS:", &f);
+}
+
+
 
 void BENCH_finalexp_lazy_montgomery(int LOOP){
   printf("********************CHECK Finalexp WITH MONTGOMERY*************************************************\n\n");
@@ -1384,10 +1108,11 @@ void BENCH_finalexp_lazy_montgomery(int LOOP){
 
   fp8_println("final_exp\n", &ANS);
   fp8_println_montgomery("final_exp_lazy_montgomery\n", &ANSm);
+
 }
 
-void BENCH_Pairingn_lazy_montgomery(int LOOP){
-  printf("check_pairing() 開始\n");
+void BENCH_Pairing_jac_lazy_montgomery(int LOOP){
+  printf("check_pairing_jac() 開始\n");
   efp8_t P,Q,aP,bQ,tmp1;
   fp8_t f,e1,e2;
   mpz_t a,b,ab;
@@ -1452,7 +1177,6 @@ void BENCH_Pairingn_lazy_montgomery(int LOOP){
   printf("---------------------------------\n");
   miller_opt_ate_jac_2NAF_lazy_montgomery(&f,&aP,&bQ);
   final_exp_lazy_montgomery(&e1,&f);
-
   //e(P,Q)^(a*b) を求める
   miller_opt_ate_jac_2NAF_lazy_montgomery(&f,&P,&Q);
   final_exp_lazy_montgomery(&e2,&f);
@@ -1470,11 +1194,110 @@ void BENCH_Pairingn_lazy_montgomery(int LOOP){
 
   // printf("--------Benching pairing()-------\n");
 
-  // CYBOZU_BENCH_C("miller_opt_ate_jac_2NAF()", LOOP, miller_opt_ate_jac_2NAF,&f,&P,&Q);
+  // CYBOZU_BENCH_C("miller_opt_ate_proj_2NAF()", LOOP, miller_opt_ate_proj_2NAF,&f,&P,&Q);
   // CYBOZU_BENCH_C("final_exp()               ", LOOP, final_exp,&e2, &e1);
   // printf("---------------------------------\n");
 
   CYBOZU_BENCH_C("miller_opt_ate_jac_2NAF_lazy_montgomery()", LOOP, miller_opt_ate_jac_2NAF_lazy_montgomery,&f,&P,&Q);
+  CYBOZU_BENCH_C("final_exp_lazy_montgomery()               ", LOOP, final_exp_lazy_montgomery, &e2, &e1);
+  printf("---------------------------------\n");
+
+  mpz_clear(a);
+  mpz_clear(b);
+  mpz_clear(ab);
+
+  printf("*********************************************************************************************\n\n");
+}
+
+
+void BENCH_Pairing_proj_lazy_montgomery(int LOOP){
+  printf("check_pairing_proj() 開始\n");
+  efp8_t P,Q,aP,bQ,tmp1;
+  fp8_t f,e1,e2;
+  mpz_t a,b,ab;
+  efp8_init(&P);
+  efp8_init(&Q);
+
+  efp8_init(&aP);
+  efp8_init(&bQ);
+  efp8_init(&tmp1);
+  fp8_init(&f);
+  fp8_init(&e1);
+  fp8_init(&e2);
+  mpz_init(a);
+  mpz_init(b);
+  mpz_init(ab);
+
+  generate_g1(&P);
+  generate_g2(&Q);
+
+  mpz_urandomm(a,state,prime_z);
+  mpz_urandomm(b,state,prime_z);
+
+  #if 1
+  efp8_println("P = ",&P);
+  efp8_println("Q = ",&Q);
+
+  efp8_scm_fp(&tmp1,&P,order_z);
+  efp8_println("[r]P = ",&tmp1);
+  efp8_scm(&tmp1,&Q,order_z);
+  efp8_println("[r]Q = ",&tmp1);
+
+  gmp_printf("a = %Zd\n",a);
+  gmp_printf("b = %Zd\n",b);
+  printf("---------------------------------\n");
+  #endif
+
+  printf("---------------------------------\n");
+  printf("check regular proj pairing()\n");
+  printf("---------------------------------\n");
+  //e([a]P,[b]Q) を求める
+  efp8_scm_fp(&aP,&P,a);
+  efp8_scm(&bQ,&Q,b);
+  miller_opt_ate_proj_2NAF(&f,&aP,&bQ);
+  final_exp(&e1,&f);
+  //e(P,Q)^(a*b) を求める
+  miller_opt_ate_proj_2NAF(&f,&P,&Q);
+  final_exp(&e2,&f);
+  mpz_mul(ab,a,b);
+  fp8_pow(&e2,&e2,ab);
+  fp8_println("e([a]P,[b]Q) = ",&e1);
+  fp8_println("e(P,Q)^(a*b) = ",&e2);
+  if(fp8_cmp(&e1,&e2)==0)  {
+  printf("=====================================================\n");
+  printf("------------------bilinear!!-------------------------\n");
+  printf("=====================================================\n");
+  }else{
+    printf("e([a]P,[b]Q) != e(P,Q)^(a*b)\n\n");
+  }
+
+  printf("---------------------------------\n");
+  printf("check lazy montgomery pairing()\n");
+  printf("---------------------------------\n");
+  miller_opt_ate_proj_2NAF_lazy_montgomery(&f,&aP,&bQ);
+  final_exp_lazy_montgomery(&e1,&f);
+  //e(P,Q)^(a*b) を求める
+  miller_opt_ate_proj_2NAF_lazy_montgomery(&f,&P,&Q);
+  final_exp_lazy_montgomery(&e2,&f);
+
+  fp8_pow_montgomery(&e2,&e2,ab);
+  fp8_println_montgomery("e([a]P,[b]Q) = ",&e1);
+  fp8_println_montgomery("e(P,Q)^(a*b) = ",&e2);
+  if(fp8_cmp(&e1,&e2)==0)  {
+  printf("=====================================================\n");
+  printf("------------------bilinear!!-------------------------\n");
+  printf("=====================================================\n\n\n");
+  }else{
+    printf("e([a]P,[b]Q) != e(P,Q)^(a*b)\n\n");
+  }
+
+  // printf("--------Benching pairing()-------\n");
+
+  // CYBOZU_BENCH_C("miller_opt_ate_proj_2NAF()", LOOP, miller_opt_ate_proj_2NAF,&f,&P,&Q);
+  // CYBOZU_BENCH_C("final_exp()               ", LOOP, final_exp,&e2, &e1);
+  // printf("---------------------------------\n");
+
+  CYBOZU_BENCH_C("miller_opt_ate_proj_2NAF_lazy_montgomery()", LOOP, miller_opt_ate_proj_2NAF_lazy_montgomery,&f,&P,&Q);
   CYBOZU_BENCH_C("final_exp_lazy_montgomery()               ", LOOP, final_exp_lazy_montgomery, &e2, &e1);
   printf("---------------------------------\n");
 
@@ -1529,14 +1352,6 @@ void check_finalexp_pow_cost_count_2NAF(){
   cost_printf("fp8_sqr cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
   printf("---------------------------------\n");
 
-
-  printf("fp8_sqr_GS count\n");
-  cost_zero();
-  fp8_sqr_GS(&f,&f);
-  cost_check(&final_exp_4hy_cost);
-  cost_printf("fp8_sqr_GS cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
-  printf("---------------------------------\n");
-
   printf("*********************************************************************************************\n\n");
 }
 
@@ -1584,98 +1399,5 @@ void check_finalexp_pow_cost_count_2NAF_montgomery(){
   cost_printf("fp8_sqr cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
   printf("---------------------------------\n");
 
-  printf("fp8_sqr_GS count\n");
-  cost_zero();
-  fp8_sqr_GS_lazy_montgomery(&f,&f);
-  cost_check(&final_exp_4hy_cost);
-  cost_printf("fp8_sqr_GS cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
-  printf("---------------------------------\n");
-
-
   printf("*********************************************************************************************\n\n");
-}
-
-void BENCH_miller_coordinate(int LOOP){
-  printf("============================================================================\n");
-  printf("--------------------------------------ltpq, lttp----------------------------\n");
-  printf("============================================================================\n");
-
-  efp8_t P,Q;
-  fp8_t f,e1,e2;
-  fp8_t fm,e1m,e2m;
-
-  mpz_t a,b,ab;
-  efp8_init(&P);
-  efp8_init(&Q);
-
-  fp8_init(&f);
-  fp8_init(&e1);
-  fp8_init(&e2);
-  fp8_init(&fm);
-  fp8_init(&e1m);
-  fp8_init(&e2m);
-  mpz_init(a);
-  mpz_init(b);
-  mpz_init(ab);
-
-  generate_g1(&P);
-  generate_g2(&Q);
-
-  static efp_t mapped_P;
-  static efp2_t mapped_Q,mapped_Q_neg;
-  static efp_t mapped_Pm;
-  static efp2_t mapped_Qm,mapped_Q_negm;
-  static efp2_jacobian_t S;
-  static efp2_jacobian_t Sm;
-//------------------Regular-----------------------
-  fp8_set_ui_ui(&f,0);
-  fp8_set_ui(&f,1);
-
-  fp_set(&mapped_P.x,&P.x.x0.x0.x0);
-  fp_set(&mapped_P.y,&P.y.x0.x0.x0);
-  mapped_P.infinity = 0;
-
-  efp8_to_efp2(&mapped_Q,&Q);//twist
-  efp8_to_Jacefp2(&S,&Q);
-  efp2_set_neg(&mapped_Q_neg,&mapped_Q);
-//------------------Montgomery-----------------------
-  fp8_set_ui_ui(&fm,0);
-  fp8_set_ui(&fm,1);
-  fp_to_montgomery(&fm.x0.x0.x0, &fm.x0.x0.x0);
-
-  fp_to_montgomery(&mapped_Pm.x,&P.x.x0.x0.x0);
-  fp_to_montgomery(&mapped_Pm.y,&P.y.x0.x0.x0);
-  mapped_Pm.infinity = 0;
-
-  efp8_to_efp2_montgomery(&mapped_Qm,&Q);//twist
-  efp8_to_Jacefp2_montgomery(&Sm,&Q);
-  efp2_set_neg_montgomery(&mapped_Q_negm,&mapped_Q);//here
-//-----------------------------------------
-
-  CYBOZU_BENCH_C("ff_lttp()", LOOP, ff_lttp,&f,&S,&mapped_P);
-  fp8_println("ANS:", &f);
-  CYBOZU_BENCH_C("ff_lttp_Costello()", LOOP, ff_lttp_Costello, &f,&S,&mapped_P);
-  fp8_println("ANSm:", &f);
-
-  // fp8_set_ui_ui(&f,0);
-  // fp8_set_ui(&f,1);
-  // fp8_set_ui_ui(&fm,0);
-  // fp8_set_ui(&fm,1);
-  // fp_to_montgomery(&fm.x0.x0.x0, &fm.x0.x0.x0);
-
-  // CYBOZU_BENCH_C("ff_ltpq()", LOOP, ff_ltqp,&f,&S,&mapped_Q,&mapped_P);
-  // CYBOZU_BENCH_C("ff_ltpq_lazy_montgomery()", LOOP, ff_ltqp_lazy_montgomery, &fm,&Sm,&mapped_Qm,&mapped_Pm);
-  // fp8_println("ANS:", &f);
-  // fp8_println_montgomery("ANSm:", &fm);
-
-  // printf("============================================================================\n");
-  // printf("--------------------------------------Miller--------------------------------\n");
-  // printf("============================================================================\n");
-
-
-  // CYBOZU_BENCH_C("miller_opt_ate_jac_2NAF()", LOOP, miller_opt_ate_jac_2NAF,&f,&P,&Q);
-  // fp8_println("ANS:", &f);
-  
-  // CYBOZU_BENCH_C("miller_opt_ate_jac_2NAF_lazy_montgomery()", LOOP, miller_opt_ate_jac_2NAF_lazy_montgomery,&fm,&P,&Q);
-  // fp8_println_montgomery("ANSm:", &fm);
 }

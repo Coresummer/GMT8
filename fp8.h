@@ -94,8 +94,11 @@ void fp8_mul_base_nonmod_double(fpd8_t *ANS,fpd8_t *A);
 
 void fp8_mul_sparse_add(fp8_t *ANS,fp8_t *A,fp8_t *B);
 void fp8_mul_sparse_dbl(fp8_t *ANS,fp8_t *A,fp8_t *B);
+void fp8_mul_sparse_add_costello(fp8_t *ANS,fp8_t *A,fp8_t *B);
+
 
 void fp8_mul_sparse_add_lazy_montgomery(fp8_t *ANS,fp8_t *A,fp8_t *B);
 void fp8_mul_sparse_dbl_lazy_montgomery(fp8_t *ANS,fp8_t *A,fp8_t *B);
+void fp8_mul_sparse_add_costello_lazy_montgomery(fp8_t *ANS,fp8_t *A,fp8_t *B);
 
 #endif
