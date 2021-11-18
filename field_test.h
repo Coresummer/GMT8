@@ -23,8 +23,9 @@ void BENCH_fp2_fp4_fp8_mul_lazy_montgomery(int LOOP);
 void BENCH_miller_lazy_montgomery(int LOOP);
 void BENCH_miller_coordinates(int LOOP);
 void BENCH_finalexp_lazy_montgomery(int LOOP);
-void BENCH_Pairingn_lazy_montgomery(int LOOP);
-void BENCH_Pairingn_lazy_montgomery2(int LOOP);
+void BENCH_Pairing_jac_lazy_montgomery(int LOOP);
+void BENCH_Pairing_proj_lazy_montgomery(int LOOP);
+void BENCH_Pairing_lazy_montgomery2(int LOOP);
 
 void check_finalexp_pow_cost_count_2NAF();
 void check_finalexp_pow_cost_count_2NAF_montgomery();
