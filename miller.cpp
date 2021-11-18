@@ -426,7 +426,7 @@ void ff_ltqp_lazy_montgomery(fp8_t *f, efp2_jacobian_t *S, efp2_t *Q,efp_t *P){
   fp2_mul_lazy_montgomery(&tmp1_fp,&t2,&Q->x);      //t2Qx
   fp2_mul_lazy_montgomery(&tmp2_fp,&nextZ,&Q->y);   //Zt1Qy
   fp2_sub_nonmod_single(&tmp1_fp8.x0.x1,&tmp1_fp,&tmp2_fp);
-  // fp2_mul_base_inv(&tmp1_fp8.x0.x1, &tmp1_fp8.x0.x1);
+  fp2_mul_base_inv(&tmp1_fp8.x0.x1, &tmp1_fp8.x0.x1);
 //------------------------------------
   fp8_mul_sparse_add_lazy_montgomery(f,&tmp1_fp8,f);
 
