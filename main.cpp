@@ -68,8 +68,8 @@ int main(){
 
   // check_pairing_time_2NAF();
   // check_pairing_count_2NAF();
-  check_pairing_jac_count_2NAF_lazy_montgomery();
-  check_pairing_proj_count_2NAF_lazy_montgomery();
+  // check_pairing_jac_count_2NAF_lazy_montgomery();
+  // check_pairing_proj_count_2NAF_lazy_montgomery();
   // check_finalexp_pow_cost_count_2NAF();
   // check_finalexp_pow_cost_count_2NAF_montgomery();
 
