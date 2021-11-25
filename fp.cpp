@@ -690,7 +690,7 @@ void fp_lshift_ui_nonmod_single(fp_t *ANS, fp_t *A, int s) {
 
 void fp_lshift_ui_nonmod_double(fpd_t *ANS, fpd_t *A, int s) {
 #ifdef DEBUG_COST_A
-  cost_sqr++;
+  cost_add_ui++;
 #endif
   mpn_lshift(ANS->x0, A->x0, FPLIMB2, s);
 }
