@@ -61,6 +61,10 @@ int main(){
   // check_g1_g2();
   // check_g2_dash();
 
+  check_fp2_count();
+  check_fp4_count();
+  check_fp8_count();
+
   // check_pairing();
   // check_pairing_2NAF();
   // check_pairing_2NAF_costello();
@@ -77,8 +81,8 @@ int main(){
   // BENCH_miller_coordinates(CHECK_PAIRING_TIME_LOOP);
   // BENCH_finalexp_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   
-  BENCH_Pairing_jac_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
-  BENCH_Pairing_proj_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
+  // BENCH_Pairing_jac_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
+  // BENCH_Pairing_proj_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   printf("*********************************************************************************************\n\n");
 
   return 0;
