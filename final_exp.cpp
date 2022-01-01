@@ -24,8 +24,6 @@ void final_exp(fp8_t *ANS, fp8_t *A){
   fp8_finalexpow_x_2NAF(&tmp4_fp8, &tmp1_fp8);          //M^x
   fp8_mul(&tmp3_fp8,&tmp3_fp8,  &tmp4_fp8);   //M^(p+x) = M'
 
-  // fp8_println("after ^x'", &tmp4_fp8);
-
   fp8_frobenius_map_p2(&tmp4_fp8,&tmp3_fp8);  //M'^(p^2)
   // fp8_finalexpow_x_2_2NAF(&tmp5_fp8,&tmp3_fp8);           //M'^(x^2)
   fp8_finalexpow_x_2NAF(&tmp5_fp8,&tmp3_fp8);           //M'^(x^2)
@@ -51,6 +49,7 @@ void final_exp(fp8_t *ANS, fp8_t *A){
   fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp4_fp8);     //M"^((4hy^2+1)x -4hy)x + 4hy + 1)x - 4 
   fp8_finalexpow_x_2NAF(&tmp5_fp8, &tmp5_fp8);//M"^(((4hy^2+1)x -4hy)x + 4hy + 1)x - 4)x
   fp8_mul(&tmp5_fp8,&tmp5_fp8,&tmp1_fp8);     //M"^((4hy^2+1)x -4hy)x + 4hy + 1)x^2 + 4hy^2
+  
   fp8_mul(ANS,&tmp5_fp8,&tmp2_fp8);           //(p^4-1)(4 + (p+x)(p^2+x^2)(((4hy^2+1)x -4hy + 1)x^2 + 4hy^2 + 4)
 }
 

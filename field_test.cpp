@@ -1399,5 +1399,12 @@ void check_finalexp_pow_cost_count_2NAF_montgomery(){
   cost_printf("fp8_sqr cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
   printf("---------------------------------\n");
 
+  printf("fp8_inv count\n");
+  cost_zero();
+  fp8_inv(&f,&f);
+  cost_check(&final_exp_4hy_cost);
+  cost_printf("fp8_inv cost",&final_exp_4hy_cost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+
   printf("*********************************************************************************************\n\n");
 }
