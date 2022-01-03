@@ -56,6 +56,10 @@ int main(){
   // check_fp4_with_montgomery();
   // check_fp8_with_montgomery();
 
+  check_fp2_count();
+  check_fp4_count();
+  check_fp8_count();
+
   // check_efp();
   // check_efp2();
   // check_efp4();
@@ -76,8 +80,8 @@ int main(){
   // BENCH_fp2_fp4_fp8_mul_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   // BENCH_miller_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   // BENCH_finalexp_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
-  BENCH_Pairing_jac_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
-  BENCH_Pairing_proj_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
+  // BENCH_Pairing_jac_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
+  // BENCH_Pairing_proj_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
 
   printf("*********************************************************************************************\n\n");
   // mpz_t expo;

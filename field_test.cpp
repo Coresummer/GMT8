@@ -920,6 +920,101 @@ void BENCH_fp2_fp4_fp8_mul_lazy_montgomery(int LOOP){
 
 }
 
+
+void check_fp2_count(){
+  printf("check_fp2_count() 開始\n");
+  fp2_t A,B,ANS;
+  fp2_init(&A);
+  fp2_init(&B);
+  fp2_init(&ANS);
+  cost mulcost, sqrcost;
+
+  fp2_set_random(&A,state);
+  fp2_set_random(&B,state);
+  printf("---------------------------------\n");
+  printf("fp2_mul() count\n");
+  cost_zero();
+  fp2_mul(&ANS,&A,&B);
+  cost_check(&mulcost);
+  cost_printf("",&mulcost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+  printf("fp2_sqr() count\n");
+  cost_zero();
+  fp2_sqr(&ANS,&A);
+  cost_check(&sqrcost);
+  cost_printf("",&sqrcost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+}
+
+void check_fp4_count(){
+  printf("check_fp4_count() 開始\n");
+  fp4_t A,B,ANS;
+  fp4_init(&A);
+  fp4_init(&B);
+  fp4_init(&ANS);
+  cost mulcost, sqrcost;
+
+  fp4_set_random(&A,state);
+  fp4_set_random(&B,state);
+  printf("---------------------------------\n");
+  printf("fp4_mul() count\n");
+  cost_zero();
+  fp4_mul(&ANS,&A,&B);
+  cost_check(&mulcost);
+  cost_printf("",&mulcost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+  printf("fp4_sqr() count\n");
+  cost_zero();
+  fp4_sqr(&ANS,&A);
+  cost_check(&sqrcost);
+  cost_printf("",&sqrcost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+}
+
+
+void check_fp8_count(){
+  printf("check_fp8_count() 開始\n");
+  fp8_t A,B,ANS;
+  fp8_init(&A);
+  fp8_init(&B);
+  fp8_init(&ANS);
+  cost mulcost, sqrcost, sqrcyclocost,fcost,invcost;
+
+  fp8_set_random(&A,state);
+  fp8_set_random(&B,state);
+  printf("---------------------------------\n");
+  printf("fp8_mul() count\n");
+  cost_zero();
+  fp8_mul(&ANS,&A,&B);
+  cost_check(&mulcost);
+  cost_printf("",&mulcost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+  printf("fp8_sqr() count\n");
+  cost_zero();
+  fp8_sqr(&ANS,&A);
+  cost_check(&sqrcost);
+  cost_printf("",&sqrcost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+  printf("fp8_sqr_GS() count\n");
+  cost_zero();
+  fp8_sqr_GS(&ANS,&A);
+  cost_check(&sqrcyclocost);
+  cost_printf("",&sqrcyclocost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+  printf("fp8_frobenius() count\n");
+  cost_zero();
+  fp8_frobenius_map_p1(&ANS,&A);
+  cost_check(&fcost);
+  cost_printf("",&fcost,CHECK_PAIRING_TIME_LOOP);
+  printf("---------------------------------\n");
+  printf("fp8_inv() count\n");
+  cost_zero();
+  fp8_inv(&ANS,&A);
+  cost_check(&invcost);
+  cost_printf("",&invcost,CHECK_PAIRING_TIME_LOOP);
+  printf("*********************************************************************************************\n\n");
+}
+
 void BENCH_miller_lazy_montgomery(int LOOP){
   printf("============================================================================\n");
   printf("--------------------------------------ltpq, lttp----------------------------\n");

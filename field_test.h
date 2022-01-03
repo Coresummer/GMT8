@@ -19,6 +19,10 @@ void check_fp2_with_montgomery();
 void check_fp4_with_montgomery();
 void check_fp8_with_montgomery();
 
+void check_fp2_count();
+void check_fp4_count();
+void check_fp8_count();
+
 void BENCH_fp2_fp4_fp8_mul_lazy_montgomery(int LOOP);
 void BENCH_miller_lazy_montgomery(int LOOP);
 void BENCH_miller_coordinates(int LOOP);
