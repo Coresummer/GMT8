@@ -61,7 +61,7 @@ int main(){
 
   // check_pairing();
   // check_pairing_2NAF();
-  check_pairing_2NAF_costello();
+  // check_pairing_2NAF_costello();
   // check_pairing_static();
   // check_pairing_time_2NAF();
   // check_pairing_count_2NAF();
