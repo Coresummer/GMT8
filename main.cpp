@@ -70,7 +70,7 @@ int main(){
   // check_pairing_jac_count_2NAF_lazy_montgomery();
   check_pairing_proj_count_2NAF_lazy_montgomery();
   // check_finalexp_pow_cost_count_2NAF();
-  check_finalexp_pow_cost_count_2NAF_montgomery();
+  // check_finalexp_pow_cost_count_2NAF_montgomery();
 
   // BENCH_fp2_fp4_fp8_mul_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   // BENCH_miller_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
