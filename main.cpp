@@ -61,9 +61,9 @@ int main(){
   // check_g1_g2();
   // check_g2_dash();
 
-  check_fp2_count();
-  check_fp4_count();
-  check_fp8_count();
+  // check_fp2_count();
+  // check_fp4_count();
+  // check_fp8_count();
 
   // check_pairing();
   // check_pairing_2NAF();
@@ -72,7 +72,7 @@ int main(){
   // check_pairing_time_2NAF();
   // check_pairing_count_2NAF();
   // check_pairing_jac_count_2NAF_lazy_montgomery();
-  // check_pairing_proj_count_2NAF_lazy_montgomery();
+  check_pairing_proj_count_2NAF_lazy_montgomery();
   // check_finalexp_pow_cost_count_2NAF();
   // check_finalexp_pow_cost_count_2NAF_montgomery();
 
