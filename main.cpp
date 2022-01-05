@@ -72,7 +72,7 @@ int main(){
   // check_pairing_time_2NAF();
   // check_pairing_count_2NAF();
   // check_pairing_jac_count_2NAF_lazy_montgomery();
-  check_pairing_proj_count_2NAF_lazy_montgomery();
+  // check_pairing_proj_count_2NAF_lazy_montgomery();
   // check_finalexp_pow_cost_count_2NAF();
   // check_finalexp_pow_cost_count_2NAF_montgomery();
 
@@ -82,7 +82,7 @@ int main(){
   // BENCH_finalexp_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   
   // BENCH_Pairing_jac_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
-  // BENCH_Pairing_proj_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
+  BENCH_Pairing_proj_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   printf("*********************************************************************************************\n\n");
 
   return 0;
