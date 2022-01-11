@@ -1406,7 +1406,6 @@ void check_finalexp_pow_cost_count_2NAF_montgomery(){
   printf("*********************************************************************************************\n\n");
 }
 
-
 void BENCH_Pairing_proj_lazy_montgomery_static(int LOOP){
   printf("check_pairing_proj() 開始\n");
   efp8_t P,Q,aP,bQ,tmp1;
