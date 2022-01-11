@@ -1467,9 +1467,9 @@ void BENCH_Pairing_proj_lazy_montgomery_static(int LOOP){
   efp2_jacobian_t S;
   efp2_jacobian_init(&S);
 
-  printf("---------------------------------\n");
-  printf("check lazy montgomery pairing()\n");
-  printf("---------------------------------\n");
+	printf("--------------------------------------\n");
+  printf("check lazy montgomery pairing_static()\n");
+  printf("--------------------------------------\n");
   pre_miller_opt_ate_proj_loop_2NAF_lazy_montgomery(&f, &mapped_P, &mapped_Q, &mapped_Q_neg, &S, &aP, &bQ);
   miller_opt_ate_proj_loop_2NAF_lazy_montgomery(&f,&mapped_P,&mapped_Q,&mapped_Q_neg,&S);
   final_exp_lazy_montgomery(&e1,&f);
