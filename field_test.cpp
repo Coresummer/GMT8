@@ -1407,7 +1407,7 @@ void check_finalexp_pow_cost_count_2NAF_montgomery(){
 }
 
 void BENCH_Pairing_proj_lazy_montgomery_static(int LOOP){
-  printf("check_pairing_proj() 開始\n");
+  printf("check_pairing_proj_static() 開始\n");
   efp8_t P,Q,aP,bQ,tmp1;
   fp8_t f,e1,e2;
   mpz_t a,b,ab;
@@ -1464,9 +1464,9 @@ void BENCH_Pairing_proj_lazy_montgomery_static(int LOOP){
   efp2_jacobian_t S;
   efp2_jacobian_init(&S);
 
-  printf("---------------------------------\n");
-  printf("check lazy montgomery pairing()\n");
-  printf("---------------------------------\n");
+	printf("--------------------------------------\n");
+  printf("check lazy montgomery pairing_static()\n");
+  printf("--------------------------------------\n");
   pre_miller_opt_ate_proj_loop_2NAF_lazy_montgomery(&f, &mapped_P, &mapped_Q, &mapped_Q_neg, &S, &aP, &bQ);
   miller_opt_ate_proj_loop_2NAF_lazy_montgomery(&f,&mapped_P,&mapped_Q,&mapped_Q_neg,&S);
   final_exp_lazy_montgomery(&e1,&f);
