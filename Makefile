@@ -5,7 +5,7 @@ OBJS   =  main.o create.o scalar.o mpn.o fp.o fp2.o field_test.o time.o fp4.o fp
 HEADER = define.h create.h  scalar.h mpn.h fp.h fp2.h fp2.h field_test.h time.h fp4.h fp8.h efp.h efp2.h efp4.h efp8.h test_efp.h miller.h final_exp.h test_pairing.h 
 
 $(PROGRAM): $(OBJS)
-	$(CXX) -fPIC -g -pg -o $(PROGRAM) $(OBJS) -Ofast -march=native -lgmp -lstdc++
+	$(CXX) -fPIC -g -o $(PROGRAM) $(OBJS) -Ofast -march=native -lgmp -lstdc++
 	#-fsanitize=address
 
 #サフィックスルールの適応対象の拡張子の定義

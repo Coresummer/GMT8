@@ -4,7 +4,6 @@
 #include "efp.h"
 #include "fp2.h"
 #include "mpn.h"
-#include <ELiPS/define.h>
 #include <gmp.h>
 
 
