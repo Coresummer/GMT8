@@ -3,7 +3,6 @@
 #include "fp.h"
 #include "efp.h"
 #include "fp2.h"
-#include <ELiPS/define.h>
 #include <gmp.h>
 
 

@@ -1,7 +1,6 @@
 #include "final_exp.h"
 #include "define.h"
 #include "fp8.h"
-#include <ELiPS/define.h>
 #include <cstdio>
 
 void final_exp_direct(fp8_t *ANS, fp8_t *A){
