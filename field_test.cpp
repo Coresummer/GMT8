@@ -1408,3 +1408,95 @@ void check_finalexp_pow_cost_count_2NAF_montgomery(){
 
   printf("*********************************************************************************************\n\n");
 }
+
+void BENCH_Pairing_proj_lazy_montgomery_static(int LOOP){
+  printf("check_pairing_proj_static() 開始\n");
+  efp8_t P,Q,aP,bQ,tmp1;
+  fp8_t f,e1,e2;
+  mpz_t a,b,ab;
+  mpz_t px,py,qx1,qx2,qy1,qy2;
+  efp8_init(&P);
+  efp8_init(&Q);
+
+  efp8_init(&aP);
+  efp8_init(&bQ);
+  efp8_init(&tmp1);
+  fp8_init(&f);
+  fp8_init(&e1);
+  fp8_init(&e2);
+  mpz_init_set_str(a,"11572949769166380585226343310304350276488912480716866848234549974660437578720144552171126138682194799744294811883399580170344708389502031284500218968890503062489504",10);
+  mpz_init_set_str(b,"4504182117316004236696961332504379040964341668012094821966581709623693876978478622078946935261083156616644047362379323023674883729763837056167376954281761355584822",10);
+  mpz_init(ab);
+  mpz_mul(ab,a,b);
+
+  mpz_init_set_str(px,"7467710015278176793660393103569331477529841715415080697012876328859729958066492978505442439617072015466752820723220839236534637183885440781110217707638903976782227",10);
+  mpz_init_set_str(py,"6088279501888905280881173198966267404997289204083625466407527005926994968981179507755569183218572146929511055540237905378670023408321875057754423935572054116115708",10);
+  mpz_init_set_str(qx1,"10671655066887411328397278463188876464639543705795716877800448659470679931618354899200260167799108043301013519469714763854149286903891803007745825431260689369853284",10);
+  mpz_init_set_str(qx2,"11014797048893612536343310546760419762816767069339245261942010635594949509899080685714684950612622057818175867547251423637374137130693438744056222812034522532405935",10);
+  mpz_init_set_str(qy1,"6441373089628608027325282797453628876799675726313687361132764629904185179891386524497545431211574477354766519515118678089875871374414426927121416252290295677827654",10);
+  mpz_init_set_str(qy2,"10015102703601587049205701816758987818504702469415710818672176397800923925736678922978002589618956690638917227779287038173369027081108414140155264387247209652322518",10);
+  mpn_set_mpz(P.x.x0.x0.x0.x0, px);
+  mpn_set_mpz(P.y.x0.x0.x0.x0, py);
+  mpn_set_mpz(Q.x.x0.x1.x0.x0, qx1);
+  mpn_set_mpz(Q.x.x0.x1.x1.x0, qx2);
+  mpn_set_mpz(Q.y.x1.x0.x0.x0, qy1);
+  mpn_set_mpz(Q.y.x1.x0.x1.x0, qy2);
+
+  //e([a]P,[b]Q) を求める
+  efp8_scm_fp(&aP,&P,a);
+  efp8_scm(&bQ,&Q,b);
+
+  #if 0
+  efp8_println("P = ",&P);
+  efp8_println("Q = ",&Q);
+
+  efp8_scm_fp(&tmp1,&P,order_z);
+  efp8_println("[r]P = ",&tmp1);
+  efp8_scm(&tmp1,&Q,order_z);
+  efp8_println("[r]Q = ",&tmp1);
+
+  gmp_printf("a = %Zd\n",a);
+  gmp_printf("b = %Zd\n",b);
+  printf("---------------------------------\n");
+  #endif
+  efp_t mapped_P;
+  efp_init(&mapped_P);
+  efp2_t mapped_Q,mapped_Q_neg;
+  efp2_init(&mapped_Q);
+  efp2_init(&mapped_Q_neg);
+  efp2_jacobian_t S;
+  efp2_jacobian_init(&S);
+
+  printf("---------------------------------\n");
+  printf("check lazy montgomery pairing()\n");
+  printf("---------------------------------\n");
+  pre_miller_opt_ate_proj_loop_2NAF_lazy_montgomery(&f, &mapped_P, &mapped_Q, &mapped_Q_neg, &S, &aP, &bQ);
+  miller_opt_ate_proj_loop_2NAF_lazy_montgomery(&f,&mapped_P,&mapped_Q,&mapped_Q_neg,&S);
+  final_exp_lazy_montgomery(&e1,&f);
+  //e(P,Q)^(a*b) を求める
+  pre_miller_opt_ate_proj_loop_2NAF_lazy_montgomery(&f, &mapped_P, &mapped_Q, &mapped_Q_neg, &S, &P, &Q);
+  miller_opt_ate_proj_loop_2NAF_lazy_montgomery(&f,&mapped_P,&mapped_Q,&mapped_Q_neg,&S);
+  final_exp_lazy_montgomery(&e2,&f);
+
+  fp8_pow_montgomery(&e2,&e2,ab);
+  fp8_println_montgomery("e([a]P,[b]Q) = ",&e1);
+  fp8_println_montgomery("e(P,Q)^(a*b) = ",&e2);
+  if(fp8_cmp(&e1,&e2)==0)  {
+  printf("=====================================================\n");
+  printf("------------------bilinear!!-------------------------\n");
+  printf("=====================================================\n\n\n");
+  }else{
+    printf("e([a]P,[b]Q) != e(P,Q)^(a*b)\n\n");
+  }
+
+  pre_miller_opt_ate_proj_loop_2NAF_lazy_montgomery(&f, &mapped_P, &mapped_Q, &mapped_Q_neg, &S, &aP, &bQ);
+  CYBOZU_BENCH_C("miller_opt_ate_proj_2NAF_lazy_montgomery()", LOOP, miller_opt_ate_proj_loop_2NAF_lazy_montgomery,&f,&mapped_P,&mapped_Q,&mapped_Q_neg,&S);
+  CYBOZU_BENCH_C("final_exp_lazy_montgomery()               ", LOOP, final_exp_lazy_montgomery, &e2, &e1);
+  printf("---------------------------------\n");
+
+  mpz_clear(a);
+  mpz_clear(b);
+  mpz_clear(ab);
+
+  printf("*********************************************************************************************\n\n");
+}
