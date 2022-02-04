@@ -6,12 +6,6 @@
 #include "mpn.h"
 #include <cstdio>
 
-
-void miller_proj_precomp_Costello(efp2_t *S,efp2_t *R){
-  //call this after generate P & Q_dash precomputed value wont change
-
-}
-
 //twist
 void efp8_to_Jacefp2(efp2_jacobian_t *ANS,efp8_t *A){ 
   fp2_mul_base(&ANS->x,&A->x.x0.x1);
