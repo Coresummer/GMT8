@@ -28,16 +28,20 @@
 #define ARCBIT 64  //64bit processor
 //#define ARCBIT 32 //32bit processor
 
-// #define DEBUG_COST_A
+//#define DEBUG_COST_A
 //#define DEBUG_ASSERT
 #define CHECK_PAIRING_TIME_LOOP 10000
-
+/**************MP Lib**************/
+// #define mcl
+#define gmp
+/**********************************/
 /**************Option**************/
 #define X64
+// #define X32
 /**********************************/
 
 #ifdef  X64
-#define FPLIMB_BITS FPLIMB*ARCBIT
+#define FPLIMB_BITS FPLIMB * ARCBIT
 #define FPLIMB 9 //
 #define FPLIMB2 FPLIMB*2   //?? + 1
 #endif
@@ -49,8 +53,6 @@
 #endif
 
 #define scalar_t mpz_t
-
-#define k6_X_length 128//////37??
 
 /*Field*/
 typedef struct{

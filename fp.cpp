@@ -193,6 +193,8 @@ void fp_mulmod_montgomery(fp_t *ANS, fp_t *A, fp_t *B) {
   cost_mul++;
   cost_mod++;
 #endif
+
+#ifdef  gmp
   // static mp_limb_t T[FPLIMB2];
   // mpn_zero(T, FPLIMB2);
 
@@ -203,9 +205,11 @@ void fp_mulmod_montgomery(fp_t *ANS, fp_t *A, fp_t *B) {
   // mpn_add_n(ANS->x0, T + FPLIMB, T, FPLIMB);
   // if (mpn_cmp(ANS->x0, prime, FPLIMB) != -1)
   //   mpn_sub_n(ANS->x0, ANS->x0, prime, FPLIMB);
-    
+#endif
 
+#ifdef  mcl
   mcl_mont(ANS->x0,A->x0, B->x0);
+#endif
 }
 
 void fp_sqrmod_montgomery(fp_t *ANS, fp_t *A) {
@@ -213,6 +217,7 @@ void fp_sqrmod_montgomery(fp_t *ANS, fp_t *A) {
   cost_sqr++;
   cost_mod++;
 #endif
+#ifdef  gmp
   // static mp_limb_t T[FPLIMB2];
   // mpn_zero(T, FPLIMB2);
 
@@ -223,7 +228,11 @@ void fp_sqrmod_montgomery(fp_t *ANS, fp_t *A) {
   // mpn_add_n(ANS->x0, T + FPLIMB, T, FPLIMB);
   // if (mpn_cmp(ANS->x0, prime, FPLIMB) != -1)
   //   mpn_sub_n(ANS->x0, ANS->x0, prime, FPLIMB);
+#endif
+
+#ifdef  mcl
   mcl_mont(ANS->x0, A->x0, A->x0);
+#endif
 }
 
 void fp_mod_montgomery(fp_t *ANS, fp_t *A) {
@@ -285,7 +294,9 @@ void fp_mul_nonmod(fpd_t *ANS, fp_t *A, fp_t *B) {
 #ifdef DEBUG_COST_A
   cost_mul++;
 #endif
+  
   // mpn_mul_n(ANS->x0, A->x0, B->x0, FPLIMB);
+
   mcl_mulPre(ANS->x0, A->x0, B->x0);
 }
 

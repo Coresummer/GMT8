@@ -157,7 +157,6 @@ void fp2_l1shift_nonmod_double(fpd2_t *ANS, fpd2_t *A) {
   fp_l1shift_nonmod_double(&ANS->x1, &A->x1);
 }
 
-
 void fp2_r1shift(fp2_t *ANS, fp2_t *A) {
   fp_r1shift(&ANS->x0, &A->x0);
   fp_r1shift(&ANS->x1, &A->x1);
@@ -202,6 +201,38 @@ void fp2_mul_lazy(fp2_t *ANS,fp2_t *A,fp2_t *B){
 } 
 
 void fp2_mul_lazy_montgomery(fp2_t *ANS,fp2_t *A,fp2_t *B){ 
+#if 0
+  //Karatsuba Complex
+  // (a+bi)(c+di) = ac-bd+(ad + bc)i = ac-bd+((a+b)(c+d) - ac - bd)i
+  // uint64_t AC[sizeof(fp_t) * 2];
+  // uint64_t BD[sizeof(fp_t) * 2];
+  // uint64_t T[sizeof(fp_t) * 2];
+  // const uint64_t *a = A->x0.x0;
+  // const uint64_t *b = A->x1.x0;
+  // const uint64_t *c = B->x0.x0;
+  // const uint64_t *d = B->x1.x0;
+  // mcl_addPre(AC, a, b);
+  // mcl_addPre(BD, c, d);
+  // mcl_mulPre(T, AC, BD); // (a+b)(c+d)
+  // mcl_mulPre(AC, a, c); // ac
+  // mcl_mulPre(BD, b, d); // bd
+  // mcl_subDblPre(T, T, AC);
+  // mcl_subDblPre(T, T, BD); // (a+b)(c+d) - ac - bd
+  // mcl_subDbl(AC, AC, BD); // ac-bd
+  // mcl_mod(ANS->x0.x0, AC);
+  // mcl_mod(ANS->x1.x0, T);
+
+  //Type-I AOPF
+  // (aω+bω^p)(cω+dω^p) = {(a-b)(c-d)-ab}ω+{(a-b)(c-d)-cd}ω^p 
+  uint64_t AC[sizeof(fp_t) * 2];
+  uint64_t BD[sizeof(fp_t) * 2];
+  uint64_t T[sizeof(fp_t) * 2];
+
+  const uint64_t *a = A->x0.x0;
+  const uint64_t *b = A->x1.x0;
+  const uint64_t *c = B->x0.x0;
+  const uint64_t *d = B->x1.x0;
+
   static fp2_t tmp_A,tmp_B;
   fp2_set(&tmp_A,A);
   fp2_set(&tmp_B,B);
@@ -215,6 +246,22 @@ void fp2_mul_lazy_montgomery(fp2_t *ANS,fp2_t *A,fp2_t *B){
 
   fp_sub(&ANS->x0,&tmp1_fp,&tmp2_fp);
   fp_sub(&ANS->x1,&tmp1_fp,&tmp3_fp);
+
+#else
+  static fp2_t tmp_A,tmp_B;
+  fp2_set(&tmp_A,A);
+  fp2_set(&tmp_B,B);
+
+  static fp_t tmp1_fp,tmp2_fp,tmp3_fp;
+  fp_sub(&tmp1_fp,&tmp_A.x0,&tmp_A.x1);
+  fp_sub(&tmp2_fp,&tmp_B.x0,&tmp_B.x1);
+  fp_mulmod_montgomery(&tmp1_fp,&tmp1_fp,&tmp2_fp);
+  fp_mulmod_montgomery(&tmp2_fp,&tmp_A.x0,&tmp_B.x0);
+  fp_mulmod_montgomery(&tmp3_fp,&tmp_A.x1,&tmp_B.x1);
+
+  fp_sub(&ANS->x0,&tmp1_fp,&tmp2_fp);
+  fp_sub(&ANS->x1,&tmp1_fp,&tmp3_fp);
+#endif
 } 
 
 void fp2_mul_nonmod_montgomery(fpd2_t *ANS, fp2_t *A, fp2_t *B) {
