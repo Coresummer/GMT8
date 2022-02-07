@@ -1,23 +1,47 @@
-PARAMETERS
-𝜒(128bit) = 0xffc00020fffffffc
-(HW=58)
+Pairing Mapping Implementation with 
+
+GMT8-542 parameter
+
+u = 0x7452
+
+2NAF(u) = 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
+
+ht = -1
+hy = 0xffbbffffffffffffc020
+
+2NAF(hy) = 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, -1, 0, 0, 1
+
+p(u, ht ,hy) =
+
+0x347111bfc75e57d130de7be68437
+c8d75455d209459d421455023bee14
+df9fe75aa4734686ca3d08c1fa5941
+00d79421d56c53899ee0f066fad9eb
+45b0985dbdbba2dcc1
+
+r(u,ht,hy) = 
+0xff005ff010fbfd093a41afce5a02
+6f5b55729902a9b26b3179c1806080
+400011
+
+t(u,ht,hy) =
+-0xff005ff010fbfd093a41afce5a0
+26f5b55729902a9b26b307a0180607
+c3e000e
 
 
-p(544bit)=0xbb9dfd549299f1c803ddd5d7c05e7cc0373d9b1ac15b47aa5aa84626f33e58fe66943943049031ae4ca1d2719b3a84fa363bcd2539a5cd02c6f4b6b645a58c1085e14411
+Towering Extension Field
 
-r(𝜒) = 𝜒^4 +1
+Fp2 : Fp[ω]/ (ω + ω^p + 1)
 
-r(256bit) =  0xff0060739e18d7594a978b0ab6ae4ce3dbfd52a9d00197603fffdf0000000101
+Fp4 : Fp2 [v]/(v^2 − (1, −1))
 
-t(𝜒) = 𝜒+1-r
+Fp8 : Fp4 [g]/(g^2 − v),
+where (1, −1) ∈ Fp2
+ω + ω^p = 1
 
-t = 0xff0060739e18d7594a978b0ab6ae4ce3dbfd52a9d00197613fbfdf21000000fe
+With Elliptic Curve and Twisted Curve:
 
-REFERENCE
-Cocks-Pinch curves of embedding degrees five to eight and optimal ate pairing computation Aurore Guillevic 1 Simon Masson 1, 2 Emmanuel Thomé 1
+E : y^2 = x^3 + x
 
-Specifically For this branch CP2_AOPF_-4_8MR
-The extension field has following stracture
-Fp2[x]/(-1=x+x^p)
-Fp4[beta]/(z=beta^2) (z=QNR, also has to be a light element)
-Fp8[gamma]/(beta=gamma^2)
+E': y^2 = x^3 + xv^2
