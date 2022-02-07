@@ -46,10 +46,6 @@ int main(){
   // test_fp_montgomery(CHECK_PAIRING_TIME_LOOP);
   // test_field(0, CHECK_PAIRING_TIME_LOOP, CHECK_PAIRING_TIME_LOOP, CHECK_PAIRING_TIME_LOOP);
 
-  // test_fp(CHECK_PAIRING_TIME_LOOP);
-  // test_fp2(CHECK_PAIRING_TIME_LOOP);
-  // test_fp6(CHECK_PAIRING_TIME_LOOP);
-
   // check_fp_with_montgomery();
   // check_fp2_with_montgomery();
   // check_fp4_with_montgomery();
@@ -79,6 +75,7 @@ int main(){
   // BENCH_Pairing_jac_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   // BENCH_Pairing_proj_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   BENCH_Pairing_proj_lazy_montgomery_static(CHECK_PAIRING_TIME_LOOP);
+  
   printf("*********************************************************************************************\n\n");
 
   return 0;
