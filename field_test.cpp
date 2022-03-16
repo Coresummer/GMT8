@@ -261,6 +261,434 @@ int test_fp2(int fp2_n) {
   return 0;
 }
 
+
+int test_field(int fp_n, int fp2_n, int fp4_n,int fp8_n, int sqr) {
+  int i, j, n = 0;
+  float add_time = 0, add_lazy_time = 0;
+  float shift2_time = 0, shift4_time = 0, shift8_time = 0;
+  float mul_time = 0, mul_lazy_time = 0;
+  float inv_time = 0, inv_lazy_time = 0;
+  float sqr_time = 0, sqr_lazy_time = 0;
+  float com_time = 0, rec_time = 0, gs_time = 0;
+  float com_lazy_time = 0, rec_lazy_time = 0, gs_lazy_time = 0;
+  cost tmp_cost, fp2_mul_cost, fp4_mul_cost, fp8_mul_cost;
+
+  efp8_t P, Q;
+  fp8_t tmp, t0, t1, f;
+  struct timeval tv_A, tv_B;
+
+  printf("====================================================================================\n");
+  printf("Field test\n");
+  mp_limb_t test1_mpn[FPLIMB2], test2_mpn[FPLIMB2];
+  fp_t A_fp, B_fp, test1_fp, test2_fp;
+  fpd_t test2_fpd;
+  fp2_t A_fp2, B_fp2, test1_fp2, test2_fp2;
+  fp4_t A_fp4, B_fp4, test1_fp4, test2_fp4, test3_fp4;
+  fp8_t A_fp8, B_fp8, test1_fp8, test2_fp8, test3_fp8;
+
+  fp_init(&A_fp);
+  fp_init(&B_fp);
+  fp_init(&test1_fp);
+  fp_init(&test2_fp);
+  fpd_init(&test2_fpd);
+
+  fp2_init(&A_fp2);
+  fp2_init(&B_fp2);
+  fp2_init(&test1_fp2);
+  fp2_init(&test2_fp2);
+
+  fp4_init(&A_fp4);
+  fp4_init(&B_fp4);
+  fp4_init(&test1_fp4);
+  fp4_init(&test2_fp4);
+  fp4_init(&test3_fp4);
+
+  fp8_init(&A_fp8);
+  fp8_init(&B_fp8);
+  fp8_init(&test1_fp8);
+  fp8_init(&test2_fp8);
+  fp8_init(&test3_fp8);
+
+  cost_init(&tmp_cost);
+  cost_init(&fp2_mul_cost);
+  cost_init(&fp4_mul_cost);
+  cost_init(&fp8_mul_cost);
+
+  gmp_randinit_default(state);
+  gmp_randseed_ui(state, (unsigned long)time(NULL));
+
+  if (fp_n > 0) {
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp_add test\n");
+    add_time = 0, add_lazy_time = 0;
+    n = 1000;
+    for (i = 0; i < fp_n; i++) {
+      fp_set_random(&A_fp, state);
+      fp_set_random(&B_fp, state);
+
+      gettimeofday(&tv_A, NULL);
+      for (j = 0; j < n; j++) fp_add(&test1_fp, &A_fp, &B_fp);
+      gettimeofday(&tv_B, NULL);
+      add_time += timedifference_msec(tv_A, tv_B) / n;
+
+      // gettimeofday(&tv_A, NULL);
+      // for(j=0;j<n;j++)fp_add_lazy(test2_mpn,FPLIMB,A_fp.x0,FPLIMB,B_fp.x0,FPLIMB);
+      // gettimeofday(&tv_B, NULL);
+      // add_lazy_time += timedifference_msec(tv_A, tv_B) / n;
+      // fp_mod(&test2_fp, test2_mpn, FPLIMB);
+
+      // if (fp_cmp(&test1_fp, &test2_fp) != 0) {
+      //   printf("failed!\n\n");
+      //   fp_printf("", &test1_fp);
+      //   fp_printf("\n", &test2_fp);
+      //   printf("\n\n");
+      //   return 1;
+      // }
+    }
+    printf("fp add.      : %.6f[ns]\n", (add_time* 1000000 )/ fp_n);
+    // printf("fp add lazy. : %.6f[ms]\n", add_lazy_time / fp_n);
+
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp_mul test\n");
+    mul_time = 0, mul_lazy_time = 0;
+    n = 1000;
+    for (i = 0; i < fp_n; i++) {
+      fp_set_random(&A_fp, state);
+      fp_set_random(&B_fp, state);
+
+      gettimeofday(&tv_A, NULL);
+      for (j = 0; j < n; j++) fp_mul(&test1_fp, &A_fp, &B_fp);
+      gettimeofday(&tv_B, NULL);
+      mul_time += timedifference_msec(tv_A, tv_B) / n;
+
+      gettimeofday(&tv_A, NULL);
+      for(j=0;j<n;j++)fp_mul_nonmod(&test2_fpd,&A_fp,&B_fp);
+      gettimeofday(&tv_B, NULL);
+      mul_lazy_time += timedifference_msec(tv_A, tv_B) / n;
+      mpn_mod(test2_fp.x0, test2_fpd.x0, FPLIMB2);
+
+      if (fp_cmp(&test1_fp, &test2_fp) != 0) {
+        printf("failed!\n\n");
+        fp_printf("", &test1_fp);
+        fp_printf("\n", &test2_fp);
+        printf("\n\n");
+        return 1;
+      }
+    }
+
+    printf("fp mul.        : %.6f[ns]\n", (mul_time * 1000000) / fp_n);
+    printf("fp mul_nonmod. : %.6f[ns]\n", (mul_lazy_time * 1000000) / fp_n);
+
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp_sqr test\n");
+    sqr_time = 0, sqr_lazy_time = 0;
+    n = 1000;
+    for (i = 0; i < fp_n; i++) {
+      fp_set_random(&A_fp, state);
+
+      gettimeofday(&tv_A, NULL);
+      for (j = 0; j < n; j++) fp_sqr(&test1_fp, &A_fp);
+      gettimeofday(&tv_B, NULL);
+      sqr_time += timedifference_msec(tv_A, tv_B) / n;
+
+      // gettimeofday(&tv_A, NULL);
+      // for(j=0;j<n;j++)fp_mul(&test2_fp2,&A_fp,&A_fp);
+      // gettimeofday(&tv_B, NULL);
+      // sqr_lazy_time += timedifference_msec(tv_A, tv_B) / n;
+      // fp_mod(&test2_fp, test2_mpn, FPLIMB2);
+
+      // if (fp_cmp(&test1_fp, &test2_fp) != 0) {
+      //   printf("failed!\n\n");
+      //   fp_printf("", &test1_fp);
+      //   fp_printf("\n", &test2_fp);
+      //   printf("\n\n");
+      //   return 1;
+      // }
+    }
+    printf("fp sqr.      : %.6f[ns]\n", sqr_time*1000000 / fp_n);
+    // printf("fp sqr lazy. : %.6f[ms]\n", sqr_lazy_time / fp_n);
+
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp_inv test\n");
+    inv_time = 0, inv_lazy_time = 0;
+    n = 1000;
+    for (i = 0; i < fp_n; i++) {
+      fp_set_random(&A_fp, state);
+      fp_set_random(&B_fp, state);
+
+      gettimeofday(&tv_A, NULL);
+      for (j = 0; j < n; j++) fp_inv(&test1_fp, &A_fp);
+      gettimeofday(&tv_B, NULL);
+      inv_time += timedifference_msec(tv_A, tv_B) / n;
+    }
+    printf("fp inv.      : %.6f[ms]\n", inv_time / fp_n);
+  }
+  
+  if (fp2_n > 0) {
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp2_add test\n");
+    add_time = 0, add_lazy_time = 0;
+    for (i = 0; i < fp2_n; i++) {
+      fp2_set_random(&A_fp2, state);
+      fp2_set_random(&B_fp2, state);
+
+      gettimeofday(&tv_A, NULL);
+      fp2_add(&test1_fp2, &A_fp2, &B_fp2);
+      gettimeofday(&tv_B, NULL);
+      add_time += timedifference_msec(tv_A, tv_B);
+    }
+    printf("fp2 add.      : %.6f[ms]\n", add_time / fp2_n);
+
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp2_shift test\n");
+    shift2_time = 0, shift4_time = 0, shift8_time = 0;
+    for (i = 0; i < fp2_n; i++) {
+      fp2_set_random(&A_fp2, state);
+      fp2_set_random(&B_fp2, state);
+
+      gettimeofday(&tv_A, NULL);
+      fp2_l1shift(&test1_fp2, &A_fp2);
+      gettimeofday(&tv_B, NULL);
+      shift2_time += timedifference_msec(tv_A, tv_B);
+
+      gettimeofday(&tv_A, NULL);
+      fp2_lshift(&test1_fp2, &A_fp2, 2);
+      gettimeofday(&tv_B, NULL);
+      shift4_time += timedifference_msec(tv_A, tv_B);
+
+      gettimeofday(&tv_A, NULL);
+      fp2_lshift(&test1_fp2, &A_fp2, 3);
+      gettimeofday(&tv_B, NULL);
+      shift8_time += timedifference_msec(tv_A, tv_B);
+    }
+
+    printf("fp2 shift2.      : %.6f[ms]\n", shift2_time / fp2_n);
+    printf("fp2 shift4.      : %.6f[ms]\n", shift4_time / fp2_n);
+    printf("fp2 shift8.      : %.6f[ms]\n", shift8_time / fp2_n);
+
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp2_mul test\n");
+    mul_time = 0, mul_lazy_time = 0;
+    n = 100;
+    for (i = 0; i < fp2_n; i++) {
+      fp2_set_random(&A_fp2, state);
+      fp2_set_random(&B_fp2, state);
+
+      cost_zero();
+      gettimeofday(&tv_A, NULL);
+      for (j = 0; j < n; j++) fp2_mul(&test1_fp2, &A_fp2, &B_fp2);
+      gettimeofday(&tv_B, NULL);
+      mul_time += timedifference_msec(tv_A, tv_B) / n;
+      cost_check(&tmp_cost);
+      cost_addition(&fp2_mul_cost, &tmp_cost);
+
+      gettimeofday(&tv_A, NULL);
+      for (j = 0; j < n; j++) fp2_mul_lazy(&test2_fp2, &A_fp2, &B_fp2);
+      gettimeofday(&tv_B, NULL);
+      mul_lazy_time += timedifference_msec(tv_A, tv_B) / n;
+
+      if (fp2_cmp(&test1_fp2, &test2_fp2) != 0) {
+        printf("failed!\n\n");
+        fp2_printf("", &test1_fp2);
+        fp2_printf("\n", &test2_fp2);
+        printf("\n\n");
+        return 1;
+      }
+    }
+    printf("fp2 mul.      : %.6f[ms]\n", mul_time / fp2_n);
+    printf("fp2 mul lazy. : %.6f[ms]\n", mul_lazy_time / fp2_n);
+#ifdef DEBUG_COST_A
+    printf("*********CP6 fp2 mul fp COST.********         \n");
+    cost_printf("CP6 fp2 mul cost", &fp2_mul_cost, fp2_n * n);
+    printf("***************************************         \n");
+#endif
+
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp2_sqr test\n");
+    sqr_time = 0, sqr_lazy_time = 0;
+    n = 100;
+    for (i = 0; i < fp2_n; i++) {
+      fp2_set_random(&A_fp2, state);
+
+      gettimeofday(&tv_A, NULL);
+      for (j = 0; j < n; j++) fp2_sqr(&test1_fp2, &A_fp2);
+      gettimeofday(&tv_B, NULL);
+      sqr_time += timedifference_msec(tv_A, tv_B) / n;
+
+      gettimeofday(&tv_A, NULL);
+      for (j = 0; j < n; j++) fp2_sqr_lazy(&test2_fp2, &A_fp2);
+      gettimeofday(&tv_B, NULL);
+      sqr_lazy_time += timedifference_msec(tv_A, tv_B) / n;
+
+      if (fp2_cmp(&test1_fp2, &test2_fp2) != 0) {
+        printf("failed!\n\n");
+        fp2_printf("", &test1_fp2);
+        fp2_printf("\n", &test2_fp2);
+        printf("\n\n");
+        return 1;
+      }
+    }
+    printf("fp2 sqr.      : %.6f[ms]\n", sqr_time / fp2_n);
+    printf("fp2 sqr lazy. : %.6f[ms]\n", sqr_lazy_time / fp2_n);
+
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp2_inv test\n");
+    inv_time = 0, inv_lazy_time = 0;
+    n = 1000;
+    for (i = 0; i < fp2_n; i++) {
+      fp2_set_random(&A_fp2, state);
+      fp2_set_random(&B_fp2, state);
+
+      gettimeofday(&tv_A, NULL);
+      for (j = 0; j < n; j++) fp2_inv(&test1_fp2, &A_fp2);
+      gettimeofday(&tv_B, NULL);
+      inv_time += timedifference_msec(tv_A, tv_B) / n;
+
+      gettimeofday(&tv_A, NULL);
+      for (j = 0; j < n; j++) fp2_inv_lazy(&test1_fp2, &A_fp2);
+      gettimeofday(&tv_B, NULL);
+      inv_lazy_time += timedifference_msec(tv_A, tv_B) / n;
+    }
+    printf("fp2 inv.      : %.6f[ms]\n", inv_time / fp2_n);
+    printf("fp2 inv_lazy. : %.6f[ms]\n", inv_lazy_time / fp2_n);
+  }
+
+  if (fp4_n > 0) {
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp4_mul test\n");
+    mul_time = 0, mul_lazy_time = 0;
+    for (i = 0; i < fp4_n; i++) {
+      fp4_set_random(&A_fp4, state);
+      fp4_set_random(&B_fp4, state);
+
+      cost_zero();
+      gettimeofday(&tv_A, NULL);
+      fp4_mul(&test1_fp4, &A_fp4, &B_fp4);
+      gettimeofday(&tv_B, NULL);
+      mul_time += timedifference_msec(tv_A, tv_B);
+      cost_check(&tmp_cost);
+      cost_addition(&fp4_mul_cost, &tmp_cost);
+
+      // gettimeofday(&tv_A, NULL);
+      // fp4_mul_lazy(&test2_fp4, &A_fp4, &B_fp4);
+      // gettimeofday(&tv_B, NULL);
+      // mul_lazy_time += timedifference_msec(tv_A, tv_B);
+
+      // if (fp4_cmp(&test1_fp4, &test2_fp4) != 0) {
+      //   printf("failed!\n\n");
+      //   fp4_printf("", &test1_fp4);
+      //   fp4_printf("\n", &test2_fp4);
+      //   printf("\n\n");
+      //   return 1;
+      // }
+    }
+
+    printf("fp4 mul.       : %.4f[ms]\n", mul_time / fp4_n);
+    printf("fp4 mul lazy.  : %.4f[ms]\n", mul_lazy_time / fp4_n);
+    #ifdef DEBUG_COST_A
+        printf("*********CP6 fp4 mul fp COST.********         \n");
+        cost_printf("CP6 fp4 mul cost", &fp4_mul_cost, fp4_n);
+        printf("***************************************         \n");
+    #endif
+
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp4_sqr test\n");
+    sqr_time = 0, sqr_lazy_time = 0;
+    for (i = 0; i < fp4_n; i++) {
+      fp4_set_random(&A_fp4, state);
+
+      gettimeofday(&tv_A, NULL);
+      fp4_sqr(&test1_fp4, &A_fp4);
+      gettimeofday(&tv_B, NULL);
+      sqr_time += timedifference_msec(tv_A, tv_B);
+
+      // gettimeofday(&tv_A, NULL);
+      // fp4_sqr_lazy(&test2_fp4, &A_fp4);
+      // gettimeofday(&tv_B, NULL);
+      // sqr_lazy_time += timedifference_msec(tv_A, tv_B);
+
+      // if (fp4_cmp(&test1_fp4, &test2_fp4) != 0) {
+      //   printf("failed!\n\n");
+      //   fp4_printf("", &test1_fp4);
+      //   fp4_printf("\n", &test2_fp4);
+      //   printf("\n\n");
+      //   return 1;
+      // }
+    }
+    printf("fp4 sqr.      : %.4f[ms]\n", sqr_time / fp4_n);
+    printf("fp4 sqr lazy. : %.4f[ms]\n", sqr_lazy_time / fp4_n);
+  }
+  
+
+  if (fp8_n > 0) {
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp8_mul test\n");
+    mul_time = 0, mul_lazy_time = 0;
+    for (i = 0; i < fp8_n; i++) {
+      fp8_set_random(&A_fp8, state);
+      fp8_set_random(&B_fp8, state);
+
+      cost_zero();
+      gettimeofday(&tv_A, NULL);
+      fp8_mul(&test1_fp8, &A_fp8, &B_fp8);
+      gettimeofday(&tv_B, NULL);
+      mul_time += timedifference_msec(tv_A, tv_B);
+      cost_check(&tmp_cost);
+      cost_addition(&fp8_mul_cost, &tmp_cost);
+
+      // gettimeofday(&tv_A, NULL);
+      // fp8_mul_lazy(&test2_fp8, &A_fp8, &B_fp8);
+      // gettimeofday(&tv_B, NULL);
+      // mul_lazy_time += timedifference_msec(tv_A, tv_B);
+
+      // if (fp8_cmp(&test1_fp8, &test2_fp8) != 0) {
+      //   printf("failed!\n\n");
+      //   fp8_printf("", &test1_fp8);
+      //   fp8_printf("\n", &test2_fp8);
+      //   printf("\n\n");
+      //   return 1;
+      // }
+    }
+
+    printf("fp8 mul.       : %.4f[ms]\n", mul_time / fp8_n);
+    printf("fp8 mul lazy.  : %.4f[ms]\n", mul_lazy_time / fp8_n);
+    #ifdef DEBUG_COST_A
+        printf("*********CP6 fp8 mul fp COST.********         \n");
+        cost_printf("CP6 fp8 mul cost", &fp8_mul_cost, fp8_n);
+        printf("***************************************         \n");
+    #endif
+
+    printf("------------------------------------------------------------------------------------\n");
+    printf("fp8_sqr test\n");
+    sqr_time = 0, sqr_lazy_time = 0;
+    for (i = 0; i < fp8_n; i++) {
+      fp8_set_random(&A_fp8, state);
+
+      gettimeofday(&tv_A, NULL);
+      fp8_sqr(&test1_fp8, &A_fp8);
+      gettimeofday(&tv_B, NULL);
+      sqr_time += timedifference_msec(tv_A, tv_B);
+
+      // gettimeofday(&tv_A, NULL);
+      // fp8_sqr_lazy(&test2_fp8, &A_fp8);
+      // gettimeofday(&tv_B, NULL);
+      // sqr_lazy_time += timedifference_msec(tv_A, tv_B);
+
+      // if (fp8_cmp(&test1_fp8, &test2_fp8) != 0) {
+      //   printf("failed!\n\n");
+      //   fp8_printf("", &test1_fp8);
+      //   fp8_printf("\n", &test2_fp8);
+      //   printf("\n\n");
+      //   return 1;
+      // }
+    }
+    printf("fp8 sqr.      : %.4f[ms]\n", sqr_time / fp8_n);
+    printf("fp8 sqr lazy. : %.4f[ms]\n", sqr_lazy_time / fp8_n);
+  }
+
+  return 0;
+}
+
 int test_fp_montgomery(int fp_n) {
   int i, j, n = 0;
   float add_time = 0, add_nonmod_single = 0, add_nonmod_double = 0;
@@ -809,7 +1237,7 @@ void check_fp8_with_montgomery(){
 
 void BENCH_fp2_fp4_fp8_mul_lazy_montgomery(int LOOP){
   printf("============================================================================\n");
-  printf("-------------------------------fp, fp2, fp6 BENCHMARK-----------------------\n");
+  printf("-------------------------------fp, fp2, fp4 BENCHMARK-----------------------\n");
   printf("============================================================================\n");
 
   fp_t ANS_fp, ANSm_fp, A_fp,Am_fp ,B_fp,Bm_fp;
