@@ -315,6 +315,9 @@ void fp2_sqr_lazy(fp2_t *ANS,fp2_t *A){
 }
 
 void fp2_sqr_lazy_montgomery(fp2_t *ANS,fp2_t *A){
+  #ifdef DEBUG_COST_A
+  cost_r1shift++;
+  #endif
   static fp2_t tmp_A;
   fp2_set(&tmp_A,A);
 
