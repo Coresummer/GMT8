@@ -203,7 +203,7 @@ void fp2_mul_lazy(fp2_t *ANS,fp2_t *A,fp2_t *B){
 } 
 
 void fp2_mul_lazy_montgomery(fp2_t *ANS,fp2_t *A,fp2_t *B){ 
-#ifdef mcl
+#if 0
   //Type-I AOPF
   // (aω+bω^p)(cω+dω^p) = {(a-b)(c-d)-ab}ω+{(a-b)(c-d)-cd}ω^p 
   uint64_t AB[sizeof(fp_t) * 2];

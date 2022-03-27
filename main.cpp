@@ -44,7 +44,7 @@ int main(){
 
   //各関数の動作確認、コスト計算、時間計測など
   // test_fp_montgomery(CHECK_PAIRING_TIME_LOOP);
-  test_field(CHECK_PAIRING_TIME_LOOP, 0,0,0,0);
+  // test_field(CHECK_PAIRING_TIME_LOOP, 0,0,0,0);
 
   // check_fp_with_montgomery();
   // check_fp2_with_montgomery();

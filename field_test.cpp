@@ -898,7 +898,7 @@ int test_fp_montgomery(int fp_n) {
   printf("fp_inv test\n");
   inv_time = 0, inv_lazy_time = 0;
   n = 1000;
-  for (i = 0; i < fp_n; i++) {
+  for (i = 0; i < fp_n/100; i++) {
     fp_set_random(&A_fp, state);
     fp_set_random(&B_fp, state);
 
