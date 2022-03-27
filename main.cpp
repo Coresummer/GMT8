@@ -48,12 +48,12 @@ int main(){
   // test_fp6(CHECK_PAIRING_TIME_LOOP);
 
   // check_fp_with_montgomery();
-  check_fp2_with_montgomery();
+  // check_fp2_with_montgomery();
   // check_fp4_with_montgomery();
   // check_fp8_with_montgomery();
 
   // check_efp();
-  check_efp2();
+  // check_efp2();
   // check_efp4();
   // check_efp8();
   // check_g1_g2();
