@@ -74,8 +74,8 @@ int main(){
   // BENCH_finalexp_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   // BENCH_Pairing_jac_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
   // BENCH_Pairing_proj_lazy_montgomery(CHECK_PAIRING_TIME_LOOP);
-  // BENCH_Pairing_proj_lazy_montgomery_static(CHECK_PAIRING_TIME_LOOP);
-  
+  BENCH_Pairing_proj_lazy_montgomery_static(CHECK_PAIRING_TIME_LOOP);
+  // 
   printf("*********************************************************************************************\n\n");
 
   return 0;
